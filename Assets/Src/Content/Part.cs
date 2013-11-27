@@ -84,15 +84,50 @@ public class Part : MonoBehaviour
 		}
 	}
 	
-	void OnTouchDown(int fingerID)
+	Location _TouchLocation;
+	float _TouchLocationTimeStamp;
+	Vector3 _TouchLocationPosition;
+	
+	void SetTouchLocation(Location at, Vector3 fingerPos)
 	{
-		if ( /*mLocation == Location.Ship ||*/ mDragFingerID != -1 )
+		_TouchLocation = at;
+		_TouchLocationTimeStamp = Time.time;
+		_TouchLocationPosition = fingerPos;
+	}
+	
+	void ResetTouchLocation()
+	{
+		_TouchLocation = Location.Invalid;
+		_TouchLocationTimeStamp = -1;
+	}
+	
+	void CheckTouchLocation(Vector3 fingerPos)
+	{
+		if ( _TouchLocationTimeStamp == -1 )
 		{
 			return;
 		}
-		MainManager.GetInstance().AttachListner(gameObject);
 		
-		mDragFingerID = fingerID;
+		if ( (fingerPos - _TouchLocationPosition).magnitude > 0.3f )
+		{
+			ResetTouchLocation();
+			return;
+		}
+		
+		if ( Time.time - _TouchLocationTimeStamp  > 0.2f )
+		{
+			DragBegin();
+		}
+	}
+	
+	bool _Dragging = false;
+	
+	void DragBegin()
+	{
+		if ( _Dragging )
+		{
+			return;
+		}
 		
 		switch ( mLocation )
 		{
@@ -108,7 +143,7 @@ public class Part : MonoBehaviour
 			break;
 		}
 			
-		mDragBeginPosition = MainManager.GetInstance().GetWorldPos(fingerID) - transform.localPosition;
+		mDragBeginPosition = MainManager.GetInstance().GetWorldPos(mDragFingerID) - transform.localPosition;
 		mLocation = Location.Handle;
 		
 		SetCaptionVisibility(true);
@@ -121,6 +156,59 @@ public class Part : MonoBehaviour
 		mHandleShadow.transform.parent = null;
 		mHandleShadow.SetActive(true);
 		
+		_Dragging = true;
+	}
+	
+	void DragMove()
+	{
+		if ( !_Dragging )
+		{
+			return;
+		}
+		
+		Vector3 localPosition_ = MainManager.GetInstance().GetWorldPos(mDragFingerID) - mDragBeginPosition;
+		transform.localPosition = localPosition_;
+		
+		Vector3 position_ = transform.position;
+		position_.y = 1;
+		transform.position = position_;
+		
+		if ( !FleetManager.GetShip().IsOccupied(mPattern.mHash ,position_) )
+		{
+			mHandleShadow.transform.position = new Vector3((int)(transform.position.x + 1000.5f) - 1000, 0, (int)(transform.position.z + 1000.5f) - 1000);
+		}
+	}
+	
+	void DragEnd()
+	{
+		if ( !_Dragging )
+		{
+			return;
+		}
+		
+		SetCaptionVisibility(false);
+		
+		ResetTouchLocation();
+		
+		transform.position = mHandleShadow.transform.position;
+		
+		mHandleShadow.SetActive(false);
+		mHandleShadow.transform.parent = transform;
+		UpdateLocation(InventoryManager.GetInstance()._ScrollingPanel.IsWithin(MainManager.GetInstance().GetWorldPos(mDragFingerID)) ? Location.Inventory : Location.Ship);
+		
+		_Dragging = false;
+	}
+	
+	void OnTouchDown(int fingerID)
+	{
+		if ( /*mLocation == Location.Ship ||*/ mDragFingerID != -1 )
+		{
+			return;
+		}
+		MainManager.GetInstance().AttachListner(gameObject);
+		
+		mDragFingerID = fingerID;
+		SetTouchLocation(mLocation, MainManager.GetInstance().GetWorldPos(fingerID));	
 	}
 	
 	int mBoundaryHeight = 0;
@@ -142,16 +230,13 @@ public class Part : MonoBehaviour
 			return;
 		}
 		
-		Vector3 localPosition_ = MainManager.GetInstance().GetWorldPos(fingerID) - mDragBeginPosition;
-		transform.localPosition = localPosition_;
-		
-		Vector3 position_ = transform.position;
-		position_.y = 1;
-		transform.position = position_;
-		
-		if ( !FleetManager.GetShip().IsOccupied(mPattern.mHash ,position_) )
+		if ( _Dragging )
 		{
-			mHandleShadow.transform.position = new Vector3((int)(transform.position.x + 1000.5f) - 1000, 0, (int)(transform.position.z + 1000.5f) - 1000);
+			DragMove ();
+		}
+		else
+		{
+			CheckTouchLocation(MainManager.GetInstance().GetWorldPos(fingerID));
 		}
 	}
 	
@@ -163,15 +248,15 @@ public class Part : MonoBehaviour
 		}
 		MainManager.GetInstance().DetachListener(gameObject);
 		
-		SetCaptionVisibility(false);
+		
+		if ( _Dragging )
+		{
+			DragEnd();
+		}
+		
+		ResetTouchLocation();
 		
 		mDragFingerID = -1;
-		
-		transform.position = mHandleShadow.transform.position;
-		
-		mHandleShadow.SetActive(false);
-		mHandleShadow.transform.parent = transform;
-		UpdateLocation(InventoryManager.GetInstance().IsLocated(MainManager.GetInstance().GetWorldPos(fingerID)) ? Location.Inventory : Location.Ship);
 	}
 	
 	void UpdateLocation(Location newLocation_)

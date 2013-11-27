@@ -321,7 +321,8 @@ public class PartManager : MonoBehaviour
 					newTile_.name = "Tile_" + i + "_" + j;
 					newTile_.transform.parent = container_.transform;
 					newTile_.transform.localPosition = new Vector3(-i, j, 0) / newTile_.transform.parent.localScale.x;
-					newTile_.AddComponent<TouchForward>();
+					newTile_.AddComponent<TouchForward>()._Target = container_.transform;
+					
 				}
 			}		
 		}

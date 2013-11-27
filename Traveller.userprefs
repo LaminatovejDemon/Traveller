@@ -1,0 +1,25 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Src/Utils/ScrollingPanel.cs">
+    <Files>
+      <File FileName="Assets/Src/Managers/TextManager.cs" Line="1" Column="1" />
+      <File FileName="Assets/Src/GUI/Button.cs" Line="35" Column="1" />
+      <File FileName="Assets/Src/Utils/TouchForward.cs" Line="6" Column="27" />
+      <File FileName="Assets/Src/Managers/PartManager.cs" Line="272" Column="20" />
+      <File FileName="Assets/Src/Managers/InventoryManager.cs" Line="98" Column="57" />
+      <File FileName="Assets/Src/Utils/ScrollingPanel.cs" Line="104" Column="16" />
+      <File FileName="Assets/Src/Managers/MainManager.cs" Line="132" Column="33" />
+      <File FileName="Assets/Src/Content/Part.cs" Line="111" Column="60" />
+      <File FileName="Assets/Src/Content/Ship.cs" Line="411" Column="1" />
+      <File FileName="Assets/Src/GUI/ButtonHandler.cs" Line="23" Column="3" />
+      <File FileName="Assets/Src/Utils/FrameSlider.cs" Line="42" Column="16" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
+    <Watch file="../../StarWars_CCG/Assets/StarwarsCCG/Code/BattleEngine/Powers/BasePower.cs" line="536" offsetX="180" offsetY="7605" expression="activeEffects" liveUpdate="False" />
+    <Watch file="../../StarWars_CCG/Assets/StarwarsCCG/Scripts/Events/EventSequencer.cs" line="360" offsetX="245" offsetY="5385" expression="effectArgs" liveUpdate="False" />
+  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
+</Properties>

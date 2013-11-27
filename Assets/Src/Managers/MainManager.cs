@@ -51,14 +51,16 @@ public class MainManager : MonoBehaviour {
 		Vector3 touchPos_ = Camera.main.ScreenToWorldPoint(position);
 		Ray touchRay_ = new Ray(touchPos_ - Camera.main.transform.forward * 50.0f, Camera.main.transform.forward);
 		mDebugRay = touchRay_;
-		RaycastHit hit_;
 		
-		mFingerWorldPositions[fingerID] = touchPos_;
-		InventoryManager.GetInstance().IsLocated(touchPos_);
+		SetWorldPos(fingerID, position);
+		
+		InventoryManager.GetInstance()._ScrollingPanel.IsWithin(GetWorldPos(fingerID));
+		
+		RaycastHit [] hits = Physics.RaycastAll(touchRay_, 200);
 			
-		if ( Physics.Raycast(touchRay_, out hit_, 200) )
+		for ( int i = 0; i < hits.Length; ++i )
 		{
-			hit_.collider.gameObject.SendMessage("OnTouchDown", fingerID, SendMessageOptions.DontRequireReceiver);
+			hits[i].collider.gameObject.SendMessage("OnTouchDown", fingerID, SendMessageOptions.DontRequireReceiver);
 		}
 	}
 	
@@ -79,20 +81,33 @@ public class MainManager : MonoBehaviour {
 	
 	public void DetachListener(GameObject who)
 	{
-		mTouchListeners.Remove(who);
+		mTouchListeners[mTouchListeners.IndexOf(who)] = null;
 	}
 	
-	void TouchMoved(int fingerID, Vector3 position)
+	void SetWorldPos(int fingerID, Vector3 position)
 	{
-		mFingerPositions[fingerID] = position;
-		
 		Vector3 pointA_ = Camera.main.ScreenToWorldPoint(position);
 		Vector3 pointB_ = Camera.main.ScreenToWorldPoint(position + Vector3.forward * 1.0f);
 		Vector3 normalized_ = (pointA_ - pointB_).normalized;		
 		mFingerWorldPositions[fingerID] = -(normalized_ / normalized_.y) * pointA_.y + pointA_;
 		
+	}
+
+	void TouchMoved(int fingerID, Vector3 position)
+	{
+		mFingerPositions[fingerID] = position;
+		
+		SetWorldPos(fingerID, position);
+		
 		for ( int i = 0; i < mTouchListeners.Count; ++i )
 		{
+			if ( mTouchListeners[i] == null )
+			{
+				mTouchListeners.RemoveAt(i);
+				--i;
+				continue;
+			}
+			
 			mTouchListeners[i].SendMessage("OnTouchMove", fingerID, SendMessageOptions.DontRequireReceiver);
 		}
 	}
@@ -107,6 +122,13 @@ public class MainManager : MonoBehaviour {
 		
 		for ( int i = 0; i < mTouchListeners.Count; ++i )
 		{
+			if ( mTouchListeners[i] == null )
+			{
+				mTouchListeners.RemoveAt(i);
+				--i;
+				continue;
+			}
+			
 			mTouchListeners[i].SendMessage("OnTouchUp", fingerID, SendMessageOptions.DontRequireReceiver);
 		}
 	}

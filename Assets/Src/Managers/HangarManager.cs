@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class HangarManager : MonoBehaviour 
+public class HangarManager : ButtonHandler 
 {
 	
 	private static HangarManager mInstance = null;
@@ -19,13 +19,13 @@ public class HangarManager : MonoBehaviour
 	}
 	
 	bool mInitlialzed = false;
-	GameObject mDoneButton = null;
-	GameObject mHangarButton = null;
-	GameObject mClearButton = null;
+//	GameObject mDoneButton = null;
+//	GameObject mHangarButton = null;
+//	GameObject mClearButton = null;
 	
 	public void InformShipValidity(bool state)
 	{
-		mDoneButton.SetActive(state);
+	//	mDoneButton.SetActive(state);
 	}
 	
 	void Initialize()
@@ -34,7 +34,7 @@ public class HangarManager : MonoBehaviour
 		{
 			return;
 		}
-		mHangarButton = Button.Create("OPEN HANGAR", "OnHangarOpenButton", transform);
+	/*	mHangarButton = Button.Create("OPEN HANGAR", "OnHangarOpenButton", transform);
 		mHangarButton.transform.parent = Camera.main.transform;
 		mHangarButton.transform.localRotation = Quaternion.identity;
 		mHangarButton.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(1,0,0));
@@ -56,7 +56,7 @@ public class HangarManager : MonoBehaviour
 		mClearButton.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(1,1,0)); 
 		mClearButton.transform.localPosition += Vector3.left * mDoneButton.transform.GetComponent<Button>().mRenderer.bounds.extents.x
 			+ Vector3.down * mClearButton.transform.GetComponent<Button>().mRenderer.bounds.extents.y;
-			
+			*/
 		mInitlialzed = true;
 	}
 	
@@ -73,9 +73,9 @@ public class HangarManager : MonoBehaviour
 	void SetHangarVisibility(bool state)
 	{
 		InventoryManager.GetInstance().gameObject.SetActive(state);
-		mClearButton.SetActive(state);
-		mDoneButton.SetActive(state);
-		mHangarButton.SetActive(!state);
+//		mClearButton.SetActive(state);
+	//	mDoneButton.SetActive(state);
+//		mHangarButton.SetActive(!state);
 		
 		FleetManager.GetInstance().SetHangarEntry(state);
 	}
@@ -92,5 +92,51 @@ public class HangarManager : MonoBehaviour
 	
 	void Update () {
 	
+	}
+	
+	
+	// BUTTON HANDLER EXTENSION
+	
+	Button _OpenHangarButton;
+	Button _CloseHangarButton;
+	
+	public override void ButtonStarted (Button target)
+	{
+		base.ButtonStarted (target);
+		
+		switch (target._Handle)
+		{
+		case ButtonHandle.HANGAR_OPEN:
+			_OpenHangarButton = target;
+			target.Visible = false;
+			break;
+		case ButtonHandle.HANGAR_DONE:
+			
+			_CloseHangarButton = target;
+			break;
+		}
+		
+	}
+	
+	public override void ButtonPressed (Button target)
+	{
+		base.ButtonPressed (target);
+		
+		switch (target._Handle)
+		{
+		case ButtonHandler.ButtonHandle.HANGAR_ERASE_ALL:
+			OnClearButton();
+			break;
+		case ButtonHandler.ButtonHandle.HANGAR_OPEN:
+			OnHangarOpenButton();
+			target.Visible = false;
+			_CloseHangarButton.Visible = true;
+			break;
+		case ButtonHandler.ButtonHandle.HANGAR_DONE:
+			OnDoneButton();
+			target.Visible = false;
+			_OpenHangarButton.Visible = true;
+			break;
+		}
 	}
 }
