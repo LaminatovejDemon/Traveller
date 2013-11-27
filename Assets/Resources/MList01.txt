@@ -1,0 +1,45 @@
+id;name;description;price;power;hash;hp;weight;integrity;model;texture;spec1;spec1val;spec2;spec2val
+LaserBasicA;Basic Laser (alpha class);Basic low damage output weapon;2;-2;1;1;5;0;LaserBasicA;mtexture;beam;1;0;0
+LaserHeavyA;Heavy Laser (alpha class);Heavy laser deals higher damage for higher power consumption and higher price compared to basic lasers;6;-4;3;1;12;0;LaserHeavyA;mtexture;beam;3;0;0
+LaserGatlingA;Gatling Laser (alpha class);Laser being able to shoot multiple times in a single turn;8;-4;1;1;10;0;LaserGatlingA;mtexture;beam;1;beamrep;3
+PhaserA;Phaser (alpha class);Advanced beam weapon being able to randomly hit any part of the enemy ship;4;-2;1;1;8;0;PhaserA;mtexture;phaser;1;0;0
+TracerA;Tracer (alpha class);Inteligent beam weapon always hitting enemy modules to deal maximum damage;6;-2;1;1;8;0;TracerA;mtexture;tracer;1;0;0
+TorpTungA;Tungsten Torpedos  (alpha class);Basic torpedo launcher whose projectiles are able to penetrate enemy shields;12;-6;65;1;20;0;TorpTungA;mtexture;torpdam;4;torpcoun;4
+GenerFuss1;Fussion Generator  (v1);Basic tiny sized power generator ;8;10;1;1;6;0;GenerFuss1;mtexture;0;0;0;0
+GenerFuss2;Fussion Generator (v2);Basic small sized power generation;10;15;3;1;8;0;GenerFuss2;mtexture;0;0;0;0
+GenerFuss3;Fussion Generator (v3);Basic medium sized power generation;18;25;7;1;12;0;GenerFuss3;mtexture;0;0;0;0
+GenerFuss4;Fussion Generator (v4);Basic large sized power generation;25;35;195;1;16;0;GenerFuss4;mtexture;0;0;0;0
+ShieldEmp1;EMP Shields (v1);Basic EMP shield with tiny capacity and minimal recharge;20;-4;1;1;15;0;ShieldEmp1;mtexture;srech;1;scap;20
+ShieldEmp2;EMP Shields (v2);Basic EMP shield with small capacity and minimal recharge;25;-6;3;1;25;0;ShieldEmp2;mtexture;srech;1;scap;30
+RechargEmp1;EMP Shield Recharger (v1);Basic shield recharger with medium recharge speed;10;-5;3;1;10;0;RechargEmp1;mtexture;srech;5;0;0
+ArmorTungA;Tungsten Armor (alpha class);Most common armor, class alpha;1;0;1;1;4;0;ArmorTungA;mtexture;0;0;0;0
+ArmorTungB;Tungsten Armor (beta class);Most common armor, class beta;3;0;1;3;7;0;ArmorTungB;mtexture;0;0;0;0
+ArmorTungC;Tungsten Armor (gamma class);Most common armor, class gamma;4;0;1;5;10;0;ArmorTungC;mtexture;0;0;0;0
+ArmorTungD;Tungsten Armor (delta class);Most common armor, class delta;5;0;1;7;13;0;ArmorTungD;mtexture;0;0;0;0
+EngineFuss1;Fussion Engines (v1);Basic tiny sized engines;10;-4;1;1;6;0;EngineFuss1;mtexture;engipow;5;0;0
+EngineFuss2;Fussion Engines (v2);Basic small sized engines giving tiny chance to avoid enemy attacks;22;-8;3;1;9;0;EngineFuss2;mtexture;engipow;10;evade;1
+EngineFuss3;Fussion Engines (v3);Basic medium sized engines giving tiny chance to avoid enemy attacks;35;-10;4161;1;12;0;EngineFuss3;mtexture;engipow;15;evade;2
+AntiMissA;Topredo Antimissiles (alpha class);Basic missiles offering low level anti-torpedo protection;6;-3;1;1;4;0;AntiMissA;mtexture;antitorp;1;0;0
+Cargo1;Cargo Module (v1);Tiny sized cargo module;1;0;1;1;10;0;Cargo1;mtexture;cargo;1;0;0
+Cargo2;Cargo Module (v2);Small sized cargo module;5;0;1;1;14;0;Cargo2;mtexture;cargo;2;0;0
+Cargo2;Cargo Module (v3);Medium sized cargo module;15;0;1;1;18;0;Cargo2;mtexture;cargo;4;0;0
+Cargo4;Cargo Module (v4);Large sized cargo module;40;0;1;1;20;0;Cargo4;mtexture;cargo;6;0;0
+CaptainA;Captain's Bridge (alpha class);Basic captain's bridge equipped with battle scanners and tiny cargo capacity;5;0;1;1;5;0;CaptainA;mtexture;scanner;1;cargo;1
+MiningA;Mining Plasma Beam Kit (v1);Basic slow speed mining kit using plasma beam technology;15;-10;1;1;15;0;MiningA;mtexture;mining;1;0;0
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
