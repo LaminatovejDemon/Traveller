@@ -3,10 +3,39 @@ using System.Collections;
 
 public class Button : MonoBehaviour 
 {
+	
+	public Transform _ActiveContainer;
+	public Transform _DeactiveContainer;
+	
 	public ButtonHandler _Handler;
 	public ButtonHandler.ButtonHandle _Handle;
 	public TextMesh _TextHandle;
 	public GameObject _VisibilityContainer;
+	
+	public bool _Active = true;
+	public bool Active
+	{
+		set 
+		{ 
+			if ( _Active == value ) 
+			{
+				return;
+			}
+			_Active = value;
+			
+			UpdateVisibility();
+		}
+		get{ 
+			return _Active;
+		}
+	}
+	
+	void UpdateVisibility()
+	{
+		_ActiveContainer.gameObject.SetActive(_Active);
+		_DeactiveContainer.gameObject.SetActive(!_Active);
+	}
+	
 	bool _Visible = true;
 	public bool Visible
 	{
@@ -31,7 +60,13 @@ public class Button : MonoBehaviour
 	
 	void Start()
 	{
-		_TextHandle.text = _Caption;
+		if ( _TextHandle != null )
+		{
+			_TextHandle.text = _Caption;
+		}
+		
+		UpdateVisibility();
+		
 		_Handler.SendMessage("ButtonStarted", this, SendMessageOptions.RequireReceiver);		
 	}
 		

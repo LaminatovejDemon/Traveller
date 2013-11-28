@@ -73,6 +73,7 @@ public class HangarManager : ButtonHandler
 		InventoryManager.GetInstance().SetVisibility(state);
 		_ButtonContainerSlider.SlideIn = state;
 		_OpenButtonContainerSlider.SlideIn = !state;	
+		
 	}
 	
 	bool _HideBattleFinished = false;
@@ -114,7 +115,8 @@ public class HangarManager : ButtonHandler
 			_HideHangarFinished = false;
 			_HangarSlideCompleted = false;
 			
-			ShowBattle();
+			BattleManager.GetInstance().ShowBattle();
+
 		}
 	}
 	
@@ -124,11 +126,7 @@ public class HangarManager : ButtonHandler
 		MainManager.GetInstance()._HangarCamera.Show(FleetManager.GetShip().transform);	
 	}
 	
-	void ShowBattle()
-	{
-		MainManager.GetInstance()._BattleCamera.OnFinished(gameObject, "ShowBattleFinished");	
-		MainManager.GetInstance()._BattleCamera.Show(FleetManager.GetShip().transform);
-	}
+
 	
 	void AnimateShipEntry(bool state)
 	{
@@ -141,24 +139,15 @@ public class HangarManager : ButtonHandler
 		{			
 			MainManager.GetInstance()._BattleCamera.OnFinished(gameObject, "HideBattleFinished");	
 			MainManager.GetInstance()._BattleCamera.Hide();
+			MainManager.GetInstance()._EnemyCamera.Hide();
 		}
 	}
 	
 	public void ShowHangarFinished()
 	{
 		transform.localRotation = Quaternion.identity;		
-		//Utils.SetLayer(transform, LayerMask.NameToLayer("HangarCamera"));
 	}
-	
-	public void ShowBattleFinished()
-	{
-	/* Ship newShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetScan("SomeShip") );
-		FleetManager.GetInstance().RegisterShip(newShip_);
-			
-		BattleManager.GetInstance().StartBattle(this , newShip_);*/
-	}
-	
-	
+		
 	void OnClearButton()
 	{
 		FleetManager.GetShip().EraseShip();

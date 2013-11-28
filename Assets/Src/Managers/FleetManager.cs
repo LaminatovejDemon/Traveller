@@ -34,6 +34,7 @@ public class FleetManager : MonoBehaviour
 		};
 		
 		public string mName;
+		public Vector3 mCenter;
 		
 		public List <PatternPlan> mPartList {get; private set;}
 		
@@ -54,6 +55,12 @@ public class FleetManager : MonoBehaviour
 		List<PatternPlan> mList;
 	};
 	
+	public void DestroyShipInstance(Ship instance)
+	{
+		mUsedShipList.Remove(instance);
+		instance.EraseShip();
+	}
+	
 	public ShipScan GetScan(string name)
 	{
 		return mShipScanList[name];
@@ -63,7 +70,7 @@ public class FleetManager : MonoBehaviour
 	
 	public void ScanShip(GameObject ship)
 	{
-		string name_ = "SomeShip";
+		string name_ = "TestShip";
 		
 		if ( mShipScanList.ContainsKey(name_) )
 		{
@@ -76,7 +83,8 @@ public class FleetManager : MonoBehaviour
 		
 		ShipScan new_ = new ShipScan();
 		new_.mName = name_;
-		
+		new_.mCenter = ship.GetComponent<Ship>().mShipCenter;
+			
 		for ( int i = 0; i < ship.transform.childCount; ++i )
 		{
 			new_.AddPart(ship.transform.GetChild(i).GetComponent<Part>());			

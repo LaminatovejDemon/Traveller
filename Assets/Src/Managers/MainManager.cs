@@ -6,6 +6,7 @@ public class MainManager : MonoBehaviour {
 	
 	public CameraHandler _BattleCamera;
 	public CameraHandler _HangarCamera;
+	public CameraHandler _EnemyCamera;
 	
 	private static MainManager mInstance = null;
 	
