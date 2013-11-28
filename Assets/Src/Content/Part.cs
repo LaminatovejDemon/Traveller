@@ -169,15 +169,14 @@ public class Part : MonoBehaviour
 		Vector3 localPosition_ = MainManager.GetInstance().GetWorldPos(mDragFingerID) - mDragBeginPosition;
 		transform.localPosition = localPosition_;
 		
-		Vector3 position_ = transform.position;
-		position_.y = 1;
-		transform.position = position_;
+		
+		Vector3 targetPosition_ = localPosition_ - HangarManager.GetInstance()._HangarContainer.transform.localPosition;
 		
 		Vector3 placementPostiion = mHandleShadow.transform.position;
 		
-		if ( !FleetManager.GetShip().IsOccupied(mPattern.mHash, position_, ref placementPostiion) )
+		if ( !FleetManager.GetShip().IsOccupied(mPattern.mHash, targetPosition_, ref placementPostiion) )
 		{
-			mHandleShadow.transform.position = new Vector3((int)(placementPostiion.x + 1000.5f) - 1000, 0, (int)(placementPostiion.z + 1000.5f) - 1000);
+			mHandleShadow.transform.position = placementPostiion + HangarManager.GetInstance()._HangarContainer.transform.localPosition;
 		}
 	}
 	

@@ -36,11 +36,11 @@ public class BattleManager : MonoBehaviour
 	
 	void Shoot(Ship shooter, Ship catcher)
 	{
-		int direction_, value_;
+		int direction_, value_ = 6;
 		for ( int i = 0; i < shooter.mWeaponList.Count; ++i )
 		{
 			direction_ = Random.Range(0,3);
-			value_ = /*Random.Range(0, catcher.GetRange(direction_));*/catcher.GetRange(direction_);
+			//value_ = /*Random.Range(0, catcher.GetRange(direction_));*/catcher.GetRange(direction_);
 			shooter.Shoot(shooter.mWeaponList[i], direction_, value_);
 		}
 	}

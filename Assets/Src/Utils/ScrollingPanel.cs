@@ -160,7 +160,7 @@ public class ScrollingPanel : MonoBehaviour
 	
 	void LimitTargetContainerPosition()
 	{
-		mTargetContainerPosition.z = (int)(mTargetContainerPosition.z / _CellSize) * _CellSize;
+	//	mTargetContainerPosition.z = (int)(mTargetContainerPosition.z / _CellSize) * _CellSize;
 		
 		if ( mTargetContainerPosition.z < _BoundaryCollider.bounds.extents.y )
 		{

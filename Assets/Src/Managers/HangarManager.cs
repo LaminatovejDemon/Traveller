@@ -3,6 +3,8 @@ using System.Collections;
 
 public class HangarManager : ButtonHandler 
 {
+	public const int HANGAR_SIZE = 6;
+	
 	public FrameSlider _ButtonContainerSlider;
 	public FrameSlider _OpenButtonContainerSlider;
 	
@@ -37,6 +39,9 @@ public class HangarManager : ButtonHandler
 		{
 			return;
 		}
+		
+		_HangarContainer.transform.GetChild(0).localScale = new Vector3(HANGAR_SIZE/10.0f, 1, HANGAR_SIZE/10.0f);
+		_HangarContainer.transform.GetChild(0).renderer.material.mainTextureScale = new Vector2(HANGAR_SIZE, HANGAR_SIZE);
 		
 		SetHangarVisibility(true);
 		mInitlialzed = true;

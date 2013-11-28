@@ -116,8 +116,11 @@ public class FleetManager : MonoBehaviour
 		 
 		if ( mPlayerShip == null )
 		{
+			
 			mPlayerShip = new GameObject("Ship").AddComponent<Ship>();
+			
 			mPlayerShip.Initialize("PlayerShip");
+			
 		}
 		return mPlayerShip;
 	}
