@@ -8,58 +8,46 @@ public class FrameSlider : ButtonHandler
 	
 	Vector3 _StartPosition;
 	
-	public bool _SlideInLocal = false;
+	public bool _SlideIn = false;
 	
-	bool _SlideIn{
-		get {	return _SlideInLocal;}
+	public bool SlideIn{
+		get {	return _SlideIn;}
 		set {
-			if ( value == _SlideInLocal )
+			if ( value == _SlideIn )
 			{
 				return;
 			}
 			
-			_SlideInLocal = value;
-			if ( _SlideInLocal )
-			{
-				SlideIn();
-			}
-			else
-			{
-				SlideOut();
-			}
+			_SlideIn = value;
+			Slide(_SlideIn);
 		}
 	}
 	
 	public void Start()
 	{
-		_StartPosition = _Container.position;
-		if ( _SlideInLocal )
+		_StartPosition = _Container.localPosition;
+		if ( _SlideIn )
 		{
-			_Container.position = _TargetPosition = _EndPosition.position;
+			_Container.localPosition = _TargetPosition = _EndPosition.localPosition;
 		}
 		else
 		{
-			_Container.position = _TargetPosition = _StartPosition;
+			_Container.localPosition  = _TargetPosition = _StartPosition;
 		}
 	}
 	
-	void SlideIn()
+	void Slide(bool direction)
 	{
-		_TargetPosition = _EndPosition.position;
-	}
-	
-	void SlideOut()
-	{
-		_TargetPosition = _StartPosition;
+		_TargetPosition = direction ? _EndPosition.localPosition : _StartPosition;
 	}
 	
 	Vector3 _TargetPosition;
 	
 	public void Update()
 	{
-		if ( _TargetPosition != _Container.position )
+		if ( _TargetPosition != _Container.localPosition  )
 		{
-			_Container.position = Utils.Interpolate(_Container.position, _TargetPosition);
+			_Container.localPosition = Utils.Interpolate(_Container.localPosition , _TargetPosition);
 		}
 	}
 	
@@ -67,6 +55,6 @@ public class FrameSlider : ButtonHandler
 	{
 		base.ButtonPressed (target);
 		
-		_SlideIn = !_SlideIn;
+		SlideIn = !SlideIn;
 	}
 }

@@ -173,9 +173,11 @@ public class Part : MonoBehaviour
 		position_.y = 1;
 		transform.position = position_;
 		
-		if ( !FleetManager.GetShip().IsOccupied(mPattern.mHash ,position_) )
+		Vector3 placementPostiion = mHandleShadow.transform.position;
+		
+		if ( !FleetManager.GetShip().IsOccupied(mPattern.mHash, position_, ref placementPostiion) )
 		{
-			mHandleShadow.transform.position = new Vector3((int)(transform.position.x + 1000.5f) - 1000, 0, (int)(transform.position.z + 1000.5f) - 1000);
+			mHandleShadow.transform.position = new Vector3((int)(placementPostiion.x + 1000.5f) - 1000, 0, (int)(placementPostiion.z + 1000.5f) - 1000);
 		}
 	}
 	

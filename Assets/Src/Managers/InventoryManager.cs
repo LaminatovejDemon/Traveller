@@ -5,6 +5,8 @@ using System.Collections.Generic;
 public class InventoryManager : MonoBehaviour 
 {
 	public ScrollingPanel _ScrollingPanel;
+	public FrameSlider _ContainerSlider;
+	public FrameSlider _ScrollingPanelSlider;
 	
 	private static InventoryManager mInstance = null;
 	public static InventoryManager GetInstance()
@@ -109,6 +111,12 @@ public class InventoryManager : MonoBehaviour
 		}
 		
 		SortInventory();
+	}
+	
+	public void SetVisibility(bool state)
+	{
+		_ContainerSlider.SlideIn = state;
+		_ScrollingPanelSlider.SlideIn = state;
 	}
 	
 	public void AddCaption(Part part)

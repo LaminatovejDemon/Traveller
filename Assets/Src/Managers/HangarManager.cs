@@ -3,7 +3,10 @@ using System.Collections;
 
 public class HangarManager : ButtonHandler 
 {
+	public FrameSlider _ButtonContainerSlider;
+	public FrameSlider _OpenButtonContainerSlider;
 	
+	public FrameSlider _HangarContainer;
 	private static HangarManager mInstance = null;
 	public static HangarManager GetInstance()
 	{
@@ -34,29 +37,8 @@ public class HangarManager : ButtonHandler
 		{
 			return;
 		}
-	/*	mHangarButton = Button.Create("OPEN HANGAR", "OnHangarOpenButton", transform);
-		mHangarButton.transform.parent = Camera.main.transform;
-		mHangarButton.transform.localRotation = Quaternion.identity;
-		mHangarButton.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(1,0,0));
-		mHangarButton.transform.localPosition += Vector3.left * mHangarButton.transform.GetComponent<Button>().mRenderer.bounds.extents.x
-			+ Vector3.up * mHangarButton.transform.GetComponent<Button>().mRenderer.bounds.extents.y;
-		mHangarButton.SetActive(false);
 		
-		mDoneButton = Button.Create("DONE", "OnDoneButton", transform);
-		mDoneButton.transform.parent = Camera.main.transform;
-		mDoneButton.transform.localRotation = Quaternion.identity;
-		mDoneButton.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(1,0,0));
-		mDoneButton.transform.localPosition += Vector3.left * mDoneButton.transform.GetComponent<Button>().mRenderer.bounds.extents.x
-			+ Vector3.up * mDoneButton.transform.GetComponent<Button>().mRenderer.bounds.extents.y;
-		mDoneButton.SetActive(false);
-		
-		mClearButton = Button.Create("ERASE SHIP", "OnClearButton", transform);
-		mClearButton.transform.parent = Camera.main.transform;
-		mClearButton.transform.localRotation = Quaternion.identity;
-		mClearButton.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(1,1,0)); 
-		mClearButton.transform.localPosition += Vector3.left * mDoneButton.transform.GetComponent<Button>().mRenderer.bounds.extents.x
-			+ Vector3.down * mClearButton.transform.GetComponent<Button>().mRenderer.bounds.extents.y;
-			*/
+		SetHangarVisibility(true);
 		mInitlialzed = true;
 	}
 	
@@ -72,12 +54,12 @@ public class HangarManager : ButtonHandler
 	
 	void SetHangarVisibility(bool state)
 	{
-		InventoryManager.GetInstance().gameObject.SetActive(state);
-//		mClearButton.SetActive(state);
-	//	mDoneButton.SetActive(state);
-//		mHangarButton.SetActive(!state);
-		
+		//InventoryManager.GetInstance().gameObject.SetActive(state);
 		FleetManager.GetInstance().SetHangarEntry(state);
+		_HangarContainer.SlideIn = state;
+		InventoryManager.GetInstance().SetVisibility(state);
+		_ButtonContainerSlider.SlideIn = state;
+		_OpenButtonContainerSlider.SlideIn = !state;
 	}
 	
 	void OnClearButton()

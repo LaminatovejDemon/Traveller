@@ -199,38 +199,81 @@ public class Ship : MonoBehaviour
 	
 	void GetHangarPlace(Vector3 position, out int x, out int y)
 	{
-		x = ((int)(position.x + 1000.5f))-1000 + HANGAR_SIZE / 2 - 13;
-		y = ((int)(position.z + 1000.5f))-1000 + HANGAR_SIZE / 2; 
+		x = (int)(((int)(position.x + 1000.5f))-1000 + HANGAR_SIZE / 2 - 13 - HangarManager.GetInstance()._HangarContainer.transform.position.x);
+		y = (int)(((int)(position.z + 1000.5f))-1000 + HANGAR_SIZE / 2 - 13 - HangarManager.GetInstance()._HangarContainer.transform.position.z); 
 	}
 	
-	public bool IsOccupied(int hash, Vector3 position)
+	Vector3 GetPosition(int x, int y)
 	{
-		int x, y;
-		GetHangarPlace(position, out x, out y);
+		return new Vector3((x + 13 + HangarManager.GetInstance()._HangarContainer.transform.position.x) - HANGAR_SIZE / 2,0 , 
+			(y + HangarManager.GetInstance()._HangarContainer.transform.position.z + 13) - HANGAR_SIZE/2);
+	}
+	
+	public bool IsOccupied(int hash, Vector3 position, ref Vector3 shadowPosition)
+	{
+		int sx_, sy_;
+		GetHangarPlace(shadowPosition, out sx_, out sy_);
 		
-		for ( int i = 0; i < 6; ++i )
+		int x_, y_;
+		GetHangarPlace(position, out x_, out y_);
+		
+		if ( !IsOccupiedLocalRange(hash, x_, y_, ref sx_, ref sy_) )
 		{
-			for ( int j = 0; j < 4; ++j)
+			shadowPosition = GetPosition(sx_,sy_);
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
+	bool IsOccupiedLocalRange(int hash, int px, int py, ref int sx, ref int sy)
+	{
+		Debug.Log ("Checking for occupied range " + px + ", " + py + " vs. " + sx + ", " + sy);
+		int incX_ = px < sx ? 1 : -1;
+		int incY_ = py < sy ? 1 : -1;
+		
+		bool free_ = false;
+		
+		for ( int x_ = px; (incX_ > 0 ? x_ <= sx : x_ >= sx); x_ += incX_ )
+		{
+			for ( int y_ = py; (incY_ > 0 ? y_ <= sy : y_ >= sy); y_ += incY_ )
 			{
-				int compareHash_ = 1 << ((j * 6) + i);
-				if ( (compareHash_ & hash) != 0 )
+				if ( !IsOccupied(hash, x_, y_) )
 				{
-					if ( x-i < 0 || x-i >= HANGAR_SIZE || y-j < 0 || y-j >= HANGAR_SIZE )
-					{
-						return true;
-					}
-					
-					if ( mOccupied[x-i,y-j] )
-					{
-						return true;
-					}
+					sx = x_;
+					sy = y_;
+					return false;
 				}
 			}
 		}
 		
-		return mOccupied[x,y];
+		return true;
 	}
 	
+	bool IsOccupied(int hash, int x, int y)
+	{		
+		for ( int i = 0; i < 6; ++i )
+		{
+			for ( int j = 0; j < 6; ++j)
+			{
+				int compareHash_ = 1 << ((j * 6) + i);
+				
+				if ( (compareHash_ & hash) != 0 )
+				{		
+					if (x-i < 0 || x-i > 5 || y-j < 0 || y-j > 5 )
+					{
+						return true;
+					}
+					
+					return mOccupied[x-i,y-j];
+				}
+			}
+		}
+		
+		return false;
+	}
+		
 	float GetEvade()
 	{
 		if ( mMass <= 0 || mEnginePower <= 0 )
@@ -339,6 +382,10 @@ public class Ship : MonoBehaviour
 		
 		if ( !state )
 		{
+			transform.parent = null;
+			transform.localPosition = Vector3.zero;
+			
+			CalculateShipCenter();
 			FleetManager.GetInstance().ScanShip(gameObject);
 			
 			Ship newShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetScan("SomeShip") );
@@ -348,7 +395,9 @@ public class Ship : MonoBehaviour
 		}
 		else
 		{
-			CalculateShipCenter();
+			transform.parent = HangarManager.GetInstance()._HangarContainer.transform;
+			transform.localPosition = Vector3.zero;
+			
 		}
 	}
 	
@@ -381,15 +430,13 @@ public class Ship : MonoBehaviour
 	}	
 	
 	public void CalculateShipCenter()
-	{
-				
+	{		
 		float top_, bottom_,left_,right_;
 		
 		GetBoundary(out top_, out bottom_, out left_, out right_, false);
 		
 		mShipCenter = new Vector3((int)(left_ + (right_ - left_) * 0.5f), 0, (int)(bottom_ + ( top_ - bottom_) * 0.5f));
-//		Debug.Log ("Ship Center is " + mShipCenter + " cuz T:" + top_ + ", B:" + bottom_ + ", L:" + left_ + ", R:" + right_ );
-		transform.position -= mShipCenter;
+		Debug.Log ("Ship Center is " + mShipCenter + " cuz T:" + top_ + ", B:" + bottom_ + ", L:" + left_ + ", R:" + right_ );
 	}
 		
 	void Occupy(Part part, Vector3 position, bool place)

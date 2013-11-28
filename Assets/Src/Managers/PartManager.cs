@@ -271,6 +271,11 @@ public class PartManager : MonoBehaviour
 	
 	public GameObject GetPattern(string id)
 	{
+		if ( !mInitialized )
+		{
+			Initialize();
+		}
+		
 		for ( int i = 0; i< mPatternList.Count; ++i )
 		{
 			if ( mPatternList[i].mID == id )
