@@ -13,4 +13,14 @@ public class Utils : MonoBehaviour
 		
 		return source + (target - source) * relativeAddition;
 	}
+	
+	public static void SetLayer(Transform parent, int layer)
+	{
+		for ( int i = 0; i < parent.childCount; ++i )
+		{
+			SetLayer(parent.GetChild(i), layer);
+		}
+		
+		parent.gameObject.layer = layer;
+	}
 }

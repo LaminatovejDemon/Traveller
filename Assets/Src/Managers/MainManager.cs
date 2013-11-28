@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class MainManager : MonoBehaviour {
 	
+	public CameraHandler _BattleCamera;
+	public CameraHandler _HangarCamera;
+	
 	private static MainManager mInstance = null;
 	
 	Vector3 [] mFingerPositions = new Vector3[10];

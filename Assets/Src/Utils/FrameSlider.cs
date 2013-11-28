@@ -9,6 +9,7 @@ public class FrameSlider : ButtonHandler
 	Vector3 _StartPosition;
 	
 	public bool _SlideIn = false;
+	public bool _InstantStart = false;
 	
 	public bool SlideIn{
 		get {	return _SlideIn;}
@@ -23,16 +24,35 @@ public class FrameSlider : ButtonHandler
 		}
 	}
 	
+	Object _OnFinished = null;
+	string _OnFinishedMethod;
+	bool _OnFinishedParameter;
+	
+	public void OnFinished(Object target, string method, bool parameter = true)
+	{
+		_OnFinished = target;
+		_OnFinishedMethod = method;
+		_OnFinishedParameter = parameter;
+	}
+	
 	public void Start()
 	{
 		_StartPosition = _Container.localPosition;
 		if ( _SlideIn )
 		{
-			_Container.localPosition = _TargetPosition = _EndPosition.localPosition;
+			_TargetPosition = _EndPosition.localPosition;
+			if ( _InstantStart )
+			{
+				_Container.localPosition = _TargetPosition;
+			}
 		}
 		else
 		{
-			_Container.localPosition  = _TargetPosition = _StartPosition;
+			_TargetPosition = _StartPosition;
+			if ( _InstantStart )
+			{
+				_Container.localPosition = _TargetPosition;
+			}
 		}
 	}
 	
@@ -48,6 +68,14 @@ public class FrameSlider : ButtonHandler
 		if ( _TargetPosition != _Container.localPosition  )
 		{
 			_Container.localPosition = Utils.Interpolate(_Container.localPosition , _TargetPosition);
+		}
+		else
+		{
+			if ( _OnFinished != null )
+			{
+				((GameObject)_OnFinished).SendMessage(_OnFinishedMethod, _OnFinishedParameter, SendMessageOptions.RequireReceiver);
+				_OnFinished = null;
+			}
 		}
 	}
 	

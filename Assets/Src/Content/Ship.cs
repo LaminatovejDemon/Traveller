@@ -93,14 +93,14 @@ public class Ship : MonoBehaviour
 		LoadShip(template);
 		mInitialized = true;
 	}
-	
+		
 	public void Initialize(string name)
 	{
 		if ( mInitialized )
 		{
 			return;
 		}
-		
+			
 		mWeaponList = new List<Weapon>();
 		
 		mShipName = name;
@@ -116,6 +116,7 @@ public class Ship : MonoBehaviour
 	{
 		which.parent = null;
 		Occupy(which.GetComponent<Part>(), which.transform.position, false);
+		
 		BackupShip();
 	}
 	
@@ -373,6 +374,8 @@ public class Ship : MonoBehaviour
 		UpdateStats();
 	}
 	
+	bool DebugRotate_ = false;
+	
 	public void SetHangarEntry(bool state)
 	{
 		if ( mStats != null )
@@ -383,24 +386,17 @@ public class Ship : MonoBehaviour
 		if ( !state )
 		{
 			transform.parent = null;
-			transform.localPosition = Vector3.zero;
-			
 			CalculateShipCenter();
+			
+			transform.localPosition = Vector3.zero;
 			FleetManager.GetInstance().ScanShip(gameObject);
-			
-			Ship newShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetScan("SomeShip") );
-			FleetManager.GetInstance().RegisterShip(newShip_);
-			
-			BattleManager.GetInstance().StartBattle(this , newShip_);
 		}
 		else
-		{
+		{	
 			transform.parent = HangarManager.GetInstance()._HangarContainer.transform;
-			transform.localPosition = Vector3.zero;
-			
+			transform.localPosition = Vector3.zero;		
 		}
 	}
-	
 	
 	
 	void GetBoundary(out float top, out float bottom, out float left, out float right, bool normalized)
@@ -445,6 +441,17 @@ public class Ship : MonoBehaviour
 		GetHangarPlace(position, out x, out y);
 		int hash = part.mPattern.mHash;
 		
+		
+		//Setting hangar layer camera
+		if ( place )
+		{
+			Utils.SetLayer(part.transform, MainManager.GetInstance()._HangarCamera.GetRealLayer() );
+		}
+		else
+		{
+			Utils.SetLayer(part.transform, 0 );
+		}
+			
 		SetStats(part, place);
 				
 		for ( int i = 0; i < 6; ++i )
@@ -508,7 +515,11 @@ public class Ship : MonoBehaviour
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	
+	void Update () 
+	{
+		if ( DebugRotate_ )
+		{
+			transform.Rotate(Vector3.up, Time.deltaTime * 10.0f);
+		}
 	}
 }
