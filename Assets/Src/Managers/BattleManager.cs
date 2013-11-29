@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BattleManager : MonoBehaviour 
+public class BattleManager : ButtonHandler 
 {
 	private static BattleManager mInstance = null;
 	public static BattleManager GetInstance()
@@ -17,7 +17,11 @@ public class BattleManager : MonoBehaviour
 		return mInstance;
 	}
 	
+	public FrameSlider _TurnButtonSlider;
+	public FrameSlider _OpenHangarSlider;
+	
 	Ship mAttacker, mDefender;
+	BattleComputer mAttackerComputer, mDefenderComputer;
 
 	public void StartBattle(Ship attacker, Ship defender)
 	{		
@@ -29,27 +33,32 @@ public class BattleManager : MonoBehaviour
 		
 		mAttacker.mStats.SetActive(true);
 		mDefender.mStats.SetActive(true);
-	//	mAttacker.CalculateShipCenter();
-	//	mDefender.CalculateShipCenter();
 		
-	//	mAttacker.transform.position += Vector3.left * 3.0f;
-	//	mDefender.transform.position += Vector3.right * 3.0f;
-		
-	//	Shoot(mAttacker, mDefender);
-	//	Shoot(mDefender, mAttacker);
+		mAttackerComputer = mAttacker.GetComponent<BattleComputer>();
+		mDefenderComputer = mDefender.GetComponent<BattleComputer>();
 	}
 	
-	void Shoot(Ship shooter, Ship catcher)
+	void Turn()
 	{
-		int direction_, value_ = 6;
-		for ( int i = 0; i < shooter.mWeaponList.Count; ++i )
+		mAttackerComputer.Attack(mDefender);
+		mDefenderComputer.Attack(mAttacker);
+		
+		mAttacker.RemoveDestroyedParts();
+		mDefender.RemoveDestroyedParts();
+		
+		CheckStats();
+	}
+	
+	void CheckStats()
+	{
+		if ( !mAttacker.IsAlive() )
 		{
-			direction_ = Random.Range(0,3);
-			//value_ = /*Random.Range(0, catcher.GetRange(direction_));*/catcher.GetRange(direction_);
-			shooter.Shoot(shooter.mWeaponList[i], direction_, value_);
+			_TurnButtonSlider.SlideIn = false;
+			HangarManager.GetInstance()._OpenButtonContainerSlider.SlideIn = true;
 		}
 	}
 	
+		
 	public void ShowBattle()
 	{
 		if ( mDefender != null )
@@ -60,7 +69,7 @@ public class BattleManager : MonoBehaviour
 		FleetManager.GetInstance().RegisterShip(newShip_);
 		
 		StartBattle (FleetManager.GetShip(), newShip_);
-		
+		_TurnButtonSlider.SlideIn = true;
 		
 		MainManager.GetInstance()._BattleCamera.OnFinished(gameObject, "ShowBattleFinished");	
 		MainManager.GetInstance()._BattleCamera.Show(FleetManager.GetShip().transform);
@@ -72,6 +81,39 @@ public class BattleManager : MonoBehaviour
 	{
 		mDefender.DebugRotate_ = true;
 	    // BEGIN_TURN
+	}
+	
+	//BUTTONS
+	
+	Button _TurnButton;
+	
+	public override void ButtonPressed (Button target)
+	{
+		base.ButtonPressed (target);
+		
+		switch (target._Handle)
+		{
+			case ButtonHandler.ButtonHandle.BATTLE_TURN:
+			Turn();
+			break;
+			case ButtonHandler.ButtonHandle.HANGAR_OPEN:
+			HangarManager.GetInstance().OnHangarOpenButton();
+			target.Visible = false;
+			
+			break;
+		}
+	}
+	
+	public override void ButtonStarted (Button target)
+	{
+		base.ButtonStarted (target);
+		
+		switch (target._Handle)
+		{
+		case ButtonHandler.ButtonHandle.BATTLE_TURN:
+			_TurnButton = target;
+			break;
+		}
 	}
 	
 }

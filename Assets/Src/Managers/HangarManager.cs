@@ -47,9 +47,10 @@ public class HangarManager : ButtonHandler
 		mInitlialzed = true;
 	}
 	
-	void OnHangarOpenButton()
+	public void OnHangarOpenButton()
 	{	
 		SetHangarVisibility(true);
+		_CloseHangarButton.Visible = true;
 	}
 	
 	void OnDoneButton()
@@ -72,7 +73,7 @@ public class HangarManager : ButtonHandler
 		_HangarContainer.OnFinished(gameObject, "HangarSlideCompleted", state);
 		InventoryManager.GetInstance().SetVisibility(state);
 		_ButtonContainerSlider.SlideIn = state;
-		_OpenButtonContainerSlider.SlideIn = !state;	
+		//_OpenButtonContainerSlider.SlideIn = !state;	
 		
 	}
 	
@@ -165,7 +166,7 @@ public class HangarManager : ButtonHandler
 	
 	// BUTTON HANDLER EXTENSION
 	
-	Button _OpenHangarButton;
+	//Button _OpenHangarButton;
 	Button _CloseHangarButton;
 	
 	public override void ButtonStarted (Button target)
@@ -174,10 +175,10 @@ public class HangarManager : ButtonHandler
 		
 		switch (target._Handle)
 		{
-		case ButtonHandle.HANGAR_OPEN:
+		/*case ButtonHandle.HANGAR_OPEN:
 			_OpenHangarButton = target;
 			target.Visible = false;
-			break;
+			break;*/
 		case ButtonHandle.HANGAR_DONE:
 			
 			_CloseHangarButton = target;
@@ -195,15 +196,10 @@ public class HangarManager : ButtonHandler
 		case ButtonHandler.ButtonHandle.HANGAR_ERASE_ALL:
 			OnClearButton();
 			break;
-		case ButtonHandler.ButtonHandle.HANGAR_OPEN:
-			OnHangarOpenButton();
-			target.Visible = false;
-			_CloseHangarButton.Visible = true;
-			break;
+		
 		case ButtonHandler.ButtonHandle.HANGAR_DONE:
 			OnDoneButton();
 			target.Visible = false;
-			_OpenHangarButton.Visible = true;
 			break;
 		}
 	}

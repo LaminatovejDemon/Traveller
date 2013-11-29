@@ -17,6 +17,7 @@ public class Part : MonoBehaviour
 	Vector3 mDragBeginPosition;
 	GameObject mHandleShadow = null;
 	Transform mCaption = null;
+	public int mHP = 1;
 	
 	public PartManager.Pattern mPattern;
 

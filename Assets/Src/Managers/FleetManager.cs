@@ -35,6 +35,10 @@ public class FleetManager : MonoBehaviour
 		
 		public string mName;
 		public Vector3 mCenter;
+		public int mBoundaryH;
+		public int mBoundaryV;
+		public int mOffsetH;
+		public int mOffsetV;
 		
 		public List <PatternPlan> mPartList {get; private set;}
 		
@@ -84,7 +88,9 @@ public class FleetManager : MonoBehaviour
 		ShipScan new_ = new ShipScan();
 		new_.mName = name_;
 		new_.mCenter = ship.GetComponent<Ship>().mShipCenter;
-			
+		new_.mBoundaryH = ship.GetComponent<Ship>()._BoundaryHorizontal;
+		new_.mBoundaryV = ship.GetComponent<Ship>()._BoundaryVertical;
+		
 		for ( int i = 0; i < ship.transform.childCount; ++i )
 		{
 			new_.AddPart(ship.transform.GetChild(i).GetComponent<Part>());			

@@ -9,6 +9,7 @@ public class ButtonHandler : MonoBehaviour
 		HANGAR_OPEN,
 		HANGAR_DONE,
 		INVENTORY_SLIDER,
+		BATTLE_TURN,
 		Invalid,
 	};
 		
