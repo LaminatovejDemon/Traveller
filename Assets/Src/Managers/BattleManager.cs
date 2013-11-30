@@ -28,6 +28,10 @@ public class BattleManager : ButtonHandler
 		mAttacker = attacker;
 		mDefender = defender;
 		
+		//Bypasing RTT Cameras
+		mAttacker.transform.position += Camera.main.transform.rotation * Vector3.right * 5.0f;
+		mDefender.transform.position += Camera.main.transform.rotation * Vector3.left * 5.0f;
+		
 		mAttacker.mStats.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(1,1,0)) + Vector3.down * 15.0f;
 		mDefender.mStats.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(0.22f,1,0)) + Vector3.down * 15.0f;
 		
@@ -43,8 +47,9 @@ public class BattleManager : ButtonHandler
 		mAttackerComputer.Attack(mDefender);
 		mDefenderComputer.Attack(mAttacker);
 		
-		mAttacker.RemoveDestroyedParts();
-		mDefender.RemoveDestroyedParts();
+		// This should be used only when skip
+		//mAttacker.RemoveDestroyedParts();
+		//mDefender.RemoveDestroyedParts();
 		
 		CheckStats();
 	}
@@ -79,7 +84,7 @@ public class BattleManager : ButtonHandler
 	
 	public void ShowBattleFinished()
 	{
-		mDefender.DebugRotate_ = true;
+		//mDefender.DebugRotate_ = true;
 	    // BEGIN_TURN
 	}
 	

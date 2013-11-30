@@ -69,21 +69,21 @@ public class BattleComputer : MonoBehaviour
 	
 	public enum Side
 	{
+		Top,
 		Left,
 		Right,
-		Top,
 		Bottom,
 		COUNT,
 	};
 	
 	Side RollSide()
 	{
-		return (Side)(Random.Range(0, (int)Side.COUNT));
+		return 0;// FIXME(Side)(Random.Range(0, (int)Side.COUNT));
 	}
 	
 	int RollIndex(Ship target, Side side)
 	{
-		int max_ = ((side == Side.Left || side == Side.Right) ? target._BoundaryVertical+1 : target._BoundaryHorizontal+1);
+		int max_ = ((side == Side.Left || side == Side.Right) ? target._BoundaryVertical : target._BoundaryHorizontal);
 		
 		Debug.Log ("Rolling on " + side + " <" + 0 + ", " + max_ +")" );
 			
@@ -125,12 +125,22 @@ public class BattleComputer : MonoBehaviour
 	{
 		int index_ = RollIndex(target, side);
 		
-		target.GetComponent<BattleComputer>().Damage(side, index_);
+		Part targetPart_ = target.GetComponent<BattleComputer>().GetTarget(side, index_);
 		
+		if ( targetPart_ != null )
+		{
+			BattleVisualManager.GetInstance().QueueFire(weapon._Owner, targetPart_, weapon._Ability , side);
+			targetPart_.mHP--;
+		}
+		else
+		{
+			BattleVisualManager.GetInstance().QueueFire(weapon._Owner, null, weapon._Ability , side, index_, target);
+		}
+			
 		Debug.Log ("Shooting at " + target + "'s " + side + " "+ index_ +" with " + weapon._Ability + "("+weapon._Damage+") of " + weapon._Owner.name );
 	}
 	
-	void Damage(Side side, int index_)
+	Part GetTarget(Side side, int index_)
 	{
 		if ( _ParentShip == null )
 		{
@@ -138,6 +148,7 @@ public class BattleComputer : MonoBehaviour
 		}
 	
 		int inc_ = (side == Side.Left || side == Side.Bottom) ? 1 : -1;
+		
 		int i_ = inc_ == 1 ? 0 : HangarManager.HANGAR_SIZE-1;
 		int top_ = inc_ == 1 ? HangarManager.HANGAR_SIZE-1 : 0;
 		Part target_ = null;
@@ -152,14 +163,13 @@ public class BattleComputer : MonoBehaviour
 				target_ = _ParentShip.GetPartAt(index_ + _ParentShip._OffsetVertical, i_);
 			}
 			
-			if ( target_ != null )
+			if ( target_ != null && target_.mHP > 0 )
 			{
-				//TODO position visual
-				Debug.Log (_ParentShip + ": Got Hit into " + target_);
-				target_.mHP--;
-				return;
+				return target_;
 			}
 		}
+		
+		return null;
 	}
 	
 }

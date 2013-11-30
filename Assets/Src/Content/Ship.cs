@@ -113,6 +113,32 @@ public class Ship : MonoBehaviour
 		mInitialized = true;
 	}
 	
+	public bool VisualHitPart(Part target)
+	{
+		// If part is already destoyed by another weapon
+		if ( target == null )
+		{
+			return true;
+		}
+		
+		if ( target.mHP <= 0 )
+		{
+			RemovePart(target, false);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	void RemovePart(Part which, bool changeLayer)
+	{
+		Debug.Log (name + ": Removing " + which);					
+		Occupy(which, which.transform.localPosition, false, changeLayer);
+		GetComponent<BattleComputer>().CheckPart(which, false);
+	}
+	
 	public void RemoveDestroyedParts()
 	{
 		Part actual_;
@@ -123,9 +149,7 @@ public class Ship : MonoBehaviour
 				actual_ = mOccupied[x_, y_];
 				if ( actual_ != null && actual_.mHP <= 0 )
 				{
-					Debug.Log (name + ": Removing " + actual_);
-					Occupy(actual_, actual_.transform.localPosition, false);
-					GetComponent<BattleComputer>().CheckPart(actual_, false);
+					RemovePart(actual_, true);
 					GameObject.Destroy(actual_.gameObject);
 				}
 			}
@@ -415,7 +439,7 @@ public class Ship : MonoBehaviour
 			transform.localPosition = mShipCenter;
 			_ShipContainer.localPosition = Vector3.zero;
 			FleetManager.GetInstance().ScanShip(gameObject);
-			DebugRotate_ = true;
+		//	DebugRotate_ = true;
 		}
 		else
 		{	
@@ -505,7 +529,7 @@ public class Ship : MonoBehaviour
 		return false;
 	}
 		
-	void Occupy(Part part, Vector3 position, bool place)
+	void Occupy(Part part, Vector3 position, bool place, bool changeLayer = true)
 	{
 		int x, y;
 	
@@ -513,15 +537,18 @@ public class Ship : MonoBehaviour
 		int hash = part.mPattern.mHash;
 		
 		//Setting hangar layer camera
-		if ( place )
+		if ( changeLayer )
 		{
-			Utils.SetLayer(part.transform, MainManager.GetInstance()._HangarCamera.GetRealLayer() );
-		}
-		else
-		{
-			Utils.SetLayer(part.transform, 0 );
-		}
-			
+			if ( place )
+			{
+				Utils.SetLayer(part.transform, MainManager.GetInstance()._HangarCamera.GetRealLayer() );
+			}
+			else
+			{
+				Utils.SetLayer(part.transform, 0 );
+			}
+		}	
+		
 		SetStats(part, place);
 				
 		for ( int i = 0; i < 6; ++i )

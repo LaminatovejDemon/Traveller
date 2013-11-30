@@ -22,7 +22,7 @@ public class CameraHandler : MonoBehaviour
 	bool _Initialized = false;
 	
 	void Initialize()
-	{
+	{		
 		if ( _Initialized )
 		{
 			return;
@@ -37,6 +37,7 @@ public class CameraHandler : MonoBehaviour
 		_RTTCameraLayer = CalculateLayer(_RTTMask);
 		
 		_RealCamera.cullingMask = _RealCameraMask;
+		Utils.SetLayer(_RealCamera.transform, _RealCameraLayer);
 		_RTTCamera.cullingMask = _RTTMask;
 		_RTTCameraTexture = ((RenderTexture)Object.Instantiate(Resources.Load("Camera/RTTCameraTarget")));
 		_RealCamera.targetTexture = _RTTCameraTexture;
@@ -58,6 +59,9 @@ public class CameraHandler : MonoBehaviour
 	
 	public int GetRealLayer()
 	{
+		// Bypas secondary cameras
+		return 0;
+		
 		Initialize();
 		return _RealCameraLayer;
 	}
@@ -77,6 +81,8 @@ public class CameraHandler : MonoBehaviour
 	
 	public void Show(Transform targetShip)
 	{
+		return;
+		
 		Initialize();
 		
 		gameObject.SetActive(true);

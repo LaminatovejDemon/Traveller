@@ -90,6 +90,8 @@ public class FleetManager : MonoBehaviour
 		new_.mCenter = ship.GetComponent<Ship>().mShipCenter;
 		new_.mBoundaryH = ship.GetComponent<Ship>()._BoundaryHorizontal;
 		new_.mBoundaryV = ship.GetComponent<Ship>()._BoundaryVertical;
+		new_.mOffsetH = ship.GetComponent<Ship>()._OffsetHorizontal;
+		new_.mOffsetV = ship.GetComponent<Ship>()._OffsetVertical;
 		
 		for ( int i = 0; i < ship.transform.childCount; ++i )
 		{

@@ -21,6 +21,33 @@ public class Utils : MonoBehaviour
 			SetLayer(parent.GetChild(i), layer);
 		}
 		
+		
+		Light light_ = parent.gameObject.GetComponent<Light>();
+		if ( light_ != null )
+		{
+			light_.cullingMask = 1<<layer;
+		}
+		
 		parent.gameObject.layer = layer;
+	}
+	
+	public static void ChangeColor(Transform parent, Color color)
+	{
+		for ( int i = 0; i < parent.childCount; ++i )
+		{
+			ChangeColor(parent.GetChild(i), color);
+		}
+		
+		Renderer rend_ = parent.gameObject.GetComponent<Renderer>();
+		Light light_ = parent.gameObject.GetComponent<Light>();
+		if ( rend_ != null )
+		{
+			rend_.material.color = color;
+			rend_.material.SetColor("_TintColor", color);
+		}
+		if ( light_ != null )
+		{
+			light_.color = color;
+		}
 	}
 }

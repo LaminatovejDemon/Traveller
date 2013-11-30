@@ -33,6 +33,11 @@ public class Part : MonoBehaviour
 	
 	}
 	
+	public Vector3 GetGunPoint()
+	{
+		return this.transform.position + this.transform.rotation * new Vector3(0.5f, -0.5f, 1.5f);
+	}
+	
 	void DestroyComponent<T>(Transform parent)
 	{
 		for ( int i = 0; i < parent.childCount; ++i )
