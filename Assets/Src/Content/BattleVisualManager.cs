@@ -6,6 +6,7 @@ public class BattleVisualManager : MonoBehaviour
 {
 	
 	public const float ANIMATION_SPEED = 4.0f;
+	public const float SHOOT_DELTA_TIME = 0.05f;
 	
 	private static BattleVisualManager mInstance = null;
 	
@@ -146,7 +147,7 @@ public class BattleVisualManager : MonoBehaviour
 		visual._Projectile.transform.parent = visual._Link.transform;
 		visual._Projectile.gameObject.SetActive(true);
 		visual._Projectile.transform.GetChild(0).animation["LaserBasicAout"].speed = ANIMATION_SPEED;
-		GameObject.Destroy(visual._Projectile.gameObject, 2.0f);
+		GameObject.Destroy(visual._Projectile.gameObject, 0.3f);
 	}
 	
 	float _LastShotTime = -1;
@@ -210,7 +211,7 @@ public class BattleVisualManager : MonoBehaviour
 	void Update()
 	{
 		
-		if ( _ProjectileQueue.Count > 0 && Time.time - _LastShotTime > 0.3f )
+		if ( _ProjectileQueue.Count > 0 && Time.time - _LastShotTime > SHOOT_DELTA_TIME )
 		{
 			ExecuteFire(_ProjectileQueue[0]);
 			_ProjectileQueue.RemoveAt(0);
@@ -227,7 +228,7 @@ public class BattleVisualManager : MonoBehaviour
 			return;
 		}
 		
-		if ( _HitQueue.Count > 0 && Time.time - _LastShotTime > 0.3f )
+		if ( _HitQueue.Count > 0 && Time.time - _LastShotTime > SHOOT_DELTA_TIME )
 		{
 			ExecuteHit(_HitQueue[0]);
 			_HitQueue.RemoveAt(0);

@@ -150,6 +150,8 @@ public class BattleManager : ButtonHandler
 			HangarManager.GetInstance().OnHangarOpenButton();
 			_TurnButtonSlider.SlideIn = false;
 			target.Visible = false;
+			mAttacker._Shield.SetVisibility(false);
+			mDefender._Shield.SetVisibility(false);
 			break;
 		}
 	}
