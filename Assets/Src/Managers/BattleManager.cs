@@ -84,6 +84,7 @@ public class BattleManager : ButtonHandler
 			HangarManager.GetInstance()._OpenButtonContainerSlider.SlideIn = true;
 			_OpenHangarButton.Visible = true;	
 			_OpenHangarButton.Caption = "OPEN DOCK";
+			_OpenHangarButton.Active = true;	
 		}
 		else
 		{
