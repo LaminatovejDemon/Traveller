@@ -38,8 +38,14 @@ public class BattleManager : ButtonHandler
 		mAttacker.mStats.SetActive(true);
 		mDefender.mStats.SetActive(true);
 		
+		//mAttacker._Shield.SetVisibility(true);
+		//mDefender._Shield.SetVisibility(true);
+		
 		mAttackerComputer = mAttacker.GetComponent<BattleComputer>();
 		mDefenderComputer = mDefender.GetComponent<BattleComputer>();
+		
+		mAttackerComputer.InitBattle();
+		mDefenderComputer.InitBattle();
 	}
 	
 	void Turn()
@@ -61,6 +67,9 @@ public class BattleManager : ButtonHandler
 		Debug.Log ("Setting stats in the end of turn");
 		mAttacker.SetStats();
 		mDefender.SetStats();
+		mDefenderComputer.EndTurn();
+		mAttackerComputer.EndTurn();
+		
 		CheckStats();
 	}
 	
@@ -68,6 +77,7 @@ public class BattleManager : ButtonHandler
 	{
 		if ( !mAttacker.IsAlive() || !mDefender.IsAlive())
 		{
+			
 			_TurnButtonSlider.SlideIn = false;
 			HangarManager.GetInstance()._OpenButtonContainerSlider.SlideIn = true;
 			_OpenHangarButton.Visible = true;			
