@@ -30,7 +30,7 @@ public class Ship : MonoBehaviour
 	
 	public bool IsAlive()
 	{
-		if (mEnginePower > 0 && mMinimalConsumption <= mEnergyProduction )
+		if (mWeaponDamage > 0 && mMinimalConsumption <= mEnergyProduction )
 		{
 			return true;
 		}
@@ -197,6 +197,7 @@ public class Ship : MonoBehaviour
 				GameObject part_ = PartManager.GetInstance().GetPattern(template.mPartList[i].mPattern.mID);
 				part_.transform.parent = transform;
 				part_.name = i + "_" + part_.name;
+				part_.GetComponent<Part>().mHP = part_.GetComponent<Part>().mPattern.mHp;
 				part_.transform.localPosition = template.mPartList[i].mPosition;
 				part_.GetComponent<Part>().mLocation = Part.Location.Ship;
 				Occupy(part_.GetComponent<Part>(), part_.transform.position, true);
@@ -334,7 +335,7 @@ public class Ship : MonoBehaviour
 	
 	
 		
-	float GetEvade()
+	public float GetEvade()
 	{
 		if ( mMass <= 0 || mEnginePower <= 0 )
 		{
@@ -413,16 +414,33 @@ public class Ship : MonoBehaviour
 		}
 	}
 	
-	void SetStats(Part part)
+	void SetEnergyIncome(Part part)
 	{
 		if ( part.mHP <= 0 )
 		{
 			return;
 		}
 		
-		mCreditCost += part.mPattern.mPrice;
-		mEnergyOverall += part.mPattern.mPower;
 		mEnergyProduction += part.mPattern.mPower > 0 ? part.mPattern.mPower : 0;
+		mEnergyOverall = mEnergyProduction;
+	}
+	
+	void SetStats(Part part)
+	{
+		if ( part.mHP <= 0 )
+		{
+			return;
+		}
+		mCreditCost += part.mPattern.mPrice;
+		mMass += part.mPattern.mWeight;
+		
+		// disabled parts
+		if ( mEnergyOverall + part.mPattern.mPower < 0 )
+		{
+			return;
+		}
+		
+		mEnergyOverall += part.mPattern.mPower < 0 ? part.mPattern.mPower : 0;
 		
 		_BattleComputer.AddConsumer(part);
 		
@@ -445,8 +463,6 @@ public class Ship : MonoBehaviour
 		new_ = part.mPattern.GetAbility(PartManager.AbilityType.EnginePower);
 		if ( new_ != null )
 			mEnginePower += new_.mValue;
-		
-		mMass += part.mPattern.mWeight;
 	}
 	
 	
@@ -626,6 +642,12 @@ public class Ship : MonoBehaviour
 		GetBoundary();
 		
 		Debug.Log ("Weapon list for " + name + " transform " + transform + " with " +transform.childCount +" children");
+		
+		for ( int i = 0; i < transform.childCount; ++i )
+		{
+			SetEnergyIncome(transform.GetChild(i).GetComponent<Part>());
+		}
+		
 		for ( int i = 0; i < transform.childCount; ++i )
 		{
 			Part part_ = transform.GetChild(i).GetComponent<Part>();

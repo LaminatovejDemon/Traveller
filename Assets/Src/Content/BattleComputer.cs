@@ -14,14 +14,12 @@ public class BattleComputer : MonoBehaviour
 			_Ability = ability;
 			_Repeater = false;
 			_Damage = 0;
-			_Consumption = 0;
 		}
 		
 		public Part _Owner;	
 		public PartManager.AbilityType _Ability;
 		public bool _Repeater;
 		public float _Damage;
-		public float _Consumption;
 	};
 	
 	List <Weapon> mWeaponList = new List<Weapon>(); 
@@ -30,7 +28,6 @@ public class BattleComputer : MonoBehaviour
 	{
 		mWeaponList.Clear();
 	}
-		
 	
 	public void AddConsumer(Part part)
 	{
@@ -51,7 +48,6 @@ public class BattleComputer : MonoBehaviour
 				Weapon new_ = new Weapon(part, part.mPattern.mAbilityList[i].mType);
 				new_._Repeater = repeater_;
 				new_._Damage = part.mPattern.mAbilityList[i].mValue;
-				new_._Consumption = -part.mPattern.mPower;
 				mWeaponList.Add(new_);			
 				Debug.Log ("\t" + part);
 				break;
@@ -87,25 +83,17 @@ public class BattleComputer : MonoBehaviour
 		{
 			_ParentShip = GetComponent<Ship>();
 		}
-		
-		float GeneratorEnergy_ = _ParentShip.mEnergyProduction;
-		
+			
 		for ( int i = 0; i < mWeaponList.Count; ++i )
 		{
 			Side side_ = RollSide();
-			if ( GeneratorEnergy_ < mWeaponList[i]._Consumption )
-			{
-				continue;
-			}
-			
+
 			if (mWeaponList[i]._Repeater )
 			{	
 				Shoot(target, mWeaponList[i], side_);
 				Shoot(target, mWeaponList[i], side_);
 			}
 			Shoot(target, mWeaponList[i], side_);
-			
-			GeneratorEnergy_ -= mWeaponList[i]._Consumption;
 			
 		}
 	}
@@ -115,6 +103,17 @@ public class BattleComputer : MonoBehaviour
 		int index_ = RollIndex(target, side);
 		
 		Part targetPart_ = target.GetComponent<BattleComputer>().GetTarget(side, index_);
+		
+		if ( targetPart_ != null )
+		{
+			Debug.Log ("evade of " + target + " is " + target.GetEvade() );
+			if ( Random.value < target.GetEvade() )
+			{
+				targetPart_ = null;
+				index_ = -1;
+			}
+		}
+		
 		
 		if ( targetPart_ != null )
 		{
