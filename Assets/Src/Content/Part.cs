@@ -17,7 +17,30 @@ public class Part : MonoBehaviour
 	Vector3 mDragBeginPosition;
 	GameObject mHandleShadow = null;
 	Transform mCaption = null;
-	public int mHP = -1;
+	public float mHP = -1;
+	
+	Transform _DisabledContainer;
+	
+	public Transform DisabledContainer
+	{
+		get 
+		{
+			if ( _DisabledContainer == null )
+			{
+				_DisabledContainer = new GameObject().transform;
+				_DisabledContainer.transform.parent = transform;
+				_DisabledContainer.transform.localPosition = Vector3.zero;
+				_DisabledContainer.name = name + "_Disabled";
+				_DisabledContainer.gameObject.SetActive(false);
+			}
+			return _DisabledContainer;
+		}
+		set 
+		{
+			_DisabledContainer = value;
+		}
+	}
+		
 	
 	bool mInitialized = false;
 	
@@ -29,6 +52,26 @@ public class Part : MonoBehaviour
 		}
 		
 		mHP = mPattern.mHp;
+		
+		CreateDisabledContainer(transform);
+	}
+	
+	void CreateDisabledContainer(Transform parent)
+	{
+		for ( int i = 0; i < parent.childCount; ++i )
+		{
+			CreateDisabledContainer(parent.GetChild(i));
+		}
+		
+		if ( parent.collider != null )
+		{
+			GameObject new_ = (GameObject)GameObject.Instantiate((Resources.Load("Content/DisabledPart")));
+			new_.transform.parent = parent;
+			new_.transform.localPosition = new Vector3(-0.5f, 0.6f, -0.5f);
+			new_.transform.localRotation = Quaternion.identity;
+			new_.transform.parent = DisabledContainer;	
+			//DisabledContainer.transform.localPosition = new Vector3(-0.005f, 0.005f, 0.006f);
+		}
 	}
 	
 	public PartManager.Pattern mPattern;
@@ -160,7 +203,8 @@ public class Part : MonoBehaviour
 			default:
 			break;
 		}
-			
+		
+		DisabledContainer.gameObject.SetActive(false);	
 		mDragBeginPosition = MainManager.GetInstance().GetWorldPos(mDragFingerID) - transform.localPosition;
 		mLocation = Location.Handle;
 		

@@ -76,7 +76,8 @@ public class HangarManager : ButtonHandler
 		_HangarSlideCompleted = false;
 		
 		AnimateShipEntry(state);
-	
+		
+		
 		_HangarContainer.SlideIn = state;
 		_HangarContainer.OnFinished(gameObject, "HangarSlideCompleted", state);
 		InventoryManager.GetInstance().SetVisibility(state);
@@ -134,9 +135,7 @@ public class HangarManager : ButtonHandler
 		MainManager.GetInstance()._HangarCamera.OnFinished(gameObject, "ShowHangarFinished");
 		MainManager.GetInstance()._HangarCamera.Show(FleetManager.GetShip().transform);	
 	}
-	
 
-	
 	void AnimateShipEntry(bool state)
 	{
 		if ( !state )
@@ -149,6 +148,7 @@ public class HangarManager : ButtonHandler
 			MainManager.GetInstance()._BattleCamera.OnFinished(gameObject, "HideBattleFinished");	
 			MainManager.GetInstance()._BattleCamera.Hide();
 			MainManager.GetInstance()._EnemyCamera.Hide();
+			FleetManager.GetShip()._Shield.SetVisibility(false);
 		}
 	}
 	

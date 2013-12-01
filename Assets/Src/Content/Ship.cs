@@ -13,8 +13,8 @@ public class Ship : MonoBehaviour
 	public float mEnergyProduction { get; private set;}
 	public float mMinimalConsumption = -1;
 	private float mCreditCost = 0;
-	private float mShieldCapacity = 0;
-	private float mShieldRecharge = 0;
+	public float mShieldCapacity {get; private set;}
+	public float mShieldRecharge {get; private set;}
 	private float mWeaponDamage = 0;
 	private float mMass = 0;
 	private float mEnginePower = 0;
@@ -25,6 +25,8 @@ public class Ship : MonoBehaviour
 	public int _BoundaryHorizontal {get; private set;}
 	public int _BoundaryVertical {get; private set;}
 	public Vector3 mShipCenter { get; private set;}
+	
+	public Shield _Shield;
 	
 	BattleComputer _BattleComputer;
 	
@@ -82,15 +84,17 @@ public class Ship : MonoBehaviour
 		_BattleComputer = gameObject.AddComponent<BattleComputer>();
 		
 		ClearHangar();
+		_Shield = gameObject.AddComponent<Shield>();
+		_Shield.Initialize();
 		
 		LoadShip(template);
 		
-		transform.localPosition = mShipCenter = template.mCenter;
 		_BoundaryHorizontal = template.mBoundaryH;
 		_BoundaryVertical = template.mBoundaryV;
 		_OffsetVertical = template.mOffsetV;
 		_OffsetHorizontal = template.mOffsetH;
 		
+		transform.localPosition = mShipCenter = template.mCenter;
 		mInitialized = true;
 	}
 	
@@ -110,11 +114,12 @@ public class Ship : MonoBehaviour
 		mShipName = name;
 		
 		ClearHangar();
-				
+		_Shield = gameObject.AddComponent<Shield>();
+		_Shield.Initialize();
+		
 		RestoreShip();
 		
 		transform.localPosition = mShipCenter;
-		
 		
 		
 		mInitialized = true;
@@ -246,9 +251,7 @@ public class Ship : MonoBehaviour
 		_BoundaryHorizontal = PlayerPrefs.GetInt(mShipName+"_ShipBoundaryH");
 		_BoundaryVertical = PlayerPrefs.GetInt(mShipName+"_ShipBoundaryV");
 		_OffsetHorizontal = PlayerPrefs.GetInt(mShipName+"_ShipOffsetH");
-		_OffsetVertical = PlayerPrefs.GetInt(mShipName+"_ShipOffsetV");
-		
-		
+		_OffsetVertical = PlayerPrefs.GetInt(mShipName+"_ShipOffsetV");	
 	}
 	
 	void BackupShip()
@@ -271,6 +274,29 @@ public class Ship : MonoBehaviour
 		PlayerPrefs.SetInt(mShipName+"_ShipBoundaryV",_OffsetVertical);
 		PlayerPrefs.SetInt(mShipName+"_ShipOffsetH",_OffsetHorizontal);
 		PlayerPrefs.SetInt(mShipName+"_ShipOffsetV",_OffsetVertical);
+	}
+	
+	void RemoveBackup()
+	{
+		int count_ = PlayerPrefs.GetInt(mShipName+"_ShipItemCount");
+		
+		for ( int i = 0; i < count_; ++i )
+		{
+			PlayerPrefs.DeleteKey(mShipName+"_ShipPartID_"+i);
+			PlayerPrefs.DeleteKey(mShipName+"_ShipPartOrder_"+i);
+			PlayerPrefs.DeleteKey(mShipName+"_ShipPartPosX_"+i);
+			PlayerPrefs.DeleteKey(mShipName+"_ShipPartPosY_"+i);
+			PlayerPrefs.DeleteKey(mShipName+"_ShipPartPosZ_"+i);
+		}
+		PlayerPrefs.DeleteKey(mShipName+"_ShipItemCount");
+		PlayerPrefs.DeleteKey(mShipName+"_ShipCenterX");
+		PlayerPrefs.DeleteKey(mShipName+"_ShipCenterY");
+		PlayerPrefs.DeleteKey(mShipName+"_ShipCenterZ");
+		
+		PlayerPrefs.DeleteKey(mShipName+"_ShipBoundaryH");
+		PlayerPrefs.DeleteKey(mShipName+"_ShipBoundaryV");
+		PlayerPrefs.DeleteKey(mShipName+"_ShipOffsetH");
+		PlayerPrefs.DeleteKey(mShipName+"_ShipOffsetV");
 	}
 	
 	// Use this for initialization
@@ -347,14 +373,18 @@ public class Ship : MonoBehaviour
 	
 	public void EraseShip()
 	{
-		while ( transform.childCount > 0 )
+		for ( int i = 0; i < HangarManager.HANGAR_SIZE; ++i )
 		{
-			Transform destroy_ = transform.GetChild(0);
-			RetrievePart(destroy_);
-			GameObject.Destroy(destroy_.gameObject);
+			for ( int j = 0; j < HangarManager.HANGAR_SIZE; ++j )
+			{
+				mOccupied[i,j] = null;
+			}
 		}
+		
+		RemoveBackup();
 		GameObject.Destroy(mStats);
 		GameObject.Destroy(transform.parent.gameObject);
+		
 	}
 	
 	void UpdateStatsContainer()
@@ -437,8 +467,10 @@ public class Ship : MonoBehaviour
 		// disabled parts
 		if ( mEnergyOverall + part.mPattern.mPower < 0 )
 		{
+			part.DisabledContainer.gameObject.SetActive(true);
 			return;
 		}
+		part.DisabledContainer.gameObject.SetActive(false);
 		
 		mEnergyOverall += part.mPattern.mPower < 0 ? part.mPattern.mPower : 0;
 		
@@ -554,8 +586,8 @@ public class Ship : MonoBehaviour
 		GetBoundary();
 	
 		mShipCenter = new Vector3( 
-			(int)((HangarManager.HANGAR_SIZE) * 0.5f) - (_BoundaryHorizontal * 0.5f + _OffsetHorizontal + 0.5f) , 0, 
-			(int)((HangarManager.HANGAR_SIZE) * 0.5f) - (_BoundaryVertical * 0.5f + _OffsetVertical + 0.5f) );
+			(int)((HangarManager.HANGAR_SIZE) * 0.5f) - (_BoundaryHorizontal * 0.5f + _OffsetHorizontal) , 0, 
+			(int)((HangarManager.HANGAR_SIZE) * 0.5f) - (_BoundaryVertical * 0.5f + _OffsetVertical) );
 	}
 	
 	bool IsOccupied(int hash, int x, int y)
@@ -593,7 +625,6 @@ public class Ship : MonoBehaviour
 		GetHangarPlace(position, out x, out y);
 		int hash = part.mPattern.mHash;
 		
-		//Setting hangar layer camera
 		if ( changeLayer )
 		{
 			if ( place )
@@ -606,8 +637,6 @@ public class Ship : MonoBehaviour
 			}
 		}	
 		
-		//SetStats(part, place);
-				
 		for ( int i = 0; i < 6; ++i )
 		{
 			for ( int j = 0; j < 4; ++j)
@@ -639,7 +668,7 @@ public class Ship : MonoBehaviour
 	{
 		ClearStats();
 		
-		GetBoundary();
+		CalculateShipCenter();
 		
 		Debug.Log ("Weapon list for " + name + " transform " + transform + " with " +transform.childCount +" children");
 		
@@ -662,6 +691,7 @@ public class Ship : MonoBehaviour
 			HangarManager.GetInstance().InformShipValidity(mValidShip);
 		}
 		
+		_Shield.RecalculateBoundary();
 		UpdateStatsContainer();
 	}
 		

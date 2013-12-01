@@ -26,11 +26,39 @@ public class BattleComputer : MonoBehaviour
 	
 	public void ClearWeaponList()
 	{
+		// NOT Outside Battle
+		if ( _ParentShip == null )
+		{
+			return;
+		}
+		
 		mWeaponList.Clear();
+		_ParentShip._Shield.EraseIncomes();
+	}
+	
+	public void InitBattle()
+	{
+		if ( _ParentShip == null )
+		{
+			_ParentShip = GetComponent<Ship>();
+		}
+		
+		_ParentShip.SetStats();
+	}
+	
+	public void EndTurn()
+	{
+		_ParentShip._Shield.Recharge();
 	}
 	
 	public void AddConsumer(Part part)
 	{
+		// Not when not in battle
+		if ( _ParentShip == null )
+		{
+			return;
+		}
+		
 		bool repeater_ = false;
 		for ( int i = 0; i < part.mPattern.mAbilityList.Count; ++i )
 		{
@@ -50,6 +78,15 @@ public class BattleComputer : MonoBehaviour
 				new_._Damage = part.mPattern.mAbilityList[i].mValue;
 				mWeaponList.Add(new_);			
 				Debug.Log ("\t" + part);
+				break;
+			case PartManager.AbilityType.ShieldCapacity:
+				// When powering/disabling shields during a battle
+				_ParentShip._Shield.AddActualCapacity(part.mPattern.mAbilityList[i].mValue);
+				_ParentShip._Shield.SetVisibility(true);
+				break;
+			case PartManager.AbilityType.ShieldRecharge:
+				// When powering/disabling shields during a battle
+				_ParentShip._Shield.AddActualRecharge(part.mPattern.mAbilityList[i].mValue);
 				break;
 			}
 		}
@@ -79,11 +116,6 @@ public class BattleComputer : MonoBehaviour
 	
 	public void Attack(Ship target)
 	{
-		if ( _ParentShip == null )
-		{
-			_ParentShip = GetComponent<Ship>();
-		}
-			
 		for ( int i = 0; i < mWeaponList.Count; ++i )
 		{
 			Side side_ = RollSide();
@@ -117,12 +149,20 @@ public class BattleComputer : MonoBehaviour
 		
 		if ( targetPart_ != null )
 		{
-			BattleVisualManager.GetInstance().QueueFire(weapon._Owner, targetPart_, weapon._Ability , side, index_, target);
-			targetPart_.mHP--;
+			if (_ParentShip._Shield.GetCapacity() > 0 )
+			{
+				BattleVisualManager.GetInstance().QueueFire(weapon._Owner, targetPart_, weapon._Ability , side, index_, target, true, 1);
+				_ParentShip._Shield.ChangeOutcomeCapacity(weapon._Damage);
+			}
+			else
+			{
+				BattleVisualManager.GetInstance().QueueFire(weapon._Owner, targetPart_, weapon._Ability , side, index_, target, false, 1);
+				targetPart_.mHP -= weapon._Damage;
+			}
 		}
 		else
 		{
-			BattleVisualManager.GetInstance().QueueFire(weapon._Owner, null, weapon._Ability , side, index_, target);
+			BattleVisualManager.GetInstance().QueueFire(weapon._Owner, null, weapon._Ability , side, index_, target, false, 0);
 		}
 			
 //		Debug.Log ("Shooting at " + target + "'s " + side + " "+ index_ +" with " + weapon._Ability + "("+weapon._Damage+") of " + weapon._Owner.name );

@@ -11,7 +11,7 @@ public class BattleVisualManager : MonoBehaviour
 	
 	struct ProjectileVisual
 	{
-		public ProjectileVisual(GameObject projectile, Part link, float angle, BattleComputer.Side targetSide, int  index = -1, Ship targetShip = null)
+		public ProjectileVisual(GameObject projectile, Part link, float angle, BattleComputer.Side targetSide, int  index, Ship targetShip, bool intoShield, float damage)
 		{
 			_Projectile = projectile;
 			_Link = link;
@@ -19,9 +19,13 @@ public class BattleVisualManager : MonoBehaviour
 			_index = index;
 			_TargetShip = targetShip;
 			_TargetSide = targetSide;
+			_IntoShield = intoShield;
+			_Damage = damage;
 		}
 		
+		public float _Damage;
 		public float _Angle;
+		public bool _IntoShield;
 		public GameObject _Projectile;
 		public Part _Link;
 		public Ship _TargetShip;
@@ -50,7 +54,7 @@ public class BattleVisualManager : MonoBehaviour
 		HitStack_ = 0;
 	}
 		
-	public void QueueFire(Part source, Part target, PartManager.AbilityType type, BattleComputer.Side side, int index_, Ship targetShip)
+	public void QueueFire(Part source, Part target, PartManager.AbilityType type, BattleComputer.Side side, int index_, Ship targetShip, bool intoShield, int damage)
 	{
 		GameObject weapon_ = GetWeaponVisual(source);
 		GameObject weaponHit_ = GetWeaponVisual(source);
@@ -62,8 +66,8 @@ public class BattleVisualManager : MonoBehaviour
 		float angle_ = ((int)side * 20) + Random.Range(-5.0f, 5.0f);
 		weapon_.gameObject.SetActive(false);
 		
-		_ProjectileQueue.Add(new ProjectileVisual(weapon_, source, angle_, side, index_, targetShip));
-		_HitQueue.Add(new ProjectileVisual(weaponHit_, target, angle_, side, index_, targetShip));
+		_ProjectileQueue.Add(new ProjectileVisual(weapon_, source, angle_, side, index_, targetShip, intoShield, damage));
+		_HitQueue.Add(new ProjectileVisual(weaponHit_, target, angle_, side, index_, targetShip, intoShield, damage));
 		_ProjectileDone = false;
 	}
 	
@@ -94,23 +98,42 @@ public class BattleVisualManager : MonoBehaviour
 		
 		Utils.SetLayer(visual._Projectile.transform, visual._Link.gameObject.layer);
 		
-		
 		float angle_ = ((int)visual._TargetSide+3) * 90.0f;
 		
 		visual._Projectile.transform.rotation = visual._TargetShip.transform.rotation * Quaternion.AngleAxis(angle_, Vector3.up) * Quaternion.AngleAxis(90, Vector3.left);
 	
 		visual._Projectile.transform.parent = visual._Link.transform;
-		visual._Projectile.transform.position = visual._Link.GetGunPoint();
 		
-		visual._Projectile.gameObject.SetActive(true);
-		visual._Projectile.transform.GetChild(0).animation.Play("Hit");
-		visual._Projectile.transform.GetChild(0).animation["Hit"].speed = ANIMATION_SPEED;
-		
-		AnimationCallback hitCallback_ = visual._Projectile.transform.GetChild(0).gameObject.AddComponent<AnimationCallback>();
-		hitCallback_._DestroyWhenFinishedObject = visual._Projectile.gameObject;
-		hitCallback_._TargetObject = gameObject;
-		hitCallback_._TargetMessage = "HitFinished";
-		hitCallback_._TargetParameter = visual._Link;
+		if ( visual._IntoShield )
+		{
+			visual._Projectile.transform.position = visual._TargetShip.transform.position + (visual._Projectile.transform.rotation * (Vector3.forward * 1.5f + Vector3.up * visual._index));
+			
+			visual._Projectile.gameObject.SetActive(true);
+			visual._Projectile.transform.GetChild(0).animation.Play("Hit");
+			visual._Projectile.transform.GetChild(0).animation["Hit"].speed = ANIMATION_SPEED;
+			
+			AnimationCallback hitCallback_ = visual._Projectile.transform.GetChild(0).gameObject.AddComponent<AnimationCallback>();
+			hitCallback_._DestroyWhenFinishedObject = visual._Projectile.gameObject;
+			hitCallback_._TargetObject = gameObject;
+			hitCallback_._TargetMessage = "HitShieldFinished";
+			hitCallback_._TargetParameter = visual._Projectile;
+			visual._TargetShip._Shield.ChangeVisualCapacity(visual._Damage);
+		}
+		else
+		{
+			visual._Projectile.transform.position = visual._Link.GetGunPoint();
+			
+			visual._Projectile.gameObject.SetActive(true);
+			visual._Projectile.transform.GetChild(0).animation.Play("Hit");
+			visual._Projectile.transform.GetChild(0).animation["Hit"].speed = ANIMATION_SPEED;
+			
+			AnimationCallback hitCallback_ = visual._Projectile.transform.GetChild(0).gameObject.AddComponent<AnimationCallback>();
+			hitCallback_._DestroyWhenFinishedObject = visual._Projectile.gameObject;
+			hitCallback_._TargetObject = gameObject;
+			hitCallback_._TargetMessage = "HitFinished";
+			hitCallback_._TargetParameter = visual._Link;
+			
+		}
 		
 		IncreaseHitStack();
 	}
@@ -147,6 +170,17 @@ public class BattleVisualManager : MonoBehaviour
 	
 	public void MissFinished()
 	{
+		DecreaseHitStack();
+	}
+	
+	public void HitShieldFinished(GameObject projectile)
+	{
+		GameObject kaboom_ = (GameObject)GameObject.Instantiate((GameObject)Resources.Load("Visuals/ParticleBeamKaboomShield"));
+			
+		kaboom_.transform.position = projectile.transform.position;
+		Utils.SetLayer(kaboom_.transform, projectile.layer);
+		GameObject.Destroy(kaboom_, 3.0f);
+		
 		DecreaseHitStack();
 	}
 	

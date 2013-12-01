@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//#define RTT
+
+using UnityEngine;
 using System.Collections;
 
 public class CameraHandler : MonoBehaviour 
@@ -42,7 +44,10 @@ public class CameraHandler : MonoBehaviour
 		_RTTCameraTexture = ((RenderTexture)Object.Instantiate(Resources.Load("Camera/RTTCameraTarget")));
 		_RealCamera.targetTexture = _RTTCameraTexture;
 		
-		//_RealCamera.gameObject.layer = _RTTCameraLayer;
+		
+#if RTT
+		_RealCamera.gameObject.layer = _RTTCameraLayer;
+#endif
 
 		_RTTCameraTarget.renderer.material.mainTexture = _RTTCameraTexture;
 		_RTTCameraTarget.gameObject.layer = _RTTCameraLayer;
@@ -59,11 +64,13 @@ public class CameraHandler : MonoBehaviour
 	
 	public int GetRealLayer()
 	{
-		// Bypas secondary cameras
-		return 0;
-		
+	
+#if RTT		
 		Initialize();
 		return _RealCameraLayer;
+#else
+		return 0;
+#endif
 	}
 	
 	int CalculateLayer(int layerMask)
@@ -100,8 +107,9 @@ public class CameraHandler : MonoBehaviour
 		{
 			_OnFinished.SendMessage(_OnFinishedMessage, SendMessageOptions.RequireReceiver);
 		}
-		//MainManager.GetInstance()._BattleCamera.GetComponent<FrameSlider>().SlideIn = true;
-		//MainManager.GetInstance()._BattleCamera.GetComponent<FrameSlider>().OnFinished(gameObject, "SlideToBattleFinished");	
+		
+	//	MainManager.GetInstance()._BattleCamera.GetComponent<FrameSlider>().SlideIn = true;
+	//	MainManager.GetInstance()._BattleCamera.GetComponent<FrameSlider>().OnFinished(gameObject, "SlideToBattleFinished");	
 	}
 	
 	public void Hide()

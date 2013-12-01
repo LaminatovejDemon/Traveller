@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿//#define RTT
+
+using UnityEngine;
 using System.Collections;
 
 public class BattleManager : ButtonHandler 
@@ -28,9 +30,12 @@ public class BattleManager : ButtonHandler
 		mAttacker = attacker;
 		mDefender = defender;
 		
-		//Bypasing RTT Cameras
+#if RTT
+		
+#else	
 		mAttacker._ShipPositionContainer.position += Camera.main.transform.rotation * Vector3.right * 5.0f;
 		mDefender._ShipPositionContainer.position += Camera.main.transform.rotation * Vector3.left * 5.0f;
+#endif
 		
 		mAttacker.mStats.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(1,1,0)) + Vector3.down * 15.0f;
 		mDefender.mStats.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(0.22f,1,0)) + Vector3.down * 15.0f;
@@ -40,6 +45,9 @@ public class BattleManager : ButtonHandler
 		
 		mAttackerComputer = mAttacker.GetComponent<BattleComputer>();
 		mDefenderComputer = mDefender.GetComponent<BattleComputer>();
+		
+		mAttackerComputer.InitBattle();
+		mDefenderComputer.InitBattle();
 	}
 	
 	void Turn()
@@ -61,6 +69,9 @@ public class BattleManager : ButtonHandler
 		Debug.Log ("Setting stats in the end of turn");
 		mAttacker.SetStats();
 		mDefender.SetStats();
+		mDefenderComputer.EndTurn();
+		mAttackerComputer.EndTurn();
+		
 		CheckStats();
 	}
 	
@@ -68,6 +79,7 @@ public class BattleManager : ButtonHandler
 	{
 		if ( !mAttacker.IsAlive() || !mDefender.IsAlive())
 		{
+			
 			_TurnButtonSlider.SlideIn = false;
 			HangarManager.GetInstance()._OpenButtonContainerSlider.SlideIn = true;
 			_OpenHangarButton.Visible = true;			
