@@ -76,7 +76,7 @@ public class HangarManager : ButtonHandler
 		_HangarSlideCompleted = false;
 		
 		AnimateShipEntry(state);
-		
+		FleetManager.GetShip().gameObject.SetActive(state);
 		
 		_HangarContainer.SlideIn = state;
 		_HangarContainer.OnFinished(gameObject, "HangarSlideCompleted", state);

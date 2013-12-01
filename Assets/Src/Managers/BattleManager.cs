@@ -102,7 +102,13 @@ public class BattleManager : ButtonHandler
 		Ship newShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetScan("TestShip") );
 		FleetManager.GetInstance().RegisterShip(newShip_);
 		
-		StartBattle (FleetManager.GetShip(), newShip_);
+		Ship newShip2_ = FleetManager.GetShip( FleetManager.GetInstance().GetScan("TestShip") );
+		FleetManager.GetInstance().RegisterShip(newShip2_);
+		
+		
+		
+		//StartBattle (FleetManager.GetShip(), newShip_);
+		StartBattle (newShip2_, newShip_);
 		_TurnButtonSlider.SlideIn = true;
 		HangarManager.GetInstance()._OpenButtonContainerSlider.SlideIn = true;
 		_OpenHangarButton.Visible = true;	
