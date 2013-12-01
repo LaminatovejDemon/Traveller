@@ -53,10 +53,6 @@ public class PartManager : MonoBehaviour
 			mIntegrity = integrity;
 			mModel = model;
 			mTexture = texture;
-			//mSpec1 = spec1;
-			//mSpec1val = spec1val;
-			//mSpec2 = spec2;
-			//mSpec2val = spec2val;
 			
 			mAbilityList = new List<Ability>();
 			

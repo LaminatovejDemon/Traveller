@@ -11,6 +11,7 @@ public class Ship : MonoBehaviour
 	
 	private float mEnergyOverall = 0;
 	public float mEnergyProduction { get; private set;}
+	public float mMinimalConsumption = -1;
 	private float mCreditCost = 0;
 	private float mShieldCapacity = 0;
 	private float mShieldRecharge = 0;
@@ -29,7 +30,7 @@ public class Ship : MonoBehaviour
 	
 	public bool IsAlive()
 	{
-		if ( mWeaponDamage > 0 && mEnergyOverall > 0)
+		if (mEnginePower > 0 && mMinimalConsumption <= mEnergyProduction )
 		{
 			return true;
 		}
@@ -58,11 +59,16 @@ public class Ship : MonoBehaviour
 	
 	void CreateContainer(string name)
 	{
-		_ShipContainer = new GameObject(name + "_Container").transform;
-		_ShipContainer.transform.localPosition = Vector3.zero;
-		_ShipContainer.transform.localRotation = Quaternion.identity;
+		_ShipPositionContainer = new GameObject(name + "_PositionContainer").transform;
+		_ShipRotationContainer = new GameObject(name + "_RotationContainer").transform;
 		
-		transform.parent = _ShipContainer;
+		_ShipPositionContainer.transform.localRotation = Quaternion.identity;
+		_ShipPositionContainer.transform.localPosition = Vector3.zero;
+		_ShipRotationContainer.transform.localRotation = Quaternion.identity;
+		_ShipRotationContainer.transform.localPosition = Vector3.zero;
+		
+		transform.parent = _ShipRotationContainer;
+		_ShipRotationContainer.parent = _ShipPositionContainer;
 	}
 	
 	public void Initialize(FleetManager.ShipScan template)
@@ -88,7 +94,8 @@ public class Ship : MonoBehaviour
 		mInitialized = true;
 	}
 	
-	Transform _ShipContainer;
+	public Transform _ShipPositionContainer;
+	Transform _ShipRotationContainer;
 		
 	public void Initialize(string name)
 	{
@@ -136,7 +143,7 @@ public class Ship : MonoBehaviour
 	{
 		Debug.Log (name + ": Removing " + which);					
 		Occupy(which, which.transform.localPosition, false, changeLayer);
-		GetComponent<BattleComputer>().CheckPart(which, false);
+		
 	}
 	
 	public void RemoveDestroyedParts()
@@ -154,16 +161,14 @@ public class Ship : MonoBehaviour
 				}
 			}
 		}
-		
-		GetBoundary();
 	}
 	
 	
 	public void RetrievePart(Transform which)
 	{
-		
 		Occupy(which.GetComponent<Part>(), which.transform.localPosition, false);
 		which.parent = null;
+		SetStats();
 		BackupShip();
 	}
 	
@@ -171,6 +176,7 @@ public class Ship : MonoBehaviour
 	{
 		which.parent = transform;
 		Occupy(which.GetComponent<Part>(), which.transform.localPosition, true);
+		SetStats();
 		BackupShip();
 	}
 	
@@ -190,12 +196,12 @@ public class Ship : MonoBehaviour
 			{
 				GameObject part_ = PartManager.GetInstance().GetPattern(template.mPartList[i].mPattern.mID);
 				part_.transform.parent = transform;
-				
+				part_.name = i + "_" + part_.name;
 				part_.transform.localPosition = template.mPartList[i].mPosition;
 				part_.GetComponent<Part>().mLocation = Part.Location.Ship;
 				Occupy(part_.GetComponent<Part>(), part_.transform.position, true);
-				
 			}
+			SetStats();
 		}
 	}
 	
@@ -205,6 +211,7 @@ public class Ship : MonoBehaviour
 		int itemCount_ = PlayerPrefs.GetInt(mShipName+"_ShipItemCount");
 		
 		float x_, y_, z_;
+		int order_;
 		
 		for ( int i = 0; i < itemCount_; ++i )
 		{
@@ -218,14 +225,17 @@ public class Ship : MonoBehaviour
 			x_ = PlayerPrefs.GetFloat(mShipName+"_ShipPartPosX_"+i);
 			y_ = PlayerPrefs.GetFloat(mShipName+"_ShipPartPosY_"+i);
 			z_ = PlayerPrefs.GetFloat(mShipName+"_ShipPartPosZ_"+i);
+			order_ = PlayerPrefs.GetInt(mShipName+"_ShipPartOrder_"+i);
 			
-			
+			part_.name = order_ + "_" + part_.name;
 			part_.transform.localPosition = new Vector3(x_,y_,z_);
+			part_.GetComponent<Part>().mHP = part_.GetComponent<Part>().mPattern.mHp;
 			
 			part_.GetComponent<Part>().mLocation = Part.Location.Ship;
 			Occupy(part_.GetComponent<Part>(), part_.transform.localPosition, true);
 			
 		}
+		SetStats();
 		
 		x_ = PlayerPrefs.GetFloat(mShipName+"_ShipCenterX");
 		y_ = PlayerPrefs.GetFloat(mShipName+"_ShipCenterY");
@@ -236,6 +246,8 @@ public class Ship : MonoBehaviour
 		_BoundaryVertical = PlayerPrefs.GetInt(mShipName+"_ShipBoundaryV");
 		_OffsetHorizontal = PlayerPrefs.GetInt(mShipName+"_ShipOffsetH");
 		_OffsetVertical = PlayerPrefs.GetInt(mShipName+"_ShipOffsetV");
+		
+		
 	}
 	
 	void BackupShip()
@@ -244,6 +256,8 @@ public class Ship : MonoBehaviour
 		for ( int i = 0; i<transform.childCount; ++i )
 		{
 			PlayerPrefs.SetString(mShipName+"_ShipPartID_"+i,transform.GetChild(i).GetComponent<Part>().mPattern.mID);
+			int order_ = int.Parse(transform.GetChild(i).name.Split('_')[0]);
+			PlayerPrefs.SetInt(mShipName+"_ShipPartOrder_"+i, order_);
 			PlayerPrefs.SetFloat(mShipName+"_ShipPartPosX_"+i,transform.GetChild(i).localPosition.x);
 			PlayerPrefs.SetFloat(mShipName+"_ShipPartPosY_"+i,transform.GetChild(i).localPosition.y);
 			PlayerPrefs.SetFloat(mShipName+"_ShipPartPosZ_"+i,transform.GetChild(i).localPosition.z);
@@ -342,7 +356,7 @@ public class Ship : MonoBehaviour
 		GameObject.Destroy(transform.parent.gameObject);
 	}
 	
-	void UpdateStats()
+	void UpdateStatsContainer()
 	{
 		if ( mStats == null )
 		{
@@ -365,64 +379,92 @@ public class Ship : MonoBehaviour
 			"\n ENGINE POWER: " + mEnginePower +
 			"\n EVADE: " + (GetEvade() == -1 ? "N/A" : (int)(GetEvade() * 100) + "%") + 
 			"\n IT'S " + (mValidShip ? "VALID SHIP" : "PIECE OF CRAP");
+		
+		HangarManager.GetInstance().InformShipValidity(FleetManager.GetShip().IsAlive());
 	}
 	
-	void SetStats(Part part, bool addition)
+	void ClearStats()
 	{
-		mCreditCost += addition ? part.mPattern.mPrice : -part.mPattern.mPrice;
-		mEnergyOverall += addition ? part.mPattern.mPower : -part.mPattern.mPower;
-		mEnergyProduction += addition ? part.mPattern.mPower : 0;
+		mCreditCost = 0;
+		mEnergyOverall = 0;
+		mEnergyProduction = 0;
+		mMass = 0;
+		mMinimalConsumption = -1;
+		mWeaponDamage = 0;
+		mShieldCapacity = 0;
+		mShieldRecharge = 0;
+		mEnginePower = 0;
 		
-		_BattleComputer.CheckPart(part, addition);
+		_BattleComputer.ClearWeaponList();
+	}
+	
+	void AddWeaponStats(float damage, PartManager.Pattern parentPattern)
+	{
+		PartManager.Ability repeater_ = parentPattern.GetAbility(PartManager.AbilityType.BeamRepeater);
+		if ( repeater_ != null )
+		{
+			damage *= repeater_.mValue;
+		}
+		mWeaponDamage += damage;
 		
-		PartManager.Ability new_ = part.mPattern.GetAbility(PartManager.AbilityType.Beam);
-		if ( new_ != null )
+		if ( mMinimalConsumption == -1 || -parentPattern.mPower < mMinimalConsumption )
 		{
-			float damage_ = (addition ? 1 : -1 ) * new_.mValue;
-			new_ = part.mPattern.GetAbility(PartManager.AbilityType.BeamRepeater);
-			if ( new_ != null )
-			{
-				damage_ *= new_.mValue;
-			}
-			mWeaponDamage += damage_;
+			mMinimalConsumption = -parentPattern.mPower;
 		}
-		new_ = part.mPattern.GetAbility(PartManager.AbilityType.Phaser);
-		if ( new_ != null )
+	}
+	
+	void SetStats(Part part)
+	{
+		if ( part.mHP <= 0 )
 		{
-			mWeaponDamage += (addition ? 1 : -1 ) * new_.mValue;
-		}
-		new_ = part.mPattern.GetAbility(PartManager.AbilityType.Tracer);
-		if ( new_ != null )
-		{
-			mWeaponDamage += (addition ? 1 : -1 ) * new_.mValue;
+			return;
 		}
 		
-		new_ = part.mPattern.GetAbility(PartManager.AbilityType.ShieldCapacity);
+		mCreditCost += part.mPattern.mPrice;
+		mEnergyOverall += part.mPattern.mPower;
+		mEnergyProduction += part.mPattern.mPower > 0 ? part.mPattern.mPower : 0;
+		
+		_BattleComputer.AddConsumer(part);
+		
+		PartManager.Ability beam_ = part.mPattern.GetAbility(PartManager.AbilityType.Beam);
+		PartManager.Ability phaser_ = part.mPattern.GetAbility(PartManager.AbilityType.Phaser);
+		PartManager.Ability tracer_ = part.mPattern.GetAbility(PartManager.AbilityType.Tracer);
+		
+		if ( beam_ != null ) AddWeaponStats(beam_.mValue, part.mPattern);
+		if ( phaser_ != null ) AddWeaponStats(phaser_.mValue, part.mPattern);
+		if ( tracer_ != null ) AddWeaponStats(tracer_.mValue, part.mPattern);
+				
+		PartManager.Ability new_ = part.mPattern.GetAbility(PartManager.AbilityType.ShieldCapacity);
 		if ( new_ != null )
-			mShieldCapacity += (addition ? 1 : -1 ) * new_.mValue;
+			mShieldCapacity +=  new_.mValue;
 		
 		new_ = part.mPattern.GetAbility(PartManager.AbilityType.ShieldRecharge);
 		if ( new_ != null )
-			mShieldRecharge += (addition ? 1 : -1 ) * new_.mValue;
+			mShieldRecharge += new_.mValue;
 		
 		new_ = part.mPattern.GetAbility(PartManager.AbilityType.EnginePower);
 		if ( new_ != null )
-			mEnginePower += (addition ? 1 : -1 ) * new_.mValue;
+			mEnginePower += new_.mValue;
 		
-		mMass += (addition ? 1 : -1 ) * part.mPattern.mWeight;
-		
-		bool lastValidity_ = mValidShip;
-		mValidShip = (mEnginePower > 0 && mEnergyOverall >= 0);
-		
-		if ( mValidShip != lastValidity_ )
-		{
-			HangarManager.GetInstance().InformShipValidity(mValidShip);
-		}
-		
-		UpdateStats();
+		mMass += part.mPattern.mWeight;
 	}
 	
-	public bool DebugRotate_ = false;
+	
+	bool _DebugRotateDirection = true;
+	float _DebugRotateSpeed = 0;
+	bool _DebugRotate;
+	
+	public bool DebugRotate
+	{
+		set {
+			_DebugRotate = value;
+			_DebugRotateSpeed = Random.Range(0, 10.0f);
+			_DebugRotateDirection = (Random.value > 0.5f);
+		}
+		get {
+			return _DebugRotate;
+		}
+	}
 	
 	public void SetHangarEntry(bool state)
 	{
@@ -433,22 +475,21 @@ public class Ship : MonoBehaviour
 		
 		if ( !state )
 		{
-			_ShipContainer.parent = null;
+			_ShipPositionContainer.parent = null;
 			CalculateShipCenter();
 			
 			transform.localPosition = mShipCenter;
-			_ShipContainer.localPosition = Vector3.zero;
+			_ShipPositionContainer.localPosition = Vector3.zero;
 			FleetManager.GetInstance().ScanShip(gameObject);
-		//	DebugRotate_ = true;
 		}
 		else
 		{	
-			UpdateStats();
-			DebugRotate_ = false;
-			_ShipContainer.parent = HangarManager.GetInstance()._HangarContainer.transform;
+			UpdateStatsContainer();
+			DebugRotate = false;
+			_ShipPositionContainer.parent = HangarManager.GetInstance()._HangarContainer.transform;
 			transform.localPosition = Vector3.zero;
-			_ShipContainer.localPosition = Vector3.zero;		
-			_ShipContainer.localRotation = Quaternion.identity;
+			_ShipPositionContainer.localPosition = Vector3.zero;		
+			_ShipRotationContainer.localRotation = Quaternion.identity;
 		}
 	}
 	
@@ -478,8 +519,8 @@ public class Ship : MonoBehaviour
 			}
 		}
 		
-		_BoundaryHorizontal = (int)(right - left);
-		_BoundaryVertical = (int)(top - bottom);
+		_BoundaryHorizontal = (int)(right - left)+1;
+		_BoundaryVertical = (int)(top - bottom)+1;
 		_OffsetHorizontal = (int)(left);
 		_OffsetVertical = (int)(bottom);
 	}	
@@ -549,7 +590,7 @@ public class Ship : MonoBehaviour
 			}
 		}	
 		
-		SetStats(part, place);
+		//SetStats(part, place);
 				
 		for ( int i = 0; i < 6; ++i )
 		{
@@ -575,16 +616,39 @@ public class Ship : MonoBehaviour
 				}
 			}
 		}	
+
+	}
+
+	public void SetStats()
+	{
+		ClearStats();
 		
+		GetBoundary();
 		
+		Debug.Log ("Weapon list for " + name + " transform " + transform + " with " +transform.childCount +" children");
+		for ( int i = 0; i < transform.childCount; ++i )
+		{
+			Part part_ = transform.GetChild(i).GetComponent<Part>();
+			SetStats(part_);
+		}
+		
+		bool lastValidity_ = mValidShip;
+		mValidShip = IsAlive();
+		
+		if ( mValidShip != lastValidity_ )
+		{
+			HangarManager.GetInstance().InformShipValidity(mValidShip);
+		}
+		
+		UpdateStatsContainer();
 	}
 		
 	// Update is called once per frame
 	void Update () 
 	{
-		if ( DebugRotate_ )
+		if ( DebugRotate )
 		{
-			_ShipContainer.Rotate(Vector3.up, Time.deltaTime * 10.0f);
+			_ShipRotationContainer.Rotate(Vector3.up, (_DebugRotateDirection ? 1 : -1) * Time.deltaTime * _DebugRotateSpeed);
 		}
 	}
 }

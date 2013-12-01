@@ -28,9 +28,16 @@ public class HangarManager : ButtonHandler
 //	GameObject mHangarButton = null;
 //	GameObject mClearButton = null;
 	
+	bool ValidShip_ = false;
+	
 	public void InformShipValidity(bool state)
 	{
-	//	mDoneButton.SetActive(state);
+		ValidShip_ = state;
+		if ( _CloseHangarButton != null )
+		{
+			_CloseHangarButton.Visible = true;
+			_CloseHangarButton.Active = state;
+		}
 	}
 	
 	void Initialize()
@@ -44,13 +51,14 @@ public class HangarManager : ButtonHandler
 		_HangarContainer.transform.GetChild(0).renderer.material.mainTextureScale = new Vector2(HANGAR_SIZE, HANGAR_SIZE);
 		
 		SetHangarVisibility(true);
+		
 		mInitlialzed = true;
 	}
 	
 	public void OnHangarOpenButton()
 	{	
 		SetHangarVisibility(true);
-		_CloseHangarButton.Visible = true;
+		
 	}
 	
 	void OnDoneButton()
@@ -167,7 +175,7 @@ public class HangarManager : ButtonHandler
 	// BUTTON HANDLER EXTENSION
 	
 	//Button _OpenHangarButton;
-	Button _CloseHangarButton;
+	public Button _CloseHangarButton;
 	
 	public override void ButtonStarted (Button target)
 	{
@@ -182,6 +190,9 @@ public class HangarManager : ButtonHandler
 		case ButtonHandle.HANGAR_DONE:
 			
 			_CloseHangarButton = target;
+			_CloseHangarButton.Visible = true;
+			_CloseHangarButton.Active = ValidShip_;
+
 			break;
 		}
 		

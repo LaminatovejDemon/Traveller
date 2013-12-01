@@ -4,17 +4,21 @@ using System.Collections.Generic;
 
 public class BattleVisualManager : MonoBehaviour 
 {
+	
+	public const float ANIMATION_SPEED = 4.0f;
+	
 	private static BattleVisualManager mInstance = null;
 	
 	struct ProjectileVisual
 	{
-		public ProjectileVisual(GameObject projectile, Part link, float angle, int  index = -1, Ship targetShip = null)
+		public ProjectileVisual(GameObject projectile, Part link, float angle, BattleComputer.Side targetSide, int  index = -1, Ship targetShip = null)
 		{
 			_Projectile = projectile;
 			_Link = link;
 			_Angle = angle;
 			_index = index;
 			_TargetShip = targetShip;
+			_TargetSide = targetSide;
 		}
 		
 		public float _Angle;
@@ -22,6 +26,7 @@ public class BattleVisualManager : MonoBehaviour
 		public Part _Link;
 		public Ship _TargetShip;
 		public int _index;
+		public BattleComputer.Side _TargetSide;
 	};
 	
 	List<ProjectileVisual> _ProjectileQueue = new List<ProjectileVisual>();
@@ -40,7 +45,12 @@ public class BattleVisualManager : MonoBehaviour
 		return mInstance;
 	}
 	
-	public void QueueFire(Part source, Part target, PartManager.AbilityType type, BattleComputer.Side side, int index_ = -1, Ship targetShip = null)
+	public void ResetTurn()
+	{
+		HitStack_ = 0;
+	}
+		
+	public void QueueFire(Part source, Part target, PartManager.AbilityType type, BattleComputer.Side side, int index_, Ship targetShip)
 	{
 		GameObject weapon_ = GetWeaponVisual(source);
 		GameObject weaponHit_ = GetWeaponVisual(source);
@@ -52,35 +62,57 @@ public class BattleVisualManager : MonoBehaviour
 		float angle_ = ((int)side * 20) + Random.Range(-5.0f, 5.0f);
 		weapon_.gameObject.SetActive(false);
 		
-		_ProjectileQueue.Add(new ProjectileVisual(weapon_, source, angle_));
-		_HitQueue.Add(new ProjectileVisual(weaponHit_, target, angle_, index_, targetShip));
+		_ProjectileQueue.Add(new ProjectileVisual(weapon_, source, angle_, side, index_, targetShip));
+		_HitQueue.Add(new ProjectileVisual(weaponHit_, target, angle_, side, index_, targetShip));
 		_ProjectileDone = false;
 	}
+	
+	int HitStack_ = 0;
 	
 	void ExecuteHit(ProjectileVisual visual)
 	{
 		if ( visual._Link == null )
 		{
 			Utils.SetLayer(visual._Projectile.transform, visual._TargetShip.gameObject.layer);
-			visual._Projectile.transform.rotation = visual._TargetShip.transform.rotation * Quaternion.AngleAxis(visual._Angle, Vector3.forward);
-			visual._Projectile.transform.position = visual._TargetShip.transform.position + visual._Projectile.transform.rotation * Vector3.left * 10.0f;
+			visual._Projectile.transform.rotation = visual._TargetShip.transform.rotation * Quaternion.AngleAxis( ((int)visual._TargetSide+3) * 90.0f, Vector3.up) * Quaternion.AngleAxis(90, Vector3.left);;
+			visual._Projectile.transform.position = visual._TargetShip.transform.position + (visual._Projectile.transform.rotation * (Vector3.left * 10.0f + Vector3.up * visual._index));
 			visual._Projectile.gameObject.SetActive(true);
-			Utils.ChangeColor(visual._Projectile.transform, Color.green);
+//			Utils.ChangeColor(visual._Projectile.transform, Color.green);
 			visual._Projectile.transform.GetChild(0).animation.Play("Hit");
+			visual._Projectile.transform.GetChild(0).animation["Hit"].speed = ANIMATION_SPEED;
+			
+			AnimationCallback missCallback_ = visual._Projectile.transform.GetChild(0).gameObject.AddComponent<AnimationCallback>();
+			missCallback_._DestroyWhenFinishedObject = visual._Projectile.gameObject;
+			missCallback_._TargetObject = gameObject;
+			missCallback_._TargetMessage = "MissFinished";
+			missCallback_._TargetParameter = null;
+			
+			IncreaseHitStack();
+			
 			return;
 		}
 		
 		Utils.SetLayer(visual._Projectile.transform, visual._Link.gameObject.layer);
-		visual._Projectile.transform.position = visual._Link.GetGunPoint();
-		visual._Projectile.transform.rotation = visual._Link.transform.rotation * Quaternion.AngleAxis(visual._Angle, Vector3.forward);
+		
+		
+		float angle_ = ((int)visual._TargetSide+3) * 90.0f;
+		
+		visual._Projectile.transform.rotation = visual._TargetShip.transform.rotation * Quaternion.AngleAxis(angle_, Vector3.up) * Quaternion.AngleAxis(90, Vector3.left);
+	
 		visual._Projectile.transform.parent = visual._Link.transform;
+		visual._Projectile.transform.position = visual._Link.GetGunPoint();
+		
 		visual._Projectile.gameObject.SetActive(true);
 		visual._Projectile.transform.GetChild(0).animation.Play("Hit");
+		visual._Projectile.transform.GetChild(0).animation["Hit"].speed = ANIMATION_SPEED;
+		
 		AnimationCallback hitCallback_ = visual._Projectile.transform.GetChild(0).gameObject.AddComponent<AnimationCallback>();
 		hitCallback_._DestroyWhenFinishedObject = visual._Projectile.gameObject;
 		hitCallback_._TargetObject = gameObject;
 		hitCallback_._TargetMessage = "HitFinished";
 		hitCallback_._TargetParameter = visual._Link;
+		
+		IncreaseHitStack();
 	}
 	
 	void ExecuteFire(ProjectileVisual visual)
@@ -90,11 +122,33 @@ public class BattleVisualManager : MonoBehaviour
 		visual._Projectile.transform.rotation = visual._Link.transform.rotation * Quaternion.AngleAxis(visual._Angle, Vector3.forward);
 		visual._Projectile.transform.parent = visual._Link.transform;
 		visual._Projectile.gameObject.SetActive(true);
+		visual._Projectile.transform.GetChild(0).animation["LaserBasicAout"].speed = ANIMATION_SPEED;
 		GameObject.Destroy(visual._Projectile.gameObject, 2.0f);
 	}
 	
 	float _LastShotTime = -1;
 	bool _ProjectileDone = false;
+	
+	
+	void IncreaseHitStack()
+	{
+		++HitStack_;
+	}
+	
+	void DecreaseHitStack()
+	{
+		--HitStack_;
+		
+		if ( HitStack_ <= 0 )
+		{
+			BattleManager.GetInstance().TurnEnded();
+		}
+	}
+	
+	public void MissFinished()
+	{
+		DecreaseHitStack();
+	}
 	
 	public void HitFinished(Part target)
 	{
@@ -103,17 +157,20 @@ public class BattleVisualManager : MonoBehaviour
 		if ( target.transform.parent.GetComponent<Ship>().VisualHitPart(target) )
 		{
 			GameObject kaboom_ = (GameObject)GameObject.Instantiate((GameObject)Resources.Load("Visuals/ParticleBeamKaboomContainer"));
-			kaboom_.transform.position = target.GetGunPoint() + Camera.main.transform.rotation * Vector3.back * 2.0f;
+			kaboom_.transform.position = target.GetGunPoint() + Camera.main.transform.rotation * Vector3.back * 1.0f;
 			Utils.SetLayer(kaboom_.transform, layer_);
 			GameObject.Destroy(kaboom_, 3.0f);
 			GameObject.Destroy(target.gameObject, 1.6f);
-		
-			// TODO DESTROYED KABOOM
 		}
 		else
 		{
-			//TODO HIT KABOOM 
+			GameObject kaboom_ = (GameObject)GameObject.Instantiate((GameObject)Resources.Load("Visuals/ParticleBeamKaboomSmallContainer" + Random.Range(1,5)));
+			kaboom_.transform.position = target.GetGunPoint() + Camera.main.transform.rotation * Vector3.back * 1.0f;
+			Utils.SetLayer(kaboom_.transform, layer_);
+			GameObject.Destroy(kaboom_, 3.0f);
 		}
+		
+		DecreaseHitStack();
 	}
 	
 	void Update()

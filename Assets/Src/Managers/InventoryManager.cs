@@ -66,7 +66,8 @@ public class InventoryManager : MonoBehaviour
 		_ScrollingPanel.StopScrolling();
 		
 		partObject.transform.parent = null;
-			
+		partObject.name = FleetManager.GetShip().transform.childCount + "_" + partObject.name;
+		
 		mInventoryList[index] = PartManager.GetInstance().GetPattern(partObject.GetComponent<Part>().mPattern.mID);
 		
 		AddCaption(mInventoryList[index].GetComponent<Part>());

@@ -26,23 +26,14 @@ public class BattleComputer : MonoBehaviour
 	
 	List <Weapon> mWeaponList = new List<Weapon>(); 
 	
-	public void CheckPart(Part part, bool addition)
+	public void ClearWeaponList()
 	{
-		if ( !addition )
-		{
-			for ( int i = 0; i < mWeaponList.Count; ++i )
-			{
-				if ( mWeaponList[i]._Owner == part )
-				{
-					Debug.Log (name +  ": Removing " + part + " from weapon list");
-					mWeaponList.RemoveAt(i);
-					return;
-				}
-			}
-			return;
-		}
+		mWeaponList.Clear();
+	}
 		
-		
+	
+	public void AddConsumer(Part part)
+	{
 		bool repeater_ = false;
 		for ( int i = 0; i < part.mPattern.mAbilityList.Count; ++i )
 		{
@@ -60,33 +51,33 @@ public class BattleComputer : MonoBehaviour
 				Weapon new_ = new Weapon(part, part.mPattern.mAbilityList[i].mType);
 				new_._Repeater = repeater_;
 				new_._Damage = part.mPattern.mAbilityList[i].mValue;
-				new_._Consumption = part.mPattern.mPower;
-				mWeaponList.Add(new_);				
+				new_._Consumption = -part.mPattern.mPower;
+				mWeaponList.Add(new_);			
+				Debug.Log ("\t" + part);
 				break;
 			}
 		}
+	
 	}
 	
 	public enum Side
 	{
-		Top,
-		Left,
-		Right,
-		Bottom,
-		COUNT,
+		Top = 0,
+		Right = 1,
+		Bottom = 2,
+		Left = 3,
+		COUNT = 4,
 	};
 	
 	Side RollSide()
 	{
-		return 0;// FIXME(Side)(Random.Range(0, (int)Side.COUNT));
+		return (Side)(Random.Range(0, (int)Side.COUNT));
 	}
 	
 	int RollIndex(Ship target, Side side)
 	{
 		int max_ = ((side == Side.Left || side == Side.Right) ? target._BoundaryVertical : target._BoundaryHorizontal);
 		
-		Debug.Log ("Rolling on " + side + " <" + 0 + ", " + max_ +")" );
-			
 		return Random.Range(0, max_);
 	}
 	
@@ -98,8 +89,6 @@ public class BattleComputer : MonoBehaviour
 		}
 		
 		float GeneratorEnergy_ = _ParentShip.mEnergyProduction;
-		
-		Debug.Log ("Attacking with energy " + GeneratorEnergy_);
 		
 		for ( int i = 0; i < mWeaponList.Count; ++i )
 		{
@@ -129,7 +118,7 @@ public class BattleComputer : MonoBehaviour
 		
 		if ( targetPart_ != null )
 		{
-			BattleVisualManager.GetInstance().QueueFire(weapon._Owner, targetPart_, weapon._Ability , side);
+			BattleVisualManager.GetInstance().QueueFire(weapon._Owner, targetPart_, weapon._Ability , side, index_, target);
 			targetPart_.mHP--;
 		}
 		else
@@ -137,7 +126,7 @@ public class BattleComputer : MonoBehaviour
 			BattleVisualManager.GetInstance().QueueFire(weapon._Owner, null, weapon._Ability , side, index_, target);
 		}
 			
-		Debug.Log ("Shooting at " + target + "'s " + side + " "+ index_ +" with " + weapon._Ability + "("+weapon._Damage+") of " + weapon._Owner.name );
+//		Debug.Log ("Shooting at " + target + "'s " + side + " "+ index_ +" with " + weapon._Ability + "("+weapon._Damage+") of " + weapon._Owner.name );
 	}
 	
 	Part GetTarget(Side side, int index_)
@@ -160,7 +149,7 @@ public class BattleComputer : MonoBehaviour
 			}
 			else
 			{
-				target_ = _ParentShip.GetPartAt(index_ + _ParentShip._OffsetVertical, i_);
+				target_ = _ParentShip.GetPartAt(index_ + _ParentShip._OffsetHorizontal, i_);
 			}
 			
 			if ( target_ != null && target_.mHP > 0 )

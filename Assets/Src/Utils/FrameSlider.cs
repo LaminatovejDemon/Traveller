@@ -14,10 +14,7 @@ public class FrameSlider : ButtonHandler
 	public bool SlideIn{
 		get {	return _SlideIn;}
 		set {
-			if ( value == _SlideIn )
-			{
-				return;
-			}
+			
 			
 			_SlideIn = value;
 			Slide(_SlideIn);

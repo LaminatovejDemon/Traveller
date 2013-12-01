@@ -17,14 +17,26 @@ public class Part : MonoBehaviour
 	Vector3 mDragBeginPosition;
 	GameObject mHandleShadow = null;
 	Transform mCaption = null;
-	public int mHP = 1;
+	public int mHP = -1;
+	
+	bool mInitialized = false;
+	
+	void Initialize()
+	{
+		if ( mInitialized )
+		{
+			return;
+		}
+		
+		mHP = mPattern.mHp;
+	}
 	
 	public PartManager.Pattern mPattern;
 
 	// Use this for initialization
 	void Start () 
 	{
-	
+	 	Initialize();
 	}
 	
 	// Update is called once per frame
@@ -35,7 +47,7 @@ public class Part : MonoBehaviour
 	
 	public Vector3 GetGunPoint()
 	{
-		return this.transform.position + this.transform.rotation * new Vector3(0.5f, -0.5f, 1.5f);
+		return this.transform.position + this.transform.parent.rotation * new Vector3(-0.5f, 1.0f, -0.5f);
 	}
 	
 	void DestroyComponent<T>(Transform parent)
@@ -172,7 +184,7 @@ public class Part : MonoBehaviour
 			return;
 		}
 		
-		Vector3 localPosition_ = MainManager.GetInstance().GetWorldPos(mDragFingerID) - mDragBeginPosition;
+		Vector3 localPosition_ = MainManager.GetInstance().GetWorldPos(mDragFingerID) + Vector3.forward * 1.5f + Vector3.left * 0.5f + Vector3.up * 1.0f - mDragBeginPosition;
 		transform.localPosition = localPosition_;
 		
 		

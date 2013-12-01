@@ -29,8 +29,8 @@ public class BattleManager : ButtonHandler
 		mDefender = defender;
 		
 		//Bypasing RTT Cameras
-		mAttacker.transform.position += Camera.main.transform.rotation * Vector3.right * 5.0f;
-		mDefender.transform.position += Camera.main.transform.rotation * Vector3.left * 5.0f;
+		mAttacker._ShipPositionContainer.position += Camera.main.transform.rotation * Vector3.right * 5.0f;
+		mDefender._ShipPositionContainer.position += Camera.main.transform.rotation * Vector3.left * 5.0f;
 		
 		mAttacker.mStats.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(1,1,0)) + Vector3.down * 15.0f;
 		mDefender.mStats.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(0.22f,1,0)) + Vector3.down * 15.0f;
@@ -44,22 +44,37 @@ public class BattleManager : ButtonHandler
 	
 	void Turn()
 	{
+		BattleVisualManager.GetInstance().ResetTurn();
 		mAttackerComputer.Attack(mDefender);
 		mDefenderComputer.Attack(mAttacker);
 		
-		// This should be used only when skip
+		//This should be used only when skip
 		//mAttacker.RemoveDestroyedParts();
 		//mDefender.RemoveDestroyedParts();
+		//CheckStats();
+		//TurnEnded();
 		
+	}
+	
+	public void TurnEnded()
+	{
+		Debug.Log ("Setting stats in the end of turn");
+		mAttacker.SetStats();
+		mDefender.SetStats();
 		CheckStats();
 	}
 	
 	void CheckStats()
 	{
-		if ( !mAttacker.IsAlive() )
+		if ( !mAttacker.IsAlive() || !mDefender.IsAlive())
 		{
 			_TurnButtonSlider.SlideIn = false;
 			HangarManager.GetInstance()._OpenButtonContainerSlider.SlideIn = true;
+			_OpenHangarButton.Visible = true;			
+		}
+		else
+		{
+			_TurnButton.Active = true;
 		}
 	}
 	
@@ -75,22 +90,26 @@ public class BattleManager : ButtonHandler
 		
 		StartBattle (FleetManager.GetShip(), newShip_);
 		_TurnButtonSlider.SlideIn = true;
+		_TurnButton.Active = true;
+		_TurnButton.Visible = true;
 		
-		MainManager.GetInstance()._BattleCamera.OnFinished(gameObject, "ShowBattleFinished");	
+		//MainManager.GetInstance()._BattleCamera.OnFinished(gameObject, "ShowBattleFinished");	
 		MainManager.GetInstance()._BattleCamera.Show(FleetManager.GetShip().transform);
 			
 		MainManager.GetInstance()._EnemyCamera.Show(newShip_.transform);
+		
+		FleetManager.GetShip().DebugRotate = true;
+		newShip_.DebugRotate = true;
 	}
 	
 	public void ShowBattleFinished()
 	{
-		//mDefender.DebugRotate_ = true;
-	    // BEGIN_TURN
 	}
 	
 	//BUTTONS
 	
 	Button _TurnButton;
+	Button _OpenHangarButton;
 	
 	public override void ButtonPressed (Button target)
 	{
@@ -100,6 +119,7 @@ public class BattleManager : ButtonHandler
 		{
 			case ButtonHandler.ButtonHandle.BATTLE_TURN:
 			Turn();
+			target.Active = false;
 			break;
 			case ButtonHandler.ButtonHandle.HANGAR_OPEN:
 			HangarManager.GetInstance().OnHangarOpenButton();
@@ -117,6 +137,9 @@ public class BattleManager : ButtonHandler
 		{
 		case ButtonHandler.ButtonHandle.BATTLE_TURN:
 			_TurnButton = target;
+			break;
+		case ButtonHandler.ButtonHandle.HANGAR_OPEN:
+			_OpenHangarButton = target;
 			break;
 		}
 	}

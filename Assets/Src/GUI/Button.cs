@@ -9,7 +9,10 @@ public class Button : MonoBehaviour
 	
 	public ButtonHandler _Handler;
 	public ButtonHandler.ButtonHandle _Handle;
-	public TextMesh _TextHandle;
+	
+	public TextMesh _ActiveTextHandle;
+	public TextMesh _InActiveTextHandle;
+	
 	public GameObject _VisibilityContainer;
 	
 	public bool _Active = true;
@@ -60,9 +63,14 @@ public class Button : MonoBehaviour
 	
 	void Start()
 	{
-		if ( _TextHandle != null )
+		if ( _ActiveTextHandle != null )
 		{
-			_TextHandle.text = _Caption;
+			_ActiveTextHandle.text = _Caption;
+		}
+		
+		if ( _InActiveTextHandle != null )
+		{
+			_InActiveTextHandle.text = _Caption;
 		}
 		
 		UpdateVisibility();
@@ -78,7 +86,7 @@ public class Button : MonoBehaviour
 	
 	void OnTouchUp(int fingerID)
 	{
-		if ( fingerID != mFingerID )
+		if ( fingerID != mFingerID || Active == false || Visible == false)
 		{
 			return;
 		}
