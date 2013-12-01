@@ -77,15 +77,17 @@ public class BattleManager : ButtonHandler
 	
 	void CheckStats()
 	{
-		if ( !mAttacker.IsAlive() || !mDefender.IsAlive())
+		if ( !mAttacker.IsAlive() || !mDefender.IsAlive() )
 		{
 			
 			_TurnButtonSlider.SlideIn = false;
 			HangarManager.GetInstance()._OpenButtonContainerSlider.SlideIn = true;
-			_OpenHangarButton.Visible = true;			
+			_OpenHangarButton.Visible = true;	
+			_OpenHangarButton.Caption = "OPEN DOCK";
 		}
 		else
 		{
+			_OpenHangarButton.Active = true;
 			_TurnButton.Active = true;
 		}
 	}
@@ -102,6 +104,10 @@ public class BattleManager : ButtonHandler
 		
 		StartBattle (FleetManager.GetShip(), newShip_);
 		_TurnButtonSlider.SlideIn = true;
+		HangarManager.GetInstance()._OpenButtonContainerSlider.SlideIn = true;
+		_OpenHangarButton.Visible = true;	
+		_OpenHangarButton.Caption = "FLEE";
+		
 		_TurnButton.Active = true;
 		_TurnButton.Visible = true;
 		
@@ -132,11 +138,12 @@ public class BattleManager : ButtonHandler
 			case ButtonHandler.ButtonHandle.BATTLE_TURN:
 			Turn();
 			target.Active = false;
+			_OpenHangarButton.Active = false;
 			break;
 			case ButtonHandler.ButtonHandle.HANGAR_OPEN:
 			HangarManager.GetInstance().OnHangarOpenButton();
+			_TurnButtonSlider.SlideIn = false;
 			target.Visible = false;
-			
 			break;
 		}
 	}

@@ -102,14 +102,14 @@ public class Shield : MonoBehaviour
 			
 			_Visual.material.color = _BasicColor;
 			
-			_ShieldCapacityCaption.GetComponent<TextMesh>().text = "SHIELD: " + _RealCapacity + _RechargeText;
+			_ShieldCapacityCaption.GetComponent<TextMesh>().text = "SHIELD: " + (_RechargeText != "" ? ""+(_RealCapacity-_Recharge) + _RechargeText : ""+_RealCapacity );
 		}
 		
 		if ( _RechargeTimestamp != -1 && Time.time - _RechargeTimestamp > 1.0f )
 		{
 			_RechargeTimestamp = -1;
 			_RechargeText = "";
-			_ShieldCapacityCaption.GetComponent<TextMesh>().text = "SHIELD: " + _RealCapacity + _RechargeText;
+			_ShieldCapacityCaption.GetComponent<TextMesh>().text = "SHIELD: " + _RealCapacity;
 		}
 	}
 	

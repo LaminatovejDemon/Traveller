@@ -149,10 +149,10 @@ public class BattleComputer : MonoBehaviour
 		
 		if ( targetPart_ != null )
 		{
-			if (_ParentShip._Shield.GetCapacity() > 0 )
+			if (target._Shield.GetCapacity() > 0 )
 			{
 				BattleVisualManager.GetInstance().QueueFire(weapon._Owner, targetPart_, weapon._Ability , side, index_, target, true, 1);
-				_ParentShip._Shield.ChangeOutcomeCapacity(weapon._Damage);
+				target._Shield.ChangeOutcomeCapacity(weapon._Damage);
 			}
 			else
 			{

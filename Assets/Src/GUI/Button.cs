@@ -59,6 +59,21 @@ public class Button : MonoBehaviour
 	
 	public string _Caption;
 	
+	public string Caption
+	{
+		set 
+		{
+			_Caption = value;
+			_ActiveTextHandle.text = _Caption;
+			_InActiveTextHandle.text = _Caption;
+		}
+		get
+		{
+			return _Caption;
+		}
+	}
+		
+	
 	private int mFingerID = -1;
 	
 	void Start()
@@ -71,6 +86,7 @@ public class Button : MonoBehaviour
 		if ( _InActiveTextHandle != null )
 		{
 			_InActiveTextHandle.text = _Caption;
+			_InActiveTextHandle.color = Color.white;
 		}
 		
 		UpdateVisibility();
