@@ -10,6 +10,7 @@ public class Shield : MonoBehaviour
 	float _Recharge;
 	string _RechargeText;
 	float _Outcome;
+	float _OutcomeVisual;
 	
 	float _RealCapacity = -1;
 	Color _BasicColor;
@@ -82,19 +83,25 @@ public class Shield : MonoBehaviour
 		_Visual.gameObject.SetActive(state);
 	}
 	
-	public void ChangeCapacity(float relative)
+	public void ChangeVisualCapacity(float relative)
 	{
-		_Outcome -= relative;
+		_OutcomeVisual += relative;
+	}
+	
+	public void ChangeOutcomeCapacity(float relative)
+	{
+		_Outcome += relative;
 	}
 	
 	void Update()
 	{
-		if ( _RealCapacity != (_Income - _Outcome) )
+		if ( _RealCapacity != (_Income - _OutcomeVisual) )
 		{
-			_RealCapacity = (_Income - _Outcome);
-			_BasicColor.a = (_RealCapacity/(_Income - _Outcome)) * _BasicColorAlpha;
+			_RealCapacity = Mathf.Max((_Income - _OutcomeVisual), 0);
+			_BasicColor.a = (_RealCapacity/(_Income)) * _BasicColorAlpha;
 			
 			_Visual.material.color = _BasicColor;
+			
 			_ShieldCapacityCaption.GetComponent<TextMesh>().text = "SHIELD: " + _RealCapacity + _RechargeText;
 		}
 		
@@ -102,7 +109,7 @@ public class Shield : MonoBehaviour
 		{
 			_RechargeTimestamp = -1;
 			_RechargeText = "";
-			_Outcome -= _Recharge;
+			_ShieldCapacityCaption.GetComponent<TextMesh>().text = "SHIELD: " + _RealCapacity + _RechargeText;
 		}
 	}
 	
@@ -115,9 +122,8 @@ public class Shield : MonoBehaviour
 			_RechargeText = " + " + _Recharge;
 			
 			_RechargeTimestamp = Time.time;
-			
-			_ShieldCapacityCaption.GetComponent<TextMesh>().text = "SHIELD: " + _RealCapacity + _RechargeText;
-		
+			_Outcome -= _Recharge;
+			_OutcomeVisual -= _Recharge;
 		}
 	}
 

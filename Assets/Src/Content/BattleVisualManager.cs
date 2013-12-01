@@ -117,7 +117,7 @@ public class BattleVisualManager : MonoBehaviour
 			hitCallback_._TargetObject = gameObject;
 			hitCallback_._TargetMessage = "HitShieldFinished";
 			hitCallback_._TargetParameter = visual._Projectile;
-			visual._TargetShip._Shield.ChangeCapacity(-visual._Damage);
+			visual._TargetShip._Shield.ChangeVisualCapacity(visual._Damage);
 		}
 		else
 		{

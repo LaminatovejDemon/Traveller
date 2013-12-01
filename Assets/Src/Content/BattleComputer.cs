@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public class BattleComputer : MonoBehaviour 
 {
 	Ship _ParentShip;
-	float _ShieldCapacity = 0;
 	
 	struct Weapon
 	{
@@ -44,7 +43,6 @@ public class BattleComputer : MonoBehaviour
 			_ParentShip = GetComponent<Ship>();
 		}
 		
-		_ShieldCapacity = _ParentShip.mShieldCapacity;
 		_ParentShip.SetStats();
 	}
 	
@@ -154,7 +152,7 @@ public class BattleComputer : MonoBehaviour
 			if (_ParentShip._Shield.GetCapacity() > 0 )
 			{
 				BattleVisualManager.GetInstance().QueueFire(weapon._Owner, targetPart_, weapon._Ability , side, index_, target, true, 1);
-				_ShieldCapacity -= weapon._Damage;
+				_ParentShip._Shield.ChangeOutcomeCapacity(weapon._Damage);
 			}
 			else
 			{
