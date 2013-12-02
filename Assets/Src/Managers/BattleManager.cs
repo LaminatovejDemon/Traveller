@@ -40,8 +40,8 @@ public class BattleManager : ButtonHandler
 		mAttacker.mStats.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(1,1,0)) + Vector3.down * 15.0f;
 		mDefender.mStats.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(0.22f,1,0)) + Vector3.down * 15.0f;
 		
-		mAttacker.mStats.SetActive(true);
-		mDefender.mStats.SetActive(true);
+		mAttacker.mStats.SetActive(false);
+		mDefender.mStats.SetActive(false);
 		
 		mAttackerComputer = mAttacker.GetComponent<BattleComputer>();
 		mDefenderComputer = mDefender.GetComponent<BattleComputer>();
@@ -100,16 +100,14 @@ public class BattleManager : ButtonHandler
 		{
 			FleetManager.GetInstance().DestroyShipInstance(mDefender);
 		}
-		Ship newShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetScan("TestShip") );
-		FleetManager.GetInstance().RegisterShip(newShip_);
+		Ship NPCShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetRandomScan() );
+		FleetManager.GetInstance().RegisterShip(NPCShip_);
 		
-		Ship newShip2_ = FleetManager.GetShip( FleetManager.GetInstance().GetScan("TestShip") );
-		FleetManager.GetInstance().RegisterShip(newShip2_);
-		
-		
+		Ship PlayerShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetLastScan() );
+		FleetManager.GetInstance().RegisterShip(PlayerShip_);
 		
 		//StartBattle (FleetManager.GetShip(), newShip_);
-		StartBattle (newShip2_, newShip_);
+		StartBattle (NPCShip_, PlayerShip_);
 		_TurnButtonSlider.SlideIn = true;
 		HangarManager.GetInstance()._OpenButtonContainerSlider.SlideIn = true;
 		_OpenHangarButton.Visible = true;	
@@ -119,12 +117,16 @@ public class BattleManager : ButtonHandler
 		_TurnButton.Visible = true;
 		
 		//MainManager.GetInstance()._BattleCamera.OnFinished(gameObject, "ShowBattleFinished");	
-		MainManager.GetInstance()._BattleCamera.Show(FleetManager.GetShip().transform);
+	
+		// Dummy instead of ship itself
+		//MainManager.GetInstance()._BattleCamera.Show(FleetManager.GetShip().transform);
+		MainManager.GetInstance()._BattleCamera.Show(PlayerShip_.transform);
 			
-		MainManager.GetInstance()._EnemyCamera.Show(newShip_.transform);
+		MainManager.GetInstance()._EnemyCamera.Show(NPCShip_.transform);
 		
-		FleetManager.GetShip().DebugRotate = true;
-		newShip_.DebugRotate = true;
+		//FleetManager.GetShip().DebugRotate = true;
+		PlayerShip_.DebugRotate = true;
+		NPCShip_.DebugRotate = true;
 	}
 	
 	public void ShowBattleFinished()
@@ -151,8 +153,13 @@ public class BattleManager : ButtonHandler
 			HangarManager.GetInstance().OnHangarOpenButton();
 			_TurnButtonSlider.SlideIn = false;
 			target.Visible = false;
-			mAttacker._Shield.SetVisibility(false);
-			mDefender._Shield.SetVisibility(false);
+			GameObject.Destroy(mAttacker.mStats.gameObject);
+			GameObject.Destroy(mAttacker.transform.parent.parent.gameObject);
+			GameObject.Destroy(mDefender.mStats.gameObject);
+			GameObject.Destroy(mDefender.transform.parent.parent.gameObject);
+			
+			//mAttacker._Shield.SetVisibility(false);
+			//mDefender._Shield.SetVisibility(false);
 			break;
 		}
 	}

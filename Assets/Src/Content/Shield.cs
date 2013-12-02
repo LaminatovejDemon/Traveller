@@ -8,7 +8,7 @@ public class Shield : MonoBehaviour
 	Ship _ParentShip;
 	float _Income;
 	float _Recharge;
-	string _RechargeText;
+	string _RechargeText = "";
 	float _Outcome;
 	float _OutcomeVisual;
 	
