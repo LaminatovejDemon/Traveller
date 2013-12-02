@@ -77,7 +77,7 @@ public class BattleComputer : MonoBehaviour
 				new_._Repeater = repeater_;
 				new_._Damage = part.mPattern.mAbilityList[i].mValue;
 				mWeaponList.Add(new_);			
-				Debug.Log ("\t" + part);
+//				Debug.Log ("\t" + part);
 				break;
 			case PartManager.AbilityType.ShieldCapacity:
 				// When powering/disabling shields during a battle

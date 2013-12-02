@@ -199,7 +199,8 @@ public class Ship : MonoBehaviour
 			
 			for ( int i = 0; i < itemCount_; ++i )
 			{
-				GameObject part_ = PartManager.GetInstance().GetPattern(template.mPartList[i].mPattern.mID);
+				//GameObject part_ = PartManager.GetInstance().GetPattern(template.mPartList[i].mPattern.mID);
+				GameObject part_ = PartManager.GetInstance().GetPattern(template.mPartList[i].mPatternID);
 				part_.transform.parent = transform;
 				part_.name = i + "_" + part_.name;
 				part_.GetComponent<Part>().mHP = part_.GetComponent<Part>().mPattern.mHp;
@@ -670,7 +671,7 @@ public class Ship : MonoBehaviour
 		
 		CalculateShipCenter();
 		
-		Debug.Log ("Weapon list for " + name + " transform " + transform + " with " +transform.childCount +" children");
+//		Debug.Log ("Weapon list for " + name + " transform " + transform + " with " +transform.childCount +" children");
 		
 		for ( int i = 0; i < transform.childCount; ++i )
 		{
