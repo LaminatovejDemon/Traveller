@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class FleetManager : MonoBehaviour 
 {
+	public string mPlayerShipName = "";
 	
 	private static FleetManager mInstance = null;
 	public static FleetManager GetInstance()
@@ -40,6 +41,7 @@ public class FleetManager : MonoBehaviour
 		public int mBoundaryV;
 		public int mOffsetH;
 		public int mOffsetV;
+		
 		
 		public List <PatternPlan> mPartList {get; private set;}
 		
@@ -78,32 +80,76 @@ public class FleetManager : MonoBehaviour
 		return mShipScanList["ScannedShip_"+order_];
 	}
 	
-	public ShipScan GetLastScan()
+	public ShipScan GetPlayerScan()
 	{
-		int scanCount_ = PlayerPrefs.GetInt("ScanShipCount");
-		
-		int order_ = scanCount_;
-		
-		Debug.Log ("Getting last scan ScannedShip_" + order_);
-		return mShipScanList["ScannedShip_"+order_];
+		return mShipScanList[mPlayerShipName];
 	}
 	
 	Dictionary<string, ShipScan> mShipScanList = new Dictionary<string, ShipScan>();
 	
+	public ShipScan GetDuplicate(Ship ship)
+	{
+		int scanCount_ = PlayerPrefs.GetInt("ScanShipCount");
+		for ( int i = 1; i < scanCount_+1; ++ i )
+		{
+			if ( IsMatching(ship, mShipScanList["ScannedShip_" + i]) )
+			{
+				return mShipScanList["ScannedShip_" + i];
+			}
+		}
+		
+		return null;
+	}
+	
+	public bool IsMatching(Ship ship, ShipScan scan)
+	{
+		if ( ship.transform.childCount != scan.mPartList.Count )
+		{
+			return false;
+		}
+		
+		bool match_;
+		
+		for ( int i = 0; i < ship.transform.childCount; ++i )
+		{
+			match_ = false;
+			for ( int j = 0; j < scan.mPartList.Count; ++j )
+			{
+				if ( ship.transform.GetChild(i).GetComponent<Part>().mPattern.mID == scan.mPartList[i].mPatternID &&
+					ship.transform.GetChild(i).transform.localPosition == scan.mPartList[i].mPosition )
+				{
+					match_ = true;
+					break;
+				}
+			}
+			
+			if ( match_ == false )
+			{
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
 	public void ScanShip(GameObject ship)
 	{
+		ShipScan duplicate_ = GetDuplicate(ship.GetComponent<Ship>());
+		
+		if ( duplicate_ != null)
+		{
+			Debug.Log ("We've got duplicate!");
+			mPlayerShipName =  duplicate_.mName;
+			return;
+		}
+		
 		int scanCount_ = PlayerPrefs.GetInt("ScanShipCount");
 		string name_ = "ScannedShip_" + (scanCount_+1);
 		
 		if ( mShipScanList.ContainsKey(name_) )
 		{
-		//	int i = 0;
-		//	while ( mShipScanList.ContainsKey(name_ +"_"+ (++i)) ){}
-		//	name_+= "_"+i;
 			RemoveBackup(name_);
 		}
-		
-//		Debug.Log ("Scanning ship" + ship.GetComponent<Ship>().mShipName + " as " + name_);
 		
 		ShipScan new_ = new ShipScan();
 		new_.mName = name_;
@@ -121,6 +167,8 @@ public class FleetManager : MonoBehaviour
 		BackupScan(new_, scanCount_+1);
 		
 		mShipScanList.Add(new_.mName, new_);
+		
+		mPlayerShipName = new_.mName;
 	}
 	
 	void RestoreScan(string name)

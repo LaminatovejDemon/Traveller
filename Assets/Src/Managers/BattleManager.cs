@@ -103,7 +103,7 @@ public class BattleManager : ButtonHandler
 		Ship NPCShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetRandomScan() );
 		FleetManager.GetInstance().RegisterShip(NPCShip_);
 		
-		Ship PlayerShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetLastScan() );
+		Ship PlayerShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetPlayerScan() );
 		FleetManager.GetInstance().RegisterShip(PlayerShip_);
 		
 		//StartBattle (FleetManager.GetShip(), newShip_);
