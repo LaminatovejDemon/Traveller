@@ -433,6 +433,8 @@ public class Ship : MonoBehaviour
 	void AddWeaponStats(float damage, PartManager.Pattern parentPattern)
 	{
 		PartManager.Ability repeater_ = parentPattern.GetAbility(PartManager.AbilityType.BeamRepeater);
+		PartManager.Ability count_ = parentPattern.GetAbility(PartManager.AbilityType.TorpedoCount);
+				
 		if ( repeater_ != null )
 		{
 			damage *= repeater_.mValue;
@@ -480,10 +482,12 @@ public class Ship : MonoBehaviour
 		PartManager.Ability beam_ = part.mPattern.GetAbility(PartManager.AbilityType.Beam);
 		PartManager.Ability phaser_ = part.mPattern.GetAbility(PartManager.AbilityType.Phaser);
 		PartManager.Ability tracer_ = part.mPattern.GetAbility(PartManager.AbilityType.Tracer);
+		PartManager.Ability torpedo_ = part.mPattern.GetAbility(PartManager.AbilityType.TorpedoDamage);
 		
 		if ( beam_ != null ) AddWeaponStats(beam_.mValue, part.mPattern);
 		if ( phaser_ != null ) AddWeaponStats(phaser_.mValue, part.mPattern);
 		if ( tracer_ != null ) AddWeaponStats(tracer_.mValue, part.mPattern);
+		if ( torpedo_ != null ) AddWeaponStats(torpedo_.mValue, part.mPattern);
 				
 		PartManager.Ability new_ = part.mPattern.GetAbility(PartManager.AbilityType.ShieldCapacity);
 		if ( new_ != null )

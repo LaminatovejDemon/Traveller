@@ -14,12 +14,14 @@ public class BattleComputer : MonoBehaviour
 			_Ability = ability;
 			_Repeater = false;
 			_Damage = 0;
+			_AmmoCount = -1;
 		}
 		
 		public Part _Owner;	
 		public PartManager.AbilityType _Ability;
 		public bool _Repeater;
 		public float _Damage;
+		public float _AmmoCount;
 	};
 	
 	List <Weapon> mWeaponList = new List<Weapon>(); 
@@ -60,21 +62,30 @@ public class BattleComputer : MonoBehaviour
 		}
 		
 		bool repeater_ = false;
+		float ammoCount_ = -1;
 		for ( int i = 0; i < part.mPattern.mAbilityList.Count; ++i )
 		{
 			if ( part.mPattern.mAbilityList[i].mType == PartManager.AbilityType.BeamRepeater )
 			{
 				repeater_ = true;	
-			}	
+			}
+			
+			if ( part.mPattern.mAbilityList[i].mType == PartManager.AbilityType.TorpedoCount )
+			{
+				ammoCount_ = part.mPattern.mAbilityList[i].mValue;	
+			}
 		}
 		
 		for ( int i = 0; i < part.mPattern.mAbilityList.Count; ++i )
 		{
 			switch (part.mPattern.mAbilityList[i].mType )
 			{
+			
+			case PartManager.AbilityType.TorpedoDamage:
 			case PartManager.AbilityType.Beam:
 				Weapon new_ = new Weapon(part, part.mPattern.mAbilityList[i].mType);
 				new_._Repeater = repeater_;
+				new_._AmmoCount = ammoCount_;
 				new_._Damage = part.mPattern.mAbilityList[i].mValue;
 				mWeaponList.Add(new_);			
 //				Debug.Log ("\t" + part);
@@ -149,7 +160,7 @@ public class BattleComputer : MonoBehaviour
 		
 		if ( targetPart_ != null )
 		{
-			if (target._Shield.GetCapacity() > 0 )
+			if (target._Shield.GetCapacity() > 0 && weapon._AmmoCount == -1)
 			{
 				BattleVisualManager.GetInstance().QueueFire(weapon._Owner, targetPart_, weapon._Ability , side, index_, target, true, 1);
 				target._Shield.ChangeOutcomeCapacity(weapon._Damage);

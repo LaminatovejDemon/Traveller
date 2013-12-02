@@ -83,8 +83,18 @@ public class BattleVisualManager : MonoBehaviour
 			visual._Projectile.transform.position = visual._TargetShip.transform.position + (visual._Projectile.transform.rotation * (Vector3.left * 10.0f + Vector3.up * visual._index));
 			visual._Projectile.gameObject.SetActive(true);
 //			Utils.ChangeColor(visual._Projectile.transform, Color.green);
-			visual._Projectile.transform.GetChild(0).animation.Play("Hit");
-			visual._Projectile.transform.GetChild(0).animation["Hit"].speed = ANIMATION_SPEED;
+			
+			AnimationState anim_ = visual._Projectile.transform.GetChild(0).animation["Hit"];
+			
+			if ( anim_ == null )
+			{
+				anim_ = visual._Projectile.transform.GetChild(0).animation["TorpedoHit"];
+			}
+			
+			visual._Projectile.transform.GetChild(0).animation.Play(anim_.name);
+			anim_.speed = ANIMATION_SPEED;
+			//visual._Projectile.transform.GetChild(0).animation.Play("Hit");
+			//visual._Projectile.transform.GetChild(0).animation["Hit"].speed = ANIMATION_SPEED;
 			
 			AnimationCallback missCallback_ = visual._Projectile.transform.GetChild(0).gameObject.AddComponent<AnimationCallback>();
 			missCallback_._DestroyWhenFinishedObject = visual._Projectile.gameObject;
@@ -110,8 +120,15 @@ public class BattleVisualManager : MonoBehaviour
 			visual._Projectile.transform.position = visual._TargetShip.transform.position + (visual._Projectile.transform.rotation * (Vector3.forward * 1.5f + Vector3.up * visual._index));
 			
 			visual._Projectile.gameObject.SetActive(true);
-			visual._Projectile.transform.GetChild(0).animation.Play("Hit");
-			visual._Projectile.transform.GetChild(0).animation["Hit"].speed = ANIMATION_SPEED;
+			
+			AnimationState anim_ = visual._Projectile.transform.GetChild(0).animation["Hit"];
+			
+			if ( anim_ == null )
+			{
+				anim_ = visual._Projectile.transform.GetChild(0).animation["TorpedoHit"];
+			}
+			visual._Projectile.transform.GetChild(0).animation.Play(anim_.clip.name);
+			anim_.speed = ANIMATION_SPEED;
 			
 			AnimationCallback hitCallback_ = visual._Projectile.transform.GetChild(0).gameObject.AddComponent<AnimationCallback>();
 			hitCallback_._DestroyWhenFinishedObject = visual._Projectile.gameObject;
@@ -125,8 +142,15 @@ public class BattleVisualManager : MonoBehaviour
 			visual._Projectile.transform.position = visual._Link.GetGunPoint();
 			
 			visual._Projectile.gameObject.SetActive(true);
-			visual._Projectile.transform.GetChild(0).animation.Play("Hit");
-			visual._Projectile.transform.GetChild(0).animation["Hit"].speed = ANIMATION_SPEED;
+			
+			AnimationState anim_ = visual._Projectile.transform.GetChild(0).animation["Hit"];
+			
+			if ( anim_ == null )
+			{
+				anim_ = visual._Projectile.transform.GetChild(0).animation["TorpedoHit"];
+			}
+			visual._Projectile.transform.GetChild(0).animation.Play(anim_.name);
+			anim_.speed = ANIMATION_SPEED;
 			
 			AnimationCallback hitCallback_ = visual._Projectile.transform.GetChild(0).gameObject.AddComponent<AnimationCallback>();
 			hitCallback_._DestroyWhenFinishedObject = visual._Projectile.gameObject;
@@ -146,8 +170,15 @@ public class BattleVisualManager : MonoBehaviour
 		visual._Projectile.transform.rotation = visual._Link.transform.rotation * Quaternion.AngleAxis(visual._Angle, Vector3.forward);
 		visual._Projectile.transform.parent = visual._Link.transform;
 		visual._Projectile.gameObject.SetActive(true);
-		visual._Projectile.transform.GetChild(0).animation["LaserBasicAout"].speed = ANIMATION_SPEED;
-		GameObject.Destroy(visual._Projectile.gameObject, 0.3f);
+		
+		AnimationState anim_ = visual._Projectile.transform.GetChild(0).animation["LaserBasicAout"];
+		if ( anim_ == null )
+		{
+			anim_ = visual._Projectile.transform.GetChild(0).animation["TorpedoBasicAout"];
+		}
+		anim_.speed = ANIMATION_SPEED;
+		
+		GameObject.Destroy(visual._Projectile.gameObject, anim_.length / ANIMATION_SPEED);
 	}
 	
 	float _LastShotTime = -1;
@@ -254,9 +285,16 @@ public class BattleVisualManager : MonoBehaviour
 			resource_.transform.localScale = new Vector3(2.0f,0.1f,0.1f);
 			Utils.ChangeColor(resource_.transform, Color.red);
 			break;
+		case "LaserHeavyA":
+			resource_ = (GameObject)GameObject.Instantiate((GameObject)Resources.Load("Visuals/LaserBasicA"));
+			resource_.transform.localScale = new Vector3(1.0f,1.5f,1.5f);
+			break;
 		case "LaserBasicA":
 			resource_ = (GameObject)GameObject.Instantiate((GameObject)Resources.Load("Visuals/LaserBasicA"));
 			Utils.ChangeColor(resource_.transform, new Color(221.0f/255.0f, 45.0f/255.0f, 0f/255.0f, 1));
+			break;
+		case "AntiMissA":
+			resource_ = (GameObject)GameObject.Instantiate((GameObject)Resources.Load("Visuals/TorpedoBasicA"));
 			break;
 		default:
 			Debug.Log ("Don't know " + source.mPattern.mID);
