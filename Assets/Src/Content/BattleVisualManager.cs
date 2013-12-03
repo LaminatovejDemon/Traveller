@@ -6,7 +6,7 @@ public class BattleVisualManager : MonoBehaviour
 {
 	
 	public const float ANIMATION_SPEED = 4.0f;
-	public const float SHOOT_DELTA_TIME = 0.05f;
+	public const float SHOOT_DELTA_TIME = /*0.05f*/0;
 	
 	private static BattleVisualManager mInstance = null;
 	
@@ -66,6 +66,7 @@ public class BattleVisualManager : MonoBehaviour
 		}
 		float angle_ = ((int)side * 20) + Random.Range(-5.0f, 5.0f);
 		weapon_.gameObject.SetActive(false);
+		weaponHit_.gameObject.SetActive(false);
 		
 		_ProjectileQueue.Add(new ProjectileVisual(weapon_, source, angle_, side, index_, targetShip, intoShield, damage));
 		_HitQueue.Add(new ProjectileVisual(weaponHit_, target, angle_, side, index_, targetShip, intoShield, damage));
@@ -97,8 +98,8 @@ public class BattleVisualManager : MonoBehaviour
 			//visual._Projectile.transform.GetChild(0).animation["Hit"].speed = ANIMATION_SPEED;
 			
 			AnimationCallback missCallback_ = visual._Projectile.transform.GetChild(0).gameObject.AddComponent<AnimationCallback>();
-			missCallback_._DestroyWhenFinishedObject = visual._Projectile.gameObject;
 			missCallback_._TargetObject = gameObject;
+			missCallback_._DestroyWhenFinishedObject = visual._Projectile.gameObject;
 			missCallback_._TargetMessage = "MissFinished";
 			missCallback_._TargetParameter = null;
 			
@@ -136,6 +137,7 @@ public class BattleVisualManager : MonoBehaviour
 			hitCallback_._TargetMessage = "HitShieldFinished";
 			hitCallback_._TargetParameter = visual._Projectile;
 			visual._TargetShip._Shield.ChangeVisualCapacity(visual._Damage);
+
 		}
 		else
 		{
@@ -165,10 +167,21 @@ public class BattleVisualManager : MonoBehaviour
 	
 	void ExecuteFire(ProjectileVisual visual)
 	{
+		Debug.Log ("Calling execute fire for visual" + visual);
 		Utils.SetLayer(visual._Projectile.transform, visual._Link.gameObject.layer);
 		visual._Projectile.transform.position = visual._Link.GetGunPoint();
 		visual._Projectile.transform.rotation = visual._Link.transform.rotation * Quaternion.AngleAxis(visual._Angle, Vector3.forward);
-		visual._Projectile.transform.parent = visual._Link.transform;
+		
+		
+		// Random rotation of torpeodes
+		if ( Random.value < 0.5f )
+		{	
+			Vector3 localScale_ = visual._Projectile.transform.localScale;
+			localScale_.y = -localScale_.y;
+			visual._Projectile.transform.localScale = localScale_;
+		}
+		
+		visual._Projectile.transform.parent = /*visual._Link.transform*/ null;
 		visual._Projectile.gameObject.SetActive(true);
 		
 		AnimationState anim_ = visual._Projectile.transform.GetChild(0).animation["LaserBasicAout"];
@@ -178,7 +191,15 @@ public class BattleVisualManager : MonoBehaviour
 		}
 		anim_.speed = ANIMATION_SPEED;
 		
-		GameObject.Destroy(visual._Projectile.gameObject, anim_.length / ANIMATION_SPEED);
+		AnimationCallback hitCallback_ = visual._Projectile.transform.GetChild(0).gameObject.AddComponent<AnimationCallback>();
+		hitCallback_._TargetObject = gameObject;
+		hitCallback_._DestroyWhenFinishedObject = null;
+		hitCallback_._TargetMessage = "FireFinished";
+		hitCallback_._EndSleep = 1.5f;
+		hitCallback_._TargetParameter = visual._Projectile;
+		
+		++_FireCount ;
+		//GameObject.Destroy(visual._Projectile.gameObject, anim_.length /*/ ANIMATION_SPEED*/);
 	}
 	
 	float _LastShotTime = -1;
@@ -239,6 +260,19 @@ public class BattleVisualManager : MonoBehaviour
 		DecreaseHitStack();
 	}
 	
+	
+	int _FireCount;
+	
+	public void FireFinished(GameObject target)
+	{
+		GameObject.Destroy(target, 1.5f);
+		--_FireCount;
+		if ( _FireCount <= 0 )
+		{
+			_ProjectileDone = true;
+		}
+	}
+	
 	void Update()
 	{
 		
@@ -247,11 +281,6 @@ public class BattleVisualManager : MonoBehaviour
 			ExecuteFire(_ProjectileQueue[0]);
 			_ProjectileQueue.RemoveAt(0);
 			_LastShotTime = Time.time;
-			
-			if ( _ProjectileQueue.Count == 0 )
-			{
-				_ProjectileDone = true;
-			}
 		}
 		
 		if ( !_ProjectileDone )
