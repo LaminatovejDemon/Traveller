@@ -127,14 +127,14 @@ public class InventoryManager : MonoBehaviour
 		//string [] name_ = pattern_.mName.Split('(');
 		
 		
-		string data_ = pattern_.mName/*[0] + "\n(" + name_[1]*/ + "\n PRICE:     " + pattern_.mPrice + " Ff";
+		string data_ = pattern_.mName/*[0] + "\n(" + name_[1]*/ + "\n HP: " + pattern_.mHp + " Ff";
 		if ( pattern_.mPower > 0 ) 
 		{
-			data_ = data_ + "\n GENERATES: " + pattern_.mPower + " Rb";
+			data_ = data_ + "\n E: " + pattern_.mPower + " Rb";
 		}
-		else
+		else if ( pattern_.mPower < 0 )
 		{
-			data_ += "\n CONSUMES:  " + -pattern_.mPower + " Rb";
+			data_ += "\n E:  " + -pattern_.mPower + " Rb";
 		}
 		
 		GameObject capName_ = TextManager.GetInstance().GetText(data_, 0.6f);
