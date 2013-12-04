@@ -160,14 +160,14 @@ public class BattleComputer : MonoBehaviour
 		
 		if ( targetPart_ != null )
 		{
-			if (target._Shield.GetCapacity() > 0 && weapon._AmmoCount == -1)
+			if (target._Shield.GetCapacity() > 0 && (weapon._Ability != PartManager.AbilityType.TorpedoDamage))
 			{
-				BattleVisualManager.GetInstance().QueueFire(weapon._Owner, targetPart_, weapon._Ability , side, index_, target, true, 1);
+				BattleVisualManager.GetInstance().QueueFire(weapon._Owner, targetPart_, weapon._Ability , side, index_, target, true, weapon._Damage);
 				target._Shield.ChangeOutcomeCapacity(weapon._Damage);
 			}
 			else
 			{
-				BattleVisualManager.GetInstance().QueueFire(weapon._Owner, targetPart_, weapon._Ability , side, index_, target, false, 1);
+				BattleVisualManager.GetInstance().QueueFire(weapon._Owner, targetPart_, weapon._Ability , side, index_, target, false, weapon._Damage);
 				targetPart_.mHP -= weapon._Damage;
 			}
 		}

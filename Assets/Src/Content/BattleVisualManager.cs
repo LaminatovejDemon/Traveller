@@ -6,7 +6,7 @@ public class BattleVisualManager : MonoBehaviour
 {
 	
 	public const float ANIMATION_SPEED = 4.0f;
-	public const float SHOOT_DELTA_TIME = /*0.05f*/0;
+	public const float SHOOT_DELTA_TIME = 0.10f;
 	
 	private static BattleVisualManager mInstance = null;
 	
@@ -55,7 +55,7 @@ public class BattleVisualManager : MonoBehaviour
 		HitStack_ = 0;
 	}
 		
-	public void QueueFire(Part source, Part target, PartManager.AbilityType type, BattleComputer.Side side, int index_, Ship targetShip, bool intoShield, int damage)
+	public void QueueFire(Part source, Part target, PartManager.AbilityType type, BattleComputer.Side side, int index_, Ship targetShip, bool intoShield, float damage)
 	{
 		GameObject weapon_ = GetWeaponVisual(source);
 		GameObject weaponHit_ = GetWeaponVisual(source);
