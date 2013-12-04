@@ -124,10 +124,10 @@ public class InventoryManager : MonoBehaviour
 	{		
 		PartManager.Pattern pattern_ =  part.mPattern;
 		
-		string [] name_ = pattern_.mName.Split('(');
+		//string [] name_ = pattern_.mName.Split('(');
 		
 		
-		string data_ = name_[0] + "\n(" + name_[1] + "\n PRICE:     " + pattern_.mPrice + " Ff";
+		string data_ = pattern_.mName/*[0] + "\n(" + name_[1]*/ + "\n PRICE:     " + pattern_.mPrice + " Ff";
 		if ( pattern_.mPower > 0 ) 
 		{
 			data_ = data_ + "\n GENERATES: " + pattern_.mPower + " Rb";
