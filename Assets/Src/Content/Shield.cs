@@ -93,11 +93,21 @@ public class Shield : MonoBehaviour
 	public void ChangeVisualCapacity(float relative)
 	{
 		_OutcomeVisual += relative;
+		
+		if ( _Outcome > _Income )
+		{
+			_Outcome = _Income;
+		}
 	}
 	
 	public void ChangeOutcomeCapacity(float relative)
 	{
 		_Outcome += relative;
+		
+		if ( _Outcome > _Income )
+		{
+			_Outcome = _Income;
+		}
 	}
 	
 	void Update()
@@ -131,6 +141,16 @@ public class Shield : MonoBehaviour
 			_RechargeTimestamp = Time.time;
 			_Outcome -= _Recharge;
 			_OutcomeVisual -= _Recharge;
+			
+			if ( _Outcome < 0 )
+			{
+				_Outcome = 0;
+			}
+			
+			if ( _OutcomeVisual < 0 )
+			{
+				_OutcomeVisual = 0;
+			}
 		}
 	}
 
