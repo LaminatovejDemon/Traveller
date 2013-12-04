@@ -1,20 +1,20 @@
 id;name;description;price;power;hash;hp;weight;integrity;model;texture;spec1;spec1val;spec2;spec2val
-GenerA1;Generator A1;Basic tiny sized power generator ;0;2;1;1;6;0;GenerA1;mtexture;0;0;0;0
-GenerA2;Generator A2;Basic small sized power generation;0;5;3;1;10;0;GenerA2;mtexture;0;0;0;0
-GenerA3;Generator A3;Basic medium sized power generation;0;8;7;1;14;0;GenerA3;mtexture;0;0;0;0
-GenerA4;Generator A4;Basic large sized power generation;0;12;195;1;18;0;GenerA4;mtexture;0;0;0;0
+GenerA1;Generator A1;Basic tiny sized power generator ;0;4;1;1;6;0;GenerA1;mtexture;0;0;0;0
+GenerA2;Generator A2;Basic small sized power generation;0;9;3;1;11;0;GenerA2;mtexture;0;0;0;0
+GenerA3;Generator A3;Basic medium sized power generation;0;14;7;1;16;0;GenerA3;mtexture;0;0;0;0
+GenerA4;Generator A4;Basic large sized power generation;0;20;195;1;21;0;GenerA4;mtexture;0;0;0;0
 EngineA1;Engines A1;Basic tiny sized engines;0;-1;1;1;4;0;EngineA1;mtexture;engipow;10;0;0
-EngineA2;Engines A2;Basic small sized engines giving tiny chance to avoid enemy attacks;0;-3;1;1;6;0;EngineA2;mtexture;engipow;35;evade;1
-EngineA3;Engines A3;Basic medium sized engines giving tiny chance to avoid enemy attacks;0;-5;3;1;9;0;EngineA3;mtexture;engipow;70;evade;2
+EngineA2;Engines A2;Basic small sized engines giving tiny chance to avoid enemy attacks;0;-3;1;1;6;0;EngineA2;mtexture;engipow;30;evade;1
+EngineA3;Engines A3;Basic medium sized engines giving tiny chance to avoid enemy attacks;0;-5;3;1;9;0;EngineA3;mtexture;engipow;60;evade;2
 ShieldA1;Shields A1;Basic shield with tiny capacity and no recharge;0;-1;1;1;8;0;ShieldA1;mtexture;srech;0;scap;5
-ShieldA2;Shields A2;Basic shield with small capacity and minimal recharge;0;-3;3;1;14;0;ShieldA2;mtexture;srech;1;scap;30
+ShieldA2;Shields A2;Basic shield with small capacity and minimal recharge;0;-3;3;1;14;0;ShieldA2;mtexture;srech;1;scap;15
 RechargerA1;Recharger A1;Basic shield recharger with medium recharge speed;0;-7;1;1;10;0;RechargerA1;mtexture;srech;4;0;0
-LaserBasicA1;Laser A1;Basic low damage output weapon;0;-1;1;1;3;0;LaserBasicA1;mtexture;beam;1;0;0
-LaserHeavyA1;Heavy Laser A1;Heavy laser deals higher damage for higher power consumption and higher price compared to basic lasers;0;-2;1;1;6;0;LaserHeavyA1;mtexture;beam;3;0;0
-LaserGatlingA1;Gatling Laser A1;Laser being able to shoot multiple times in a single turn, fires all projectiles from one side in its single turn;0;-3;1;1;7;0;LaserGatlingA1;mtexture;beam;1;beamrep;3
-TorpedoA1;Torpedos A1;Basic torpedo launcher whose projectiles are able to penetrate enemy shields, 50% hitchance;0;-10;1;1;10;0;TorpedoA1;mtexture;torpdam;5;hitchance;50
-ArmorA1;Armor A1;The most common armor, v01;0;0;1;3;5;0;ArmorA1;mtexture;0;0;0;0
-ArmorA2;Armor A2;The most common armor, v02;0;0;1;6;8;0;ArmorA2;mtexture;0;0;0;0
-ArmorA3;Armor A3;The most common armor, v03;0;0;1;9;12;0;ArmorA3;mtexture;0;0;0;0
-ArmorA4;Armor A4;The most common armor, v04;0;0;1;12;15;0;ArmorA4;mtexture;0;0;0;0
-;;;;;;;;;;;;;;;;;;;;;;;;;
+LaserBasicA1;Laser A1;Basic low damage output weapon;0;-2;1;1;3;0;LaserBasicA1;mtexture;beam;1;0;0
+LaserHeavyA1;Heavy Laser A1;Heavy laser deals higher damage for higher power consumption and higher price compared to basic lasers;0;-3;1;1;6;0;LaserHeavyA1;mtexture;beam;3;0;0
+LaserGatlingA1;Gatling Laser A1;Laser being able to shoot multiple times in a single turn, fires all projectiles from one side in its single turn;0;-4;1;1;7;0;LaserGatlingA1;mtexture;beam;1;beamrep;3
+TorpedoA1;Torpedos A1;Basic torpedo launcher whose projectiles are able to penetrate enemy shields, 50% hitchance;0;-10;1;1;10;0;TorpedoA1;mtexture;torpdam;5;hitchance;100
+ArmorA1;Armor A1;The most common armor, v01;0;0;1;2;12;0;ArmorA1;mtexture;0;0;0;0
+ArmorA2;Armor A2;The most common armor, v02;0;0;1;5;18;0;ArmorA2;mtexture;0;0;0;0
+ArmorA3;Armor A3;The most common armor, v03;0;0;1;8;24;0;ArmorA3;mtexture;0;0;0;0
+ArmorA4;Armor A4;The most common armor, v04;0;0;1;11;30;0;ArmorA4;mtexture;0;0;0;0
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
