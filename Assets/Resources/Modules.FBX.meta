@@ -36,6 +36,25 @@ ModelImporter:
     100060: LaserHeavyAturret
     100062: PhaserAturret
     100064: TracerAturret
+    100066: ArmorA1
+    100068: ArmorA2
+    100070: ArmorA3
+    100072: ArmorA4
+    100074: EngineA1
+    100076: EngineA2
+    100078: EngineA3
+    100080: GenerA1
+    100082: GenerA2
+    100084: GenerA3
+    100086: GenerA4
+    100088: LaserBasicA1
+    100090: LaserGatlingA1
+    100092: LaserHeavyA1
+    100094: Object02
+    100096: RechargerA1
+    100098: ShieldA1
+    100100: ShieldA2
+    100102: TorpedoA1
     400000: AntiMissA
     400002: ArmorTungA
     400004: ArmorTungB
@@ -69,6 +88,25 @@ ModelImporter:
     400060: LaserHeavyAturret
     400062: PhaserAturret
     400064: TracerAturret
+    400066: ArmorA1
+    400068: ArmorA2
+    400070: ArmorA3
+    400072: ArmorA4
+    400074: EngineA1
+    400076: EngineA2
+    400078: EngineA3
+    400080: GenerA1
+    400082: GenerA2
+    400084: GenerA3
+    400086: GenerA4
+    400088: LaserBasicA1
+    400090: LaserGatlingA1
+    400092: LaserHeavyA1
+    400094: Object02
+    400096: RechargerA1
+    400098: ShieldA1
+    400100: ShieldA2
+    400102: TorpedoA1
     2300000: AntiMissA
     2300002: ArmorTungA
     2300004: ArmorTungB
@@ -101,6 +139,25 @@ ModelImporter:
     2300058: LaserHeavyAturret
     2300060: PhaserAturret
     2300062: TracerAturret
+    2300064: ArmorA1
+    2300066: ArmorA2
+    2300068: ArmorA3
+    2300070: ArmorA4
+    2300072: EngineA1
+    2300074: EngineA2
+    2300076: EngineA3
+    2300078: GenerA1
+    2300080: GenerA2
+    2300082: GenerA3
+    2300084: GenerA4
+    2300086: LaserBasicA1
+    2300088: LaserGatlingA1
+    2300090: LaserHeavyA1
+    2300092: Object02
+    2300094: RechargerA1
+    2300096: ShieldA1
+    2300098: ShieldA2
+    2300100: TorpedoA1
     3300000: AntiMissA
     3300002: ArmorTungA
     3300004: ArmorTungB
@@ -133,6 +190,25 @@ ModelImporter:
     3300058: LaserHeavyAturret
     3300060: PhaserAturret
     3300062: TracerAturret
+    3300064: ArmorA1
+    3300066: ArmorA2
+    3300068: ArmorA3
+    3300070: ArmorA4
+    3300072: EngineA1
+    3300074: EngineA2
+    3300076: EngineA3
+    3300078: GenerA1
+    3300080: GenerA2
+    3300082: GenerA3
+    3300084: GenerA4
+    3300086: LaserBasicA1
+    3300088: LaserGatlingA1
+    3300090: LaserHeavyA1
+    3300092: Object02
+    3300094: RechargerA1
+    3300096: ShieldA1
+    3300098: ShieldA2
+    3300100: TorpedoA1
     4300000: ArmorTungD
     4300002: ArmorTungC
     4300004: ArmorTungB
@@ -165,6 +241,25 @@ ModelImporter:
     4300058: LaserGatlingAturret
     4300060: TracerAturret
     4300062: PhaserAturret
+    4300064: GenerA1
+    4300066: ShieldA1
+    4300068: ArmorA1
+    4300070: LaserHeavyA1
+    4300072: LaserBasicA1
+    4300074: LaserGatlingA1
+    4300076: TorpedoA1
+    4300078: Object02
+    4300080: ArmorA2
+    4300082: ArmorA4
+    4300084: ArmorA3
+    4300086: GenerA2
+    4300088: GenerA3
+    4300090: GenerA4
+    4300092: EngineA2
+    4300094: EngineA3
+    4300096: EngineA1
+    4300098: RechargerA1
+    4300100: ShieldA2
     9500000: //RootNode
   materials:
     importMaterials: 1

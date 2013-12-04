@@ -223,7 +223,12 @@ public class Ship : MonoBehaviour
 		for ( int i = 0; i < itemCount_; ++i )
 		{
 			GameObject part_ = PartManager.GetInstance().GetPattern(PlayerPrefs.GetString(mShipName+"_ShipPartID_"+i));
-			
+			if ( part_ == null )
+			{
+				EraseShip();
+				RemoveBackup();
+				return;
+			}
 			InventoryManager.GetInstance().AddCaption(part_.GetComponent<Part>());
 			part_.GetComponent<Part>().SetCaptionVisibility(false);
 			

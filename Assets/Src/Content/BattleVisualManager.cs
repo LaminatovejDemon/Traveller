@@ -309,20 +309,20 @@ public class BattleVisualManager : MonoBehaviour
 		
 		switch (source.mPattern.mID)
 		{
-		case "LaserGatlingA":
+		case "LaserGatlingA1":
 			resource_ = (GameObject)GameObject.Instantiate((GameObject)Resources.Load("Visuals/LaserBasicA"));
 			resource_.transform.localScale = new Vector3(2.0f,0.1f,0.1f);
 			Utils.ChangeColor(resource_.transform, Color.red);
 			break;
-		case "LaserHeavyA":
+		case "LaserHeavyA1":
 			resource_ = (GameObject)GameObject.Instantiate((GameObject)Resources.Load("Visuals/LaserBasicA"));
 			resource_.transform.localScale = new Vector3(1.0f,1.5f,1.5f);
 			break;
-		case "LaserBasicA":
+		case "LaserBasicA1":
 			resource_ = (GameObject)GameObject.Instantiate((GameObject)Resources.Load("Visuals/LaserBasicA"));
 			Utils.ChangeColor(resource_.transform, new Color(221.0f/255.0f, 45.0f/255.0f, 0f/255.0f, 1));
 			break;
-		case "AntiMissA":
+		case "TorpedoA1":
 			resource_ = (GameObject)GameObject.Instantiate((GameObject)Resources.Load("Visuals/TorpedoBasicA"));
 			break;
 		default:
