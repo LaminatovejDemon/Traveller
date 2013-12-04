@@ -1,6 +1,4 @@
-﻿//#define RTT
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public class BattleManager : ButtonHandler 
@@ -30,12 +28,8 @@ public class BattleManager : ButtonHandler
 		mAttacker = attacker;
 		mDefender = defender;
 		
-#if RTT
-		
-#else	
 		mAttacker._ShipPositionContainer.position += Camera.main.transform.rotation * Vector3.right * 5.0f;
 		mDefender._ShipPositionContainer.position += Camera.main.transform.rotation * Vector3.left * 5.0f;
-#endif
 		
 		mAttacker.mStats.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(1,1,0)) + Vector3.down * 15.0f;
 		mDefender.mStats.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(0.22f,1,0)) + Vector3.down * 15.0f;
@@ -120,9 +114,9 @@ public class BattleManager : ButtonHandler
 	
 		// Dummy instead of ship itself
 		//MainManager.GetInstance()._BattleCamera.Show(FleetManager.GetShip().transform);
-		MainManager.GetInstance()._BattleCamera.Show(PlayerShip_.transform);
+		MainManager.GetInstance()._BattleCamera.Show(PlayerShip_.transform.parent);
 			
-		MainManager.GetInstance()._EnemyCamera.Show(NPCShip_.transform);
+		MainManager.GetInstance()._EnemyCamera.Show(NPCShip_.transform.parent);
 		
 		//FleetManager.GetShip().DebugRotate = true;
 		PlayerShip_.DebugRotate = true;

@@ -476,6 +476,7 @@ public class Ship : MonoBehaviour
 		if ( mEnergyOverall + part.mPattern.mPower < 0 )
 		{
 			part.DisabledContainer.gameObject.SetActive(true);
+			Utils.SetLayer(part.DisabledContainer.transform, part.gameObject.layer);
 			return;
 		}
 		part.DisabledContainer.gameObject.SetActive(false);
@@ -679,9 +680,7 @@ public class Ship : MonoBehaviour
 		ClearStats();
 		
 		CalculateShipCenter();
-		
-//		Debug.Log ("Weapon list for " + name + " transform " + transform + " with " +transform.childCount +" children");
-		
+				
 		for ( int i = 0; i < transform.childCount; ++i )
 		{
 			SetEnergyIncome(transform.GetChild(i).GetComponent<Part>());

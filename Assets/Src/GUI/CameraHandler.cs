@@ -1,6 +1,4 @@
-﻿//#define RTT
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 
 public class CameraHandler : MonoBehaviour 
@@ -8,8 +6,7 @@ public class CameraHandler : MonoBehaviour
 	public Camera _RealCamera;
 	public LayerMask _RealCameraMask;
 	int _RealCameraLayer;
-	
-	
+
 	public Camera _RTTCamera;
 	public LayerMask _RTTMask;
 	public Transform _RTTCameraTarget;
@@ -17,6 +14,8 @@ public class CameraHandler : MonoBehaviour
 	int _RTTCameraLayer;
 	
 	public bool _FillScreen = false;
+	public bool _CenterOnObject = false;
+	public float _ViewPortOffset = 0.0f;
 	
 	GameObject _OnFinished;
 	string _OnFinishedMessage;
@@ -41,13 +40,25 @@ public class CameraHandler : MonoBehaviour
 		_RealCamera.cullingMask = _RealCameraMask;
 		Utils.SetLayer(_RealCamera.transform, _RealCameraLayer);
 		_RTTCamera.cullingMask = _RTTMask;
-		_RTTCameraTexture = ((RenderTexture)Object.Instantiate(Resources.Load("Camera/RTTCameraTarget")));
-		_RealCamera.targetTexture = _RTTCameraTexture;
+		
+		if ( Utils.RenderToTexture )
+		{	
+			_RTTCameraTexture = ((RenderTexture)Object.Instantiate(Resources.Load("Camera/RTTCameraTarget")));
+			_RealCamera.targetTexture = _RTTCameraTexture;
+		}
+		else if ( !_FillScreen )
+		{
+			Rect cameraRect_ = _RealCamera.rect;
+			cameraRect_.width = 0.5f;
+			cameraRect_.x = _ViewPortOffset;
+			_RealCamera.rect = cameraRect_;
+		}
 		
 		
-#if RTT
-		_RealCamera.gameObject.layer = _RTTCameraLayer;
-#endif
+		if ( Utils.RenderToTexture )
+		{
+			_RealCamera.gameObject.layer = _RTTCameraLayer;
+		}			
 
 		_RTTCameraTarget.renderer.material.mainTexture = _RTTCameraTexture;
 		_RTTCameraTarget.gameObject.layer = _RTTCameraLayer;
@@ -64,13 +75,15 @@ public class CameraHandler : MonoBehaviour
 	
 	public int GetRealLayer()
 	{
-	
-#if RTT		
-		Initialize();
-		return _RealCameraLayer;
-#else
-		return 0;
-#endif
+		if ( Utils.RenderToTexture )
+		{
+			Initialize();
+			return _RealCameraLayer;
+		}
+		else
+		{
+			return 0;
+		}
 	}
 	
 	int CalculateLayer(int layerMask)
@@ -87,12 +100,13 @@ public class CameraHandler : MonoBehaviour
 	}
 	
 	public void Show(Transform targetShip)
-	{
-		return;
-		
+	{		
 		Initialize();
 		
-		gameObject.SetActive(true);
+		if ( Utils.RenderToTexture )
+		{
+			gameObject.SetActive(true);
+		}
 		
 		Utils.SetLayer(targetShip, _RealCameraLayer);
 		
@@ -107,6 +121,17 @@ public class CameraHandler : MonoBehaviour
 		{
 			_OnFinished.SendMessage(_OnFinishedMessage, SendMessageOptions.RequireReceiver);
 		}
+		
+		if ( _CenterOnObject )
+		{
+			_RealCamera.transform.position = targetShip.transform.position + _RealCamera.transform.rotation * (Vector3.back * 5.0f + Vector3.up * 1.0f);
+		}
+		
+		//Refresh main camera
+		Camera mainCamera_ = Camera.main;
+		mainCamera_.enabled = false;
+		mainCamera_.enabled = true;
+		Camera.main.clearFlags = CameraClearFlags.Nothing;
 		
 	//	MainManager.GetInstance()._BattleCamera.GetComponent<FrameSlider>().SlideIn = true;
 	//	MainManager.GetInstance()._BattleCamera.GetComponent<FrameSlider>().OnFinished(gameObject, "SlideToBattleFinished");	

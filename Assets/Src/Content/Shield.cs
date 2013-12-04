@@ -15,6 +15,7 @@ public class Shield : MonoBehaviour
 	float _RealCapacity = -1;
 	Color _BasicColor;
 	float _BasicColorAlpha;
+	Vector3 _InitialShipCenter;
 	
 	public GameObject _ShieldCapacityCaption;
 	
@@ -48,7 +49,9 @@ public class Shield : MonoBehaviour
 		
 		_Visual = ((GameObject)GameObject.Instantiate((GameObject)Resources.Load("Content/Shield"))).renderer;
 		_ParentShip = gameObject.GetComponent<Ship>();
+		_InitialShipCenter = _ParentShip.mShipCenter;
 		
+		_Visual.gameObject.layer = _ParentShip.gameObject.layer;
 		_Visual.transform.parent = _ParentShip.transform.parent;
 		
 		_BasicColor = _Visual.material.color;
@@ -63,12 +66,16 @@ public class Shield : MonoBehaviour
 		
 		SetVisibility(false);
 		
+		
 		_Initialized = true;
+		
 	}
 	
 	public void RecalculateBoundary()
 	{
-		_Visual.transform.localPosition = new Vector3( 0,  0.5f , 0);
+		Vector3 shieldOffset_ = _InitialShipCenter - _ParentShip.mShipCenter;
+			
+		_Visual.transform.localPosition = shieldOffset_;
 		_Visual.transform.localRotation = Quaternion.identity;
 		_Visual.transform.localScale = new Vector3(_ParentShip._BoundaryHorizontal + 0.2f, 2.0f, _ParentShip._BoundaryVertical + 0.2f);
 		_ShieldCapacityCaption.transform.position = _Visual.transform.position + Camera.main.transform.rotation * Vector3.up * 3.0f;
