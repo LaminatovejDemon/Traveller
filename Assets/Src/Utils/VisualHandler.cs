@@ -11,6 +11,7 @@ public class VisualHandler : MonoBehaviour
 	{
 		GameObject visual_ = (GameObject)GameObject.Instantiate(_FBXTemplate);
 		visual_.transform.parent = transform;
+		visual_.layer = visual_.transform.parent.gameObject.layer;
 		visual_.transform.localRotation = Quaternion.AngleAxis(180, Vector3.up);
 		visual_.transform.localPosition = _Offset;
 		visual_.transform.localScale = Vector3.one * _Scale;

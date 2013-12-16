@@ -7,6 +7,8 @@ public class MainManager : MonoBehaviour {
 	public CameraHandler _BattleCamera;
 	public CameraHandler _HangarCamera;
 	public CameraHandler _EnemyCamera;
+	public Camera _InventoryCamera;
+	public Camera _GUICamera;
 	
 	private static MainManager mInstance = null;
 	
@@ -41,31 +43,50 @@ public class MainManager : MonoBehaviour {
 		
 	}
 	
-	Ray mDebugRay;
+	Ray mDebugRayInventory;
+	Ray mDebugRayHangar;
+	Ray mDebugRayGUI;
+
 	void OnDrawGizmos()
 	{
 		Gizmos.color = Color.green;
-		Gizmos.DrawLine(mDebugRay.origin, mDebugRay.origin + mDebugRay.direction * 100.0f);
+		Gizmos.DrawLine(mDebugRayInventory.origin, mDebugRayInventory.origin + mDebugRayInventory.direction * 100.0f);
+		Gizmos.color = Color.red;
+		Gizmos.DrawLine(mDebugRayHangar.origin, mDebugRayHangar.origin + mDebugRayHangar.direction * 100.0f);
 	}
 	
 	void TouchBegin(int fingerID, Vector3 position)
 	{
 		mFingerPositions[fingerID] = position;
-		
-		Vector3 touchPos_ = Camera.main.ScreenToWorldPoint(position);
-		Ray touchRay_ = new Ray(touchPos_ - Camera.main.transform.forward * 50.0f, Camera.main.transform.forward);
-		mDebugRay = touchRay_;
+
+		CheckTouchDown(_GUICamera, fingerID, position, out mDebugRayGUI);
+		CheckTouchDown(_InventoryCamera, fingerID, position, out mDebugRayInventory);
+		CheckTouchDown(_HangarCamera._RealCamera, fingerID, position, out mDebugRayHangar);
+
+	}
+
+	void CheckTouchDown(Camera cam, int fingerID, Vector3 position, out Ray ray)
+	{
+		Vector3 touchPos_ = cam.ScreenToWorldPoint(position);
+		ray = new Ray(touchPos_ - cam.transform.forward * 50.0f, cam.transform.forward);
 		
 		SetWorldPos(fingerID, position);
-		
-		InventoryManager.GetInstance()._ScrollingPanel.IsWithin(GetWorldPos(fingerID));
-		
-		RaycastHit [] hits = Physics.RaycastAll(touchRay_, 200);
-			
+		RaycastHit hit_;
+
+		/*
+		RaycastHit [] hits = Physics.RaycastAll(ray, 200, 1 << cam.gameObject.layer);
 		for ( int i = 0; i < hits.Length; ++i )
 		{
+			Debug.Log ("We hit " + hits[i].collider.gameObject.name);
 			hits[i].collider.gameObject.SendMessage("OnTouchDown", fingerID, SendMessageOptions.DontRequireReceiver);
 		}
+		/*/
+		if ( Physics.Raycast(ray, out hit_, 200, 1 << cam.gameObject.layer) )
+		{
+			Debug.Log (cam.name + " hit " + hit_.collider.gameObject.name);
+			hit_.collider.gameObject.SendMessage("OnTouchDown", fingerID, SendMessageOptions.DontRequireReceiver);
+		}
+		//*/
 	}
 	
 	public Vector3 GetPos(int fingerID)

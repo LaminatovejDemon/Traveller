@@ -67,6 +67,7 @@ public class ScrollingPanel : MonoBehaviour
 		{
 			_ContentContainer = new GameObject("ContentContainer").transform;
 			_ContentContainer.transform.parent = _Container.transform;
+			_ContentContainer.gameObject.layer = _ContentContainer.transform.parent.gameObject.layer;
 			_ContentContainer.transform.localPosition = Vector3.zero;
 			_ContentContainer.transform.localRotation = Quaternion.identity;
 		}

@@ -107,7 +107,7 @@ public class CameraHandler : MonoBehaviour
 		{
 			gameObject.SetActive(true);
 		}
-		
+
 		Utils.SetLayer(targetShip, _RealCameraLayer);
 		
 		_RealCamera.gameObject.SetActive(true);
@@ -124,7 +124,7 @@ public class CameraHandler : MonoBehaviour
 		
 		if ( _CenterOnObject )
 		{
-			_RealCamera.transform.position = targetShip.transform.position + _RealCamera.transform.rotation * (Vector3.back * 5.0f + Vector3.up * 1.0f);
+			_RealCamera.transform.position = targetShip.transform.position + _RealCamera.transform.rotation * (Vector3.back * 10.0f + Vector3.up * 1.0f);
 		}
 		
 		//Refresh main camera

@@ -32,6 +32,16 @@ public class Utils : MonoBehaviour
 		
 		parent.gameObject.layer = layer;
 	}
+
+	public static void SetTransformCamera(Transform parent, Camera from, Camera to)
+	{
+		SetLayer(parent, to.gameObject.layer);
+
+		Vector3 oldViewportPosition_ = from.WorldToViewportPoint(parent.position);
+		Vector3 newWorldPositon_ = to.ViewportToWorldPoint(oldViewportPosition_);
+
+		parent.transform.position = newWorldPositon_;
+	}
 	
 	public static void ChangeColor(Transform parent, Color color)
 	{

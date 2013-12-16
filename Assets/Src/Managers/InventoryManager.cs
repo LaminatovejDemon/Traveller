@@ -66,6 +66,8 @@ public class InventoryManager : MonoBehaviour
 		_ScrollingPanel.StopScrolling();
 		
 		partObject.transform.parent = null;
+		Utils.SetTransformCamera(partObject.transform, MainManager.GetInstance()._InventoryCamera, MainManager.GetInstance()._HangarCamera._RealCamera); 
+
 		partObject.name = FleetManager.GetShip().transform.childCount + "_" + partObject.name;
 		
 		mInventoryList[index] = PartManager.GetInstance().GetPattern(partObject.GetComponent<Part>().mPattern.mID);
@@ -85,7 +87,7 @@ public class InventoryManager : MonoBehaviour
 		for ( int i = 0; i < mInventoryList.Count; ++i )
 		{
 			mInventoryList[i].transform.parent = _ScrollingPanel._ContentContainer;
-			//mInventoryList[i].transform.localPosition = (i == 0 ? Vector3.right * 3.0f : mInventoryList[i-1].transform.localPosition + Vector3.back * (mInventoryList[i-1].GetComponent<Part>().GetHeight() + 0.5f) );
+			Utils.SetLayer(mInventoryList[i].transform, mInventoryList[i].transform.parent.gameObject.layer);
 		}
 		
 		_ScrollingPanel._RefreshNow = true;

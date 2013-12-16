@@ -636,7 +636,7 @@ public class Ship : MonoBehaviour
 		GetHangarPlace(position, out x, out y);
 		int hash = part.mPattern.mHash;
 		
-		if ( changeLayer )
+		/*if ( changeLayer )
 		{
 			if ( place )
 			{
@@ -646,7 +646,7 @@ public class Ship : MonoBehaviour
 			{
 				Utils.SetLayer(part.transform, 0 );
 			}
-		}	
+		}*/	
 		
 		for ( int i = 0; i < 6; ++i )
 		{
