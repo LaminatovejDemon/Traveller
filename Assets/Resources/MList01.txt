@@ -1,20 +1,20 @@
-id;name;description;price;power;hash;hp;weight;integrity;model;texture;spec1;spec1val;spec2;spec2val
+id;name;description;rarity;power;hash;hp;weight;integrity;model;texture;spec1;spec1val;spec2;spec2val
 GenerA1;Generator A1;The smallest generator, innefective but very compact and versatile.;1;4;1;1;6;0;GenerA1;mtexture;0;0;0;0
-GenerA2;Generator A2;Advanced version of the first generator, for bigger size and higher weight offers better energy gain.;2;9;3;1;11;0;GenerA2;mtexture;0;0;0;0
-GenerA3;Generator A3;Large sized generator, easy to hit due to its size, but effective at energy gain for your modules.;3;15;7;1;16;0;GenerA3;mtexture;0;0;0;0
-GenerA4;Generator A4;The biggest generator up to date, very effective energy wise. Protect it at all cost as a single hit to this module can leave half of your systems without power.;4;22;195;1;21;0;GenerA4;mtexture;0;0;0;0
+GenerA2;Generator A2;Advanced version of the first generator, for bigger size and higher weight offers better energy gain.;3;10;3;1;11;0;GenerA2;mtexture;0;0;0;0
+GenerA3;Generator A3;Large sized generator, easy to hit due to its size, but effective at energy gain for your modules.;5;17;7;1;16;0;GenerA3;mtexture;0;0;0;0
+GenerA4;Generator A4;The biggest generator up to date, very effective energy wise. Protect it at all cost as a single hit to this module can leave half of your systems without power.;7;25;195;1;21;0;GenerA4;mtexture;0;0;0;0
 EngineA1;Engines A1;The most basic engines, still offering acceptable evade chances for lightweighted ships.;2;-1;1;1;3;0;EngineA1;mtexture;engipow;6;0;0
-EngineA2;Engines A2;Advanced version of the first engines, offering good evade at compact size but for increased energy cost.;3;-3;1;1;5;0;EngineA2;mtexture;engipow;27;evade;1
-EngineA3;Engines A3;Basic medium sized engines, giving great evade chances for higher module size and energy cost.;0;-5;3;1;7;0;EngineA3;mtexture;engipow;70;evade;2
+EngineA2;Engines A2;Advanced version of the first engines, offering good evade at compact size but for increased energy cost.;4;-3;1;1;5;0;EngineA2;mtexture;engipow;27;evade;1
+EngineA3;Engines A3;Basic medium sized engines, giving great evade chances for higher module size and energy cost.;6;-5;3;1;7;0;EngineA3;mtexture;engipow;70;evade;2
 ShieldA1;Shields A1;The first tiny shield with low energy cost. Can offer great defence vs smaller ships but has no recharge. Effective in combination with recharger modules.;2;-1;1;1;8;0;ShieldA1;mtexture;srech;0;scap;6
-ShieldA2;Shields A2;Medium sized shield with minimal recharge but acceptable shield capacity. Effective in combination with recharger modules.;3;-3;3;1;14;0;ShieldA2;mtexture;srech;1;scap;15
-RechargerA1;Recharger A1;Recharger offerst a nice boost for shield regeneration, if cleverly placed in your boxship, it can help to soak up tons of enemy beam damage.;4;-7;1;1;15;0;RechargerA1;mtexture;srech;4;0;0
+ShieldA2;Shields A2;Medium sized shield with minimal recharge but acceptable shield capacity. Effective in combination with recharger modules.;5;-3;3;1;14;0;ShieldA2;mtexture;srech;1;scap;15
+RechargerA1;Recharger A1;Recharger offerst a nice boost for shield regeneration, if cleverly placed in your boxship, it can help to soak up tons of enemy beam damage.;5;-7;1;1;15;0;RechargerA1;mtexture;srech;4;0;0
 LaserBasicA1;Laser A1;The most basic laser in the universum, the very first weapon usefull for your first smaller ships.;1;-2;1;1;3;0;LaserBasicA1;mtexture;beam;1;0;0
-LaserHeavyA1;Heavy Laser A1;The first heavy laser in the game, effective at energy/damage ratio, but still fires only one shot.;3;-3;1;1;6;0;LaserHeavyA1;mtexture;beam;3;0;0
-LaserGatlingA1;Gatling Laser A1;Compact laser being able to shoot multiple times in a single turn, fires all its projectiles from one side in its single turn. Great at destroying multiple unarmored and unshielded targets.;3;-4;1;1;7;0;LaserGatlingA1;mtexture;beam;1;beamrep;3
-TorpedoA1;Torpedos A1;Basic torpedo launcher. It has low damage and high energy cost, but still offers extremely efficient way on how to destroy exposed unarmored modules of the enemy in one hit as it penetrates shields easily.;4;-9;1;1;10;0;TorpedoA1;mtexture;torpdam;3;hitchance;100
-ArmorA1;Armor A1;Ultra leightweited armor that melts like a paper, acceptable defence against missiles for high maneuvrable boxships.;1;0;1;1;1;0;ArmorA1;mtexture;0;0;0;0
-ArmorA2;Armor A2;Offers reasonable protection against low tier weapons at reasonable weight, but not really strong vs heavily armed beam boxships.;2;0;1;3;4;0;ArmorA2;mtexture;0;0;0;0
-ArmorA3;Armor A3;Great armor against torpedos, quite usefull even against mediocre armed beam boxships, but quite heavy.;4;0;1;6;9;0;ArmorA3;mtexture;0;0;0;0
-ArmorA4;Armor A4;The monstrously strong armor able to survive multiple volleys of enemy fire, but extremely heavy weighted.;4;0;1;10;25;0;ArmorA4;mtexture;0;0;0;0
+LaserHeavyA1;Heavy Laser A1;The first heavy laser in the game, effective at energy/damage ratio, but still fires only one shot.;5;-7;1;1;6;0;LaserHeavyA1;mtexture;beam;6;0;0
+LaserGatlingA1;Gatling Laser A1;Compact laser being able to shoot multiple times in a single turn, fires all its projectiles from one side in its single turn. Great at destroying multiple unarmored and unshielded targets.;4;-4;1;1;7;0;LaserGatlingA1;mtexture;beam;1;beamrep;3
+TorpedoA1;Torpedos A1;Basic torpedo launcher. It has low damage and high energy cost, but still offers extremely efficient way on how to destroy exposed unarmored modules of the enemy in one hit as it penetrates shields easily.;6;-8;1;1;10;0;TorpedoA1;mtexture;torpdam;3;hitchance;100
+ArmorA1;Armor A1;Ultra leightweited armor that melts like a paper, acceptable defence against missiles for high maneuvrable boxships.;1;0;1;2;1;0;ArmorA1;mtexture;0;0;0;0
+ArmorA2;Armor A2;Offers reasonable protection against low tier weapons at reasonable weight, but not really strong vs heavily armed beam boxships.;2;0;1;4;4;0;ArmorA2;mtexture;0;0;0;0
+ArmorA3;Armor A3;Great armor against torpedos, quite usefull even against mediocre armed beam boxships, but quite heavy.;4;0;1;7;9;0;ArmorA3;mtexture;0;0;0;0
+ArmorA4;Armor A4;The monstrously strong armor able to survive multiple volleys of enemy fire, but extremely heavy weighted.;6;0;1;10;25;0;ArmorA4;mtexture;0;0;0;0
 ;;;;;;;;;;;;;;
