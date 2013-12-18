@@ -39,13 +39,13 @@ public class PartManager : MonoBehaviour
 	public struct Pattern
 	{
 		
-		public Pattern(string id, string name, string description, int price, int power, int hash, 
+		public Pattern(string id, string name, string description, int rarity, int power, int hash, 
 			int hp, int weight, int integrity, string model, string texture, string spec1, int spec1val, string spec2, int spec2val)
 		{
 			mID = id;
 			mName = name;
 			mDescription = description;
-			mPrice = price;
+			mRarity = rarity;
 			mPower = power;
 			mHash = hash;
 			mHp = hp;
@@ -86,7 +86,7 @@ public class PartManager : MonoBehaviour
 		public string mID {get; private set;}
 		public string mName {get; private set;}
 		public string mDescription {get; private set;}
-		public int mPrice {get; private set;}
+		public int mRarity {get; private set;}
 		public int mPower {get; private set;}
 		public int mHash {get; private set;}
 		public int mHp {get; private set;}
@@ -103,10 +103,10 @@ public class PartManager : MonoBehaviour
 	
 	List<Pattern> mPatternList = new List<Pattern>();
 	
-	public void AddPattern(string id, string name, string description, int price, int power, int hash, 
+	public void AddPattern(string id, string name, string description, int rarity, int power, int hash, 
 			int hp, int weight, int integrity, string model, string texture, string spec1, int spec1val, string spec2, int spec2val)
 	{
-		mPatternList.Add(new Pattern(id, name, description, price, power, hash, hp, weight, integrity, model, texture,
+		mPatternList.Add(new Pattern(id, name, description, rarity, power, hash, hp, weight, integrity, model, texture,
 			spec1, spec1val, spec2, spec2val));
 	}
 	
@@ -132,8 +132,9 @@ public class PartManager : MonoBehaviour
 		Invalid,
 	};
 	
-	void Initialize()
+	public void Initialize()
 	{
+		Debug.Log("Filling parts");
 		if ( mInitialized )
 		{
 			return;
@@ -151,7 +152,7 @@ public class PartManager : MonoBehaviour
 		string id;
 		string name; 
 		string description; 
-		int price; 
+		int rarity; 
 		int power;
 		int hash;
 		int hp; 
@@ -166,13 +167,13 @@ public class PartManager : MonoBehaviour
 		
 		mDataIndex = 0;
 		
-		GetLine(false, out id, out  name, out  description, out price, out power, out hash, out hp, out weight,
+		GetLine(false, out id, out  name, out  description, out rarity, out power, out hash, out hp, out weight,
 			out integrity, out model, out texture, out spec1, out spec1val, out spec2, out spec2val);
 		
-		while ( GetLine(true, out id, out  name, out  description, out price, out power, out hash, out hp, out weight,
+		while ( GetLine(true, out id, out  name, out  description, out rarity, out power, out hash, out hp, out weight,
 			out integrity, out model, out texture, out spec1, out spec1val, out spec2, out spec2val) )
 		{
-			AddPattern(id, name, description, price, power, hash, hp, weight, integrity, model, texture, spec1, spec1val, spec2, spec2val);
+			AddPattern(id, name, description, rarity, power, hash, hp, weight, integrity, model, texture, spec1, spec1val, spec2, spec2val);
 		}
 		
 		mTemplate = (GameObject)GameObject.Instantiate(Resources.Load("Modules"));
@@ -222,7 +223,7 @@ public class PartManager : MonoBehaviour
 	
 	
 	
-	bool GetLine(bool relevant, out string id, out string name, out string description, out int price, out int power, out int hash, out int hp,
+	bool GetLine(bool relevant, out string id, out string name, out string description, out int rarity, out int power, out int hash, out int hp,
 		out int weight, out int integrity, out string model, out string texture, out string spec1, out int spec1val, out string spec2, out int spec2val)
 	{
 		bool success_ = true;
@@ -230,7 +231,7 @@ public class PartManager : MonoBehaviour
 		id = mDataFile[mDataIndex++];
 		name = mDataFile[mDataIndex++];
 		description = mDataFile[mDataIndex++];
-		success_ = int.TryParse(mDataFile[mDataIndex++], out price) & success_;
+		success_ = int.TryParse(mDataFile[mDataIndex++], out rarity) & success_;
 		int.TryParse(mDataFile[mDataIndex++], out power);
 		int.TryParse(mDataFile[mDataIndex++], out hash);
 		int.TryParse(mDataFile[mDataIndex++], out hp);
@@ -251,20 +252,13 @@ public class PartManager : MonoBehaviour
 		
 /*		if ( relevant )
 		{
-			Debug.Log("Got Line" + id + ", " + name + ", " + description + ", " + price + "," + power + ","  + hash + ","  
+			Debug.Log("Got Line" + id + ", " + name + ", " + description + ", " + rarity + "," + power + ","  + hash + ","  
 			 + hp + "," + weight + "," + integrity + "," + model + "," + texture + "," + spec1 + "," + spec1val + "," + spec2 + "," + spec2val + ",");   
 		}*/
 		
 		return true;
 	}
 
-	// Use this for initialization
-	void Start () 
-	{
-		Initialize();
-		InventoryManager.GetInstance().FillInventory();
-	}
-	
 	public GameObject GetPattern(string id)
 	{
 		if ( !mInitialized )
@@ -280,6 +274,16 @@ public class PartManager : MonoBehaviour
 			}
 		}
 		return null;
+	}
+
+	public float GetRarity(int id)
+	{
+		if ( id < 0 || mPatternList.Count <= id )
+		{
+			return -1;
+		}
+
+		return mPatternList[id].mRarity;
 	}
 	
 	public GameObject GetPattern(int id)

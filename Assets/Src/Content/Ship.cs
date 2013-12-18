@@ -12,7 +12,7 @@ public class Ship : MonoBehaviour
 	private float mEnergyOverall = 0;
 	public float mEnergyProduction { get; private set;}
 	public float mMinimalConsumption = -1;
-	private float mCreditCost = 0;
+	private float mRarityOverall = 0;
 	public float mShieldCapacity {get; private set;}
 	public float mShieldRecharge {get; private set;}
 	private float mWeaponDamage = 0;
@@ -174,7 +174,9 @@ public class Ship : MonoBehaviour
 		Occupy(which.GetComponent<Part>(), which.transform.localPosition, false);
 		which.parent = null;
 		SetStats();
-		BackupShip();
+
+		MainManager.GetInstance().Backup();
+		//BackupShip();
 	}
 	
 	public void InsertPart(Transform which)
@@ -182,7 +184,9 @@ public class Ship : MonoBehaviour
 		which.parent = transform;
 		Occupy(which.GetComponent<Part>(), which.transform.localPosition, true);
 		SetStats();
-		BackupShip();
+
+		MainManager.GetInstance().Backup();
+		//BackupShip();
 	}
 	
 	public void LoadShip(FleetManager.ShipScan template)
@@ -212,9 +216,10 @@ public class Ship : MonoBehaviour
 		}
 	}
 	
-	public void RestoreShip()
+	void RestoreShip()
 	{
-//		Debug.Log ("Restoring Ship" + mShipName);
+
+		Debug.Log ("Restoring Ship" + mShipName);
 		int itemCount_ = PlayerPrefs.GetInt(mShipName+"_ShipItemCount");
 		
 		float x_, y_, z_;
@@ -226,7 +231,7 @@ public class Ship : MonoBehaviour
 			if ( part_ == null )
 			{
 				EraseShip();
-				RemoveBackup();
+				//RemoveBackup();
 				return;
 			}
 			InventoryManager.GetInstance().AddCaption(part_.GetComponent<Part>());
@@ -260,8 +265,11 @@ public class Ship : MonoBehaviour
 		_OffsetVertical = PlayerPrefs.GetInt(mShipName+"_ShipOffsetV");	
 	}
 	
-	void BackupShip()
+	public void BackupShip()
 	{
+		Debug.Log ("Backing up ship with " + transform.childCount + " kids");
+		RemoveBackup();
+
 		PlayerPrefs.SetInt(mShipName+"_ShipItemCount", transform.childCount);
 		for ( int i = 0; i<transform.childCount; ++i )
 		{
@@ -379,18 +387,23 @@ public class Ship : MonoBehaviour
 	
 	public void EraseShip()
 	{
+		Debug.Log ("Erasing ship");
 		for ( int i = 0; i < HangarManager.HANGAR_SIZE; ++i )
 		{
 			for ( int j = 0; j < HangarManager.HANGAR_SIZE; ++j )
 			{
-				mOccupied[i,j] = null;
+				if ( mOccupied[i,j] != null )
+				{
+					mOccupied[i,j].GetComponent<Part>().UpdateLocation(Part.Location.Inventory);
+					mOccupied[i,j] = null;
+				}
 			}
 		}
-		
-		RemoveBackup();
+
 		GameObject.Destroy(mStats);
-		GameObject.Destroy(transform.parent.gameObject);
-		
+		//GameObject.Destroy(transform.parent.gameObject);
+
+		MainManager.GetInstance().Backup();
 	}
 	
 	void UpdateStatsContainer()
@@ -407,7 +420,7 @@ public class Ship : MonoBehaviour
 		
 		
 		mStats.GetComponent<TextMesh>().text = 
-			"PRICE: " + mCreditCost + 
+			"RARITY: " + mRarityOverall + 
 			"\nENERGY: " + mEnergyOverall +
 			"\n MONKEY DAMAGE: " + mWeaponDamage + 
 			"\n SHIELD CAPACITY: " + mShieldCapacity + 
@@ -422,7 +435,7 @@ public class Ship : MonoBehaviour
 	
 	void ClearStats()
 	{
-		mCreditCost = 0;
+		mRarityOverall = 0;
 		mEnergyOverall = 0;
 		mEnergyProduction = 0;
 		mMass = 0;
@@ -469,7 +482,8 @@ public class Ship : MonoBehaviour
 		{
 			return;
 		}
-		mCreditCost += part.mPattern.mPrice;
+
+		mRarityOverall += part.mPattern.mRarity;
 		mMass += part.mPattern.mWeight;
 		
 		// disabled parts

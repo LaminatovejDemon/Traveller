@@ -168,16 +168,42 @@ public class Part : MonoBehaviour
 		{
 			return;
 		}
-		
-		if ( (fingerPos - _TouchLocationPosition).magnitude > 0.3f )
+
+		Vector3 fingerDelta = (fingerPos - _TouchLocationPosition);
+		fingerDelta.x = Mathf.Abs(fingerDelta.x);
+		fingerDelta.y = Mathf.Abs(fingerDelta.y);
+		fingerDelta.z = Mathf.Abs(fingerDelta.z);
+
+		if ( fingerDelta.x > GetDragThreshold() || _TouchLocation == Location.Ship ) 
 		{
+			Debug.Log ("It's draggin'" + fingerDelta);
+			DragBegin();
+		}
+		else if ( fingerDelta.y > GetDragThreshold() )
+		{
+			Debug.Log ("It's movin'" + fingerDelta);
 			ResetTouchLocation();
+		}
+
+	}
+
+	float GetDragThreshold()
+	{
+		float ret_ = 30.0f;
+		return ret_;
+	}
+
+	void CheckClick(Vector3 position)
+	{
+		if ( _TouchLocationTimeStamp == -1 )
+		{
 			return;
 		}
-		
-		if ( Time.time - _TouchLocationTimeStamp  > 0.2f )
+
+		if ( (position - _TouchLocationPosition).magnitude < GetDragThreshold() && Time.time - _TouchLocationTimeStamp < 0.4f )
 		{
-			DragBegin();
+			Debug.Log ("Click");
+			ResetTouchLocation();
 		}
 	}
 	
@@ -271,7 +297,7 @@ public class Part : MonoBehaviour
 		MainManager.GetInstance().AttachListner(gameObject);
 		
 		mDragFingerID = fingerID;
-		SetTouchLocation(mLocation, MainManager.GetInstance().GetWorldPos(fingerID));	
+		SetTouchLocation(mLocation, MainManager.GetInstance().GetScreenPos(fingerID));	
 	}
 	
 	int mBoundaryHeight = 0;
@@ -299,7 +325,7 @@ public class Part : MonoBehaviour
 		}
 		else
 		{
-			CheckTouchLocation(MainManager.GetInstance().GetWorldPos(fingerID));
+			CheckTouchLocation(MainManager.GetInstance().GetScreenPos(fingerID));
 		}
 	}
 	
@@ -316,18 +342,24 @@ public class Part : MonoBehaviour
 		{
 			DragEnd();
 		}
+		else
+		{
+			CheckClick(MainManager.GetInstance().GetScreenPos(fingerID));
+		}
 		
 		ResetTouchLocation();
 		
 		mDragFingerID = -1;
 	}
 	
-	void UpdateLocation(Location newLocation_)
+	public void UpdateLocation(Location newLocation_)
 	{
 		if ( newLocation_ == mLocation )
 		{
 			return;
 		}
+
+		Debug.Log ("Updating location");
 		
 		mLocation = newLocation_;
 		
@@ -337,7 +369,7 @@ public class Part : MonoBehaviour
 				FleetManager.GetShip().InsertPart(transform);
 				break;
 			case Location.Inventory:
-				InventoryManager.GetInstance().InsertPart(transform);
+				InventoryManager.GetInstance().InsertPart(gameObject);
 				break;
 		}
 	}

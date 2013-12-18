@@ -35,9 +35,16 @@ public class ScrollingPanel : MonoBehaviour
 		transform.rotation = _Camera.transform.rotation;
 		transform.position = Camera.main.ViewportToWorldPoint(Vector3.up) + Vector3.right * 1.0f + Vector3.back * 1.0f;
 	}
+
+	bool _Initialized = false;
 	
-	void Start()
+	public void Initialize()
 	{
+		if ( _Initialized )
+		{
+			return;
+		}
+
 		if ( _Container == null )
 		{
 			_Container = gameObject;
@@ -74,6 +81,8 @@ public class ScrollingPanel : MonoBehaviour
 		
 		LimitTargetContainerPosition();
 		_ContentContainer.transform.localPosition = mTargetContainerPosition;
+
+		_Initialized = true;
 	}
 	
 	void Refresh()
@@ -91,7 +100,9 @@ public class ScrollingPanel : MonoBehaviour
 			_RefreshNow = false;
 			Refresh();
 		}
-		
+
+		Initialize();
+
 		if ( mDragFinger != -1 ) 
 		{
 			_ContentContainer.transform.localPosition = mTargetContainerPosition;

@@ -9,12 +9,13 @@ public class MainManager : MonoBehaviour {
 	public CameraHandler _EnemyCamera;
 	public Camera _InventoryCamera;
 	public Camera _GUICamera;
+	public PlayerData _PlayerData;
 	
 	private static MainManager mInstance = null;
 	
-	Vector3 [] mFingerPositions = new Vector3[10];
 	Vector3 [] mFingerWorldPositions = new Vector3[10];
-	
+	Vector3 [] mFingerScreenPos = new Vector3[10];
+
 	List<GameObject> mTouchListeners = new List<GameObject>();
 	
 	public static MainManager GetInstance()
@@ -32,15 +33,47 @@ public class MainManager : MonoBehaviour {
 	
 	void Start () 
 	{
+		//PlayerPrefs.DeleteAll();
+
 		name = "#MainManager";
-		
-		PartManager.GetInstance();
-	//	NetworkManager.GetInstance();
+
 		InventoryManager.GetInstance();
+		PartManager.GetInstance().Initialize();
+		InventoryManager.GetInstance().Initialize();
+	//	NetworkManager.GetInstance();
 		HangarManager.GetInstance();
 		BattleManager.GetInstance();
 		FleetManager.GetInstance();
-		
+
+		RestorePlayer();
+
+	}
+
+	bool _BackupDirty = true;
+
+	public void Backup()
+	{
+		_BackupDirty = true;
+	}
+
+	void BackupUpdate()
+	{
+		if ( _BackupDirty )
+		{
+			FleetManager.GetShip().BackupShip();
+			BackupPlayer();
+			_BackupDirty = false;
+		}
+	}
+	
+	void BackupPlayer()
+	{
+		_PlayerData.Backup();
+	}
+
+	void RestorePlayer()
+	{
+		_PlayerData.Restore();
 	}
 	
 	Ray mDebugRayInventory;
@@ -57,46 +90,53 @@ public class MainManager : MonoBehaviour {
 	
 	void TouchBegin(int fingerID, Vector3 position)
 	{
-		mFingerPositions[fingerID] = position;
+		SetScreenPos(fingerID, position);
 
-		CheckTouchDown(_GUICamera, fingerID, position, out mDebugRayGUI);
-		CheckTouchDown(_InventoryCamera, fingerID, position, out mDebugRayInventory);
-		CheckTouchDown(_HangarCamera._RealCamera, fingerID, position, out mDebugRayHangar);
+		CheckTouchDown(_GUICamera, fingerID, position, ref mDebugRayGUI, true);
+		CheckTouchDown(_InventoryCamera, fingerID, position, ref mDebugRayInventory, true);
+		CheckTouchDown(_HangarCamera._RealCamera, fingerID, position, ref mDebugRayHangar);
 
 	}
 
-	void CheckTouchDown(Camera cam, int fingerID, Vector3 position, out Ray ray)
+	void CheckTouchDown(Camera cam, int fingerID, Vector3 position, ref Ray ray, bool allCast = false)
 	{
+		if ( cam == null )
+		{
+			return;
+		}
+
 		Vector3 touchPos_ = cam.ScreenToWorldPoint(position);
 		ray = new Ray(touchPos_ - cam.transform.forward * 50.0f, cam.transform.forward);
-		
+
+		SetScreenPos(fingerID, position);
 		SetWorldPos(fingerID, position);
 		RaycastHit hit_;
 
-		/*
-		RaycastHit [] hits = Physics.RaycastAll(ray, 200, 1 << cam.gameObject.layer);
-		for ( int i = 0; i < hits.Length; ++i )
+		if ( allCast )
 		{
-			Debug.Log ("We hit " + hits[i].collider.gameObject.name);
-			hits[i].collider.gameObject.SendMessage("OnTouchDown", fingerID, SendMessageOptions.DontRequireReceiver);
+			RaycastHit [] hits = Physics.RaycastAll(ray, 200, 1 << cam.gameObject.layer);
+			for ( int i = 0; i < hits.Length; ++i )
+			{
+				hits[i].collider.gameObject.SendMessage("OnTouchDown", fingerID, SendMessageOptions.DontRequireReceiver);
+			}
 		}
-		/*/
-		if ( Physics.Raycast(ray, out hit_, 200, 1 << cam.gameObject.layer) )
+		else
 		{
-			Debug.Log (cam.name + " hit " + hit_.collider.gameObject.name);
-			hit_.collider.gameObject.SendMessage("OnTouchDown", fingerID, SendMessageOptions.DontRequireReceiver);
+			if ( Physics.Raycast(ray, out hit_, 200, 1 << cam.gameObject.layer) )
+			{
+				hit_.collider.gameObject.SendMessage("OnTouchDown", fingerID, SendMessageOptions.DontRequireReceiver);
+			}
 		}
-		//*/
 	}
-	
-	public Vector3 GetPos(int fingerID)
-	{
-		return mFingerPositions[fingerID];
-	}
-	
+
 	public Vector3 GetWorldPos(int fingerID)
 	{
 		return mFingerWorldPositions[fingerID];
+	}
+
+	public Vector3 GetScreenPos(int fingerID)
+	{
+		return mFingerScreenPos[fingerID];
 	}
 	
 	public void AttachListner(GameObject who)
@@ -115,13 +155,18 @@ public class MainManager : MonoBehaviour {
 		Vector3 pointB_ = Camera.main.ScreenToWorldPoint(position + Vector3.forward * 1.0f);
 		Vector3 normalized_ = (pointA_ - pointB_).normalized;		
 		mFingerWorldPositions[fingerID] = -(normalized_ / normalized_.y) * pointA_.y + pointA_;
-		
+	}
+
+	void SetScreenPos(int fingerID, Vector3 position)
+	{
+		mFingerScreenPos[fingerID] = position;
 	}
 
 	void TouchMoved(int fingerID, Vector3 position)
 	{
-		mFingerPositions[fingerID] = position;
-		
+		//mFingerPositions[fingerID] = position;
+
+		SetScreenPos(fingerID, position);
 		SetWorldPos(fingerID, position);
 		
 		for ( int i = 0; i < mTouchListeners.Count; ++i )
@@ -139,11 +184,8 @@ public class MainManager : MonoBehaviour {
 	
 	void TouchEnded(int fingerID, Vector3 position)
 	{
-		mFingerPositions[fingerID] = position;
-		Vector3 pointA_ = Camera.main.ScreenToWorldPoint(position);
-		Vector3 pointB_ = Camera.main.ScreenToWorldPoint(position + Vector3.forward * 1.0f);
-		Vector3 normalized_ = (pointA_ - pointB_).normalized;		
-		mFingerWorldPositions[fingerID] = -(normalized_ / normalized_.y) * pointA_.y + pointA_;
+		SetScreenPos(fingerID, position);
+		SetWorldPos(fingerID, position);
 		
 		for ( int i = 0; i < mTouchListeners.Count; ++i )
 		{
@@ -163,7 +205,7 @@ public class MainManager : MonoBehaviour {
 	
 	void Update () 
 	{
-		
+		BackupUpdate();
 #if UNITY_EDITOR
 		if ( Input.GetMouseButtonDown(0) )
 		{
