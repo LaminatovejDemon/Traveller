@@ -134,8 +134,12 @@ public class HangarManager : ButtonHandler
 	{
 		MainManager.GetInstance()._HangarCamera.OnFinished(gameObject, "ShowHangarFinished");
 		MainManager.GetInstance()._HangarCamera.Show(FleetManager.GetShip().transform);	
+
+		//sort order
 		MainManager.GetInstance()._InventoryCamera.enabled = false;
 		MainManager.GetInstance()._InventoryCamera.enabled = true;
+		MainManager.GetInstance()._GUICamera.enabled = false;
+		MainManager.GetInstance()._GUICamera.enabled = true;
 	}
 
 	void AnimateShipEntry(bool state)

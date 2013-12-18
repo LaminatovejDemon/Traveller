@@ -92,18 +92,24 @@ public class MainManager : MonoBehaviour {
 	{
 		SetScreenPos(fingerID, position);
 
-		CheckTouchDown(_GUICamera, fingerID, position, ref mDebugRayGUI, true);
+		if ( CheckTouchDown(_GUICamera, fingerID, position, ref mDebugRayGUI) )
+		{
+			return;
+		}
+
 		CheckTouchDown(_InventoryCamera, fingerID, position, ref mDebugRayInventory, true);
 		CheckTouchDown(_HangarCamera._RealCamera, fingerID, position, ref mDebugRayHangar);
 
 	}
 
-	void CheckTouchDown(Camera cam, int fingerID, Vector3 position, ref Ray ray, bool allCast = false)
+	bool CheckTouchDown(Camera cam, int fingerID, Vector3 position, ref Ray ray, bool allCast = false)
 	{
 		if ( cam == null )
 		{
-			return;
+			return false;
 		}
+
+		bool ret_ = false;
 
 		Vector3 touchPos_ = cam.ScreenToWorldPoint(position);
 		ray = new Ray(touchPos_ - cam.transform.forward * 50.0f, cam.transform.forward);
@@ -111,22 +117,24 @@ public class MainManager : MonoBehaviour {
 		SetScreenPos(fingerID, position);
 		SetWorldPos(fingerID, position);
 		RaycastHit hit_;
+		int layerMask_ = 1 << cam.gameObject.layer;
 
 		if ( allCast )
 		{
-			RaycastHit [] hits = Physics.RaycastAll(ray, 200, 1 << cam.gameObject.layer);
+			RaycastHit [] hits = Physics.RaycastAll(ray, 200, layerMask_ );
 			for ( int i = 0; i < hits.Length; ++i )
 			{
 				hits[i].collider.gameObject.SendMessage("OnTouchDown", fingerID, SendMessageOptions.DontRequireReceiver);
+				ret_ = true;
 			}
 		}
-		else
+		else if ( Physics.Raycast(ray, out hit_, 200, layerMask_) )
 		{
-			if ( Physics.Raycast(ray, out hit_, 200, 1 << cam.gameObject.layer) )
-			{
-				hit_.collider.gameObject.SendMessage("OnTouchDown", fingerID, SendMessageOptions.DontRequireReceiver);
-			}
+			hit_.collider.gameObject.SendMessage("OnTouchDown", fingerID, SendMessageOptions.DontRequireReceiver);
+			ret_ = true;
 		}
+
+		return ret_;
 	}
 
 	public Vector3 GetWorldPos(int fingerID)

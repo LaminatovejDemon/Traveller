@@ -303,7 +303,6 @@ public class FleetManager : MonoBehaviour
 		//PlayerPrefs.SetInt("ScanShipCount", 0);
 		RestoreScans();
 		
-		Debug.Log ("Restored " + mShipScanList.Count + " ships");
 		GetShip();
 	}
 	

@@ -219,7 +219,6 @@ public class Ship : MonoBehaviour
 	void RestoreShip()
 	{
 
-		Debug.Log ("Restoring Ship" + mShipName);
 		int itemCount_ = PlayerPrefs.GetInt(mShipName+"_ShipItemCount");
 		
 		float x_, y_, z_;
@@ -267,7 +266,6 @@ public class Ship : MonoBehaviour
 	
 	public void BackupShip()
 	{
-		Debug.Log ("Backing up ship with " + transform.childCount + " kids");
 		RemoveBackup();
 
 		PlayerPrefs.SetInt(mShipName+"_ShipItemCount", transform.childCount);

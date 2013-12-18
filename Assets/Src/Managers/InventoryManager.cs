@@ -75,7 +75,6 @@ public class InventoryManager : MonoBehaviour
 	// We don't want to override backup after restoring first modul of ship and inserting into, that's backup parameter
 	void InsertPart(string patternID)
 	{
-		Debug.Log ("!!! Inserting part " + patternID);
 		GameObject new_ = PartManager.GetInstance().GetPattern(patternID);
 		
 		InsertPart(new_);
@@ -83,7 +82,6 @@ public class InventoryManager : MonoBehaviour
 	
 	public void InsertPart(GameObject partObject)
 	{
-		Debug.Log ("inserting part " + partObject);
 		int index_ = GetFreeIndex();
 		
 		if ( index_ == -1 )
@@ -97,8 +95,7 @@ public class InventoryManager : MonoBehaviour
 
 		partObject.transform.parent = _ScrollingPanel._ContentContainer;
 		partObject.name = "Transformed_" + partObject.name;
-		Debug.Log ("parent of " + partObject + " is " + partObject.transform.parent);
-		//BackupInventory();
+	
 		SortInventory();
 		MainManager.GetInstance().Backup();
 	}
@@ -238,7 +235,6 @@ public class InventoryManager : MonoBehaviour
 	{
 		ClearBackup();
 
-		Debug.Log ("Backing up inventory...");
 		int count_ = 0;
 		for ( int i = 0; i < mInventoryList.Count; ++i )
 		{
@@ -246,7 +242,6 @@ public class InventoryManager : MonoBehaviour
 			{
 				continue;
 			}
-			Debug.Log ("\tSaving pattern" + mInventoryList[i].GetComponent<Part>().mPattern.mID);
 			PlayerPrefs.SetString("Player_Inventory_"+count_+"_id", mInventoryList[i].GetComponent<Part>().mPattern.mID);
 			count_++;
 		}
@@ -257,14 +252,11 @@ public class InventoryManager : MonoBehaviour
 	public void RestoreInventory()
 	{
 		ClearInventory();
-		Debug.Log ("Restoring inventory...");
 		int count_ = PlayerPrefs.GetInt("Player_InventoryCount");
 		for ( int i = 0; i < count_; ++i )
 		{
 			string patternID_ = PlayerPrefs.GetString("Player_Inventory_"+i+"_id");
-			Debug.Log ("\tRestoring pattern" + patternID_);
 			InsertPart(patternID_);
 		}
-		Debug.Log("Restoring done.");
 	}
 }

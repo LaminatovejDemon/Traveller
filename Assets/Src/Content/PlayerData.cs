@@ -13,7 +13,6 @@ public class PlayerData : MonoBehaviour
 
 	public void Restore()
 	{
-		Debug.Log("REstoring player Data");
 		_AchievedRarity = PlayerPrefs.GetInt("Player_AchievedRarity");
 		//_AchievedRarity = 0;
 

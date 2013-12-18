@@ -203,6 +203,7 @@ public class Part : MonoBehaviour
 		if ( (position - _TouchLocationPosition).magnitude < GetDragThreshold() && Time.time - _TouchLocationTimeStamp < 0.4f )
 		{
 			Debug.Log ("Click");
+			PopupManager.GetInstance().CreatePartPopup(gameObject, mPattern);
 			ResetTouchLocation();
 		}
 	}

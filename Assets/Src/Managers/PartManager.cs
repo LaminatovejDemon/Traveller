@@ -134,7 +134,6 @@ public class PartManager : MonoBehaviour
 	
 	public void Initialize()
 	{
-		Debug.Log("Filling parts");
 		if ( mInitialized )
 		{
 			return;
@@ -337,5 +336,65 @@ public class PartManager : MonoBehaviour
 		
 		
 		return container_;
+	}
+
+	public string GetEnergyLabel(Pattern pattern)
+	{
+		if ( pattern.mPower == 0 )
+		{
+			return "";
+		}
+
+		return pattern.mPower > 0 ? "Produces: " + pattern.mPower + "E\n" : "Consumes: " + (-pattern.mPower) + "E\n"; 
+	}
+
+	public string GetEvadeLabel(Pattern pattern)
+	{
+		Ability evade_ = pattern.GetAbility(AbilityType.Evade);
+
+		if ( evade_ == null )
+		{
+			return "";
+		}
+		
+		return "Evade Power: " + evade_.mValue + "GWatt\n";
+	}
+
+	public string GetHPLabel(Pattern pattern)
+	{
+		return "Armor: " + pattern.mHp + "HU\n";
+	}
+
+	public string GetDamageLabel(Pattern pattern)
+	{
+		string damage_ = "";
+		string amount_ = "";
+		string torpedo_ = "";
+
+		Ability beamAbility_ = pattern.GetAbility(AbilityType.Beam);
+		Ability torpedoAbility_ = pattern.GetAbility(AbilityType.TorpedoDamage);
+		Ability repeaterAbility_ = pattern.GetAbility(AbilityType.BeamRepeater);
+
+		if ( repeaterAbility_ != null )
+		{
+			amount_ = " (3x)";
+		}
+
+		if ( beamAbility_ != null )
+		{
+			damage_ += beamAbility_.mValue + amount_ + "\n";
+		}
+
+		if ( torpedoAbility_ != null )
+		{
+			damage_ += torpedoAbility_.mValue + amount_ + " (Shield Piercing)\n";
+		}
+
+		if ( damage_ == "" )
+		{
+			return "";
+		}
+
+		return "Damage: " + damage_;
 	}
 }

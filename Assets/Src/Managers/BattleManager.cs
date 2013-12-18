@@ -55,7 +55,6 @@ public class BattleManager : ButtonHandler
 		//mDefender.RemoveDestroyedParts();
 		//CheckStats();
 		//TurnEnded();
-		
 	}
 	
 	public void TurnEnded()
@@ -73,7 +72,6 @@ public class BattleManager : ButtonHandler
 	{
 		if ( !mAttacker.IsAlive() || !mDefender.IsAlive() )
 		{
-			
 			_TurnButtonSlider.SlideIn = false;
 			HangarManager.GetInstance()._OpenButtonContainerSlider.SlideIn = true;
 			_OpenHangarButton.Visible = true;	
@@ -115,7 +113,6 @@ public class BattleManager : ButtonHandler
 		// Dummy instead of ship itself
 		//MainManager.GetInstance()._BattleCamera.Show(FleetManager.GetShip().transform);
 		MainManager.GetInstance()._BattleCamera.Show(PlayerShip_.transform.parent);
-			
 		MainManager.GetInstance()._EnemyCamera.Show(NPCShip_.transform.parent);
 		
 		//FleetManager.GetShip().DebugRotate = true;

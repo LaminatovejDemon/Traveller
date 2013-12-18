@@ -15,6 +15,41 @@ public class Utils : MonoBehaviour
 		
 		return source + (target - source) * relativeAddition;
 	}
+
+	public static Vector3 ScalarDivide(Vector3 above, Vector3 below)
+	{
+		Vector3 ret_ = above;
+		ret_.x /= below.x;
+		ret_.y /= below.y;
+		ret_.z /= below.z;
+
+		return ret_;
+	}
+
+	public static Vector3 ScalarMultiply(Vector3 left, Vector3 right)
+	{
+		Vector3 ret_ = left;
+		ret_.x *= right.x;
+		ret_.y *= right.y;
+		ret_.z *= right.z;
+		
+		return ret_;
+	}
+
+	public static void SetColissionEnabled(Transform parent, bool state)
+	{
+		for ( int i = 0; i < parent.childCount; ++i )
+		{
+			SetColissionEnabled(parent.GetChild(i), state);
+		}
+
+		Collider collider_ = parent.gameObject.GetComponent<Collider>();
+		if ( collider_ != null )
+		{
+			collider_.enabled = state;
+		}
+	}
+
 	
 	public static void SetLayer(Transform parent, int layer)
 	{
