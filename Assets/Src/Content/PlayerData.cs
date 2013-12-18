@@ -67,6 +67,7 @@ public class PlayerData : MonoBehaviour
 		PlayerPrefs.DeleteAll();
 		_AchievedRarity = 0;
 
+		FleetManager.GetInstance().AddTutorialShip();
 		Restore();
 	}
 }

@@ -45,7 +45,8 @@ public class Ship : MonoBehaviour
 		return mOccupied[x,y];
 	}
 	
-	public string mShipName {get; private set;}
+	public string _ShipName;
+
 	bool mInitialized = false;
 	
 	void ClearHangar()
@@ -111,7 +112,7 @@ public class Ship : MonoBehaviour
 		CreateContainer(name);
 		_BattleComputer = gameObject.AddComponent<BattleComputer>();	
 		
-		mShipName = name;
+		_ShipName = name;
 		
 		ClearHangar();
 		_Shield = gameObject.AddComponent<Shield>();
@@ -191,7 +192,9 @@ public class Ship : MonoBehaviour
 	
 	public void LoadShip(FleetManager.ShipScan template)
 	{
-		mShipName = template.mName;
+		Debug.Log ("loading ship" + template.mName);
+
+		_ShipName = template.mName;
 		
 		if (PlayerPrefs.GetInt(template.mName+"_ShipItemCount") > 0 )
 		{
@@ -204,6 +207,7 @@ public class Ship : MonoBehaviour
 			for ( int i = 0; i < itemCount_; ++i )
 			{
 				//GameObject part_ = PartManager.GetInstance().GetPattern(template.mPartList[i].mPattern.mID);
+
 				GameObject part_ = PartManager.GetInstance().GetPattern(template.mPartList[i].mPatternID);
 				part_.transform.parent = transform;
 				part_.name = i + "_" + part_.name;
@@ -219,14 +223,14 @@ public class Ship : MonoBehaviour
 	void RestoreShip()
 	{
 
-		int itemCount_ = PlayerPrefs.GetInt(mShipName+"_ShipItemCount");
+		int itemCount_ = PlayerPrefs.GetInt(_ShipName+"_ShipItemCount");
 		
 		float x_, y_, z_;
 		int order_;
 		
 		for ( int i = 0; i < itemCount_; ++i )
 		{
-			GameObject part_ = PartManager.GetInstance().GetPattern(PlayerPrefs.GetString(mShipName+"_ShipPartID_"+i));
+			GameObject part_ = PartManager.GetInstance().GetPattern(PlayerPrefs.GetString(_ShipName+"_ShipPartID_"+i));
 			if ( part_ == null )
 			{
 				EraseShip();
@@ -238,10 +242,10 @@ public class Ship : MonoBehaviour
 			
 			part_.transform.parent = transform;
 			
-			x_ = PlayerPrefs.GetFloat(mShipName+"_ShipPartPosX_"+i);
-			y_ = PlayerPrefs.GetFloat(mShipName+"_ShipPartPosY_"+i);
-			z_ = PlayerPrefs.GetFloat(mShipName+"_ShipPartPosZ_"+i);
-			order_ = PlayerPrefs.GetInt(mShipName+"_ShipPartOrder_"+i);
+			x_ = PlayerPrefs.GetFloat(_ShipName+"_ShipPartPosX_"+i);
+			y_ = PlayerPrefs.GetFloat(_ShipName+"_ShipPartPosY_"+i);
+			z_ = PlayerPrefs.GetFloat(_ShipName+"_ShipPartPosZ_"+i);
+			order_ = PlayerPrefs.GetInt(_ShipName+"_ShipPartOrder_"+i);
 			
 			part_.name = order_ + "_" + part_.name;
 			part_.transform.localPosition = new Vector3(x_,y_,z_);
@@ -253,62 +257,62 @@ public class Ship : MonoBehaviour
 		}
 		SetStats();
 		
-		x_ = PlayerPrefs.GetFloat(mShipName+"_ShipCenterX");
-		y_ = PlayerPrefs.GetFloat(mShipName+"_ShipCenterY");
-		z_ = PlayerPrefs.GetFloat(mShipName+"_ShipCenterZ");
+		x_ = PlayerPrefs.GetFloat(_ShipName+"_ShipCenterX");
+		y_ = PlayerPrefs.GetFloat(_ShipName+"_ShipCenterY");
+		z_ = PlayerPrefs.GetFloat(_ShipName+"_ShipCenterZ");
 		mShipCenter = new Vector3(x_, y_, z_);
 		
-		_BoundaryHorizontal = PlayerPrefs.GetInt(mShipName+"_ShipBoundaryH");
-		_BoundaryVertical = PlayerPrefs.GetInt(mShipName+"_ShipBoundaryV");
-		_OffsetHorizontal = PlayerPrefs.GetInt(mShipName+"_ShipOffsetH");
-		_OffsetVertical = PlayerPrefs.GetInt(mShipName+"_ShipOffsetV");	
+		_BoundaryHorizontal = PlayerPrefs.GetInt(_ShipName+"_ShipBoundaryH");
+		_BoundaryVertical = PlayerPrefs.GetInt(_ShipName+"_ShipBoundaryV");
+		_OffsetHorizontal = PlayerPrefs.GetInt(_ShipName+"_ShipOffsetH");
+		_OffsetVertical = PlayerPrefs.GetInt(_ShipName+"_ShipOffsetV");	
 	}
 	
 	public void BackupShip()
 	{
 		RemoveBackup();
 
-		PlayerPrefs.SetInt(mShipName+"_ShipItemCount", transform.childCount);
+		PlayerPrefs.SetInt(_ShipName+"_ShipItemCount", transform.childCount);
 		for ( int i = 0; i<transform.childCount; ++i )
 		{
-			PlayerPrefs.SetString(mShipName+"_ShipPartID_"+i,transform.GetChild(i).GetComponent<Part>().mPattern.mID);
+			PlayerPrefs.SetString(_ShipName+"_ShipPartID_"+i,transform.GetChild(i).GetComponent<Part>().mPattern.mID);
 			int order_ = int.Parse(transform.GetChild(i).name.Split('_')[0]);
-			PlayerPrefs.SetInt(mShipName+"_ShipPartOrder_"+i, order_);
-			PlayerPrefs.SetFloat(mShipName+"_ShipPartPosX_"+i,transform.GetChild(i).localPosition.x);
-			PlayerPrefs.SetFloat(mShipName+"_ShipPartPosY_"+i,transform.GetChild(i).localPosition.y);
-			PlayerPrefs.SetFloat(mShipName+"_ShipPartPosZ_"+i,transform.GetChild(i).localPosition.z);
+			PlayerPrefs.SetInt(_ShipName+"_ShipPartOrder_"+i, order_);
+			PlayerPrefs.SetFloat(_ShipName+"_ShipPartPosX_"+i,transform.GetChild(i).localPosition.x);
+			PlayerPrefs.SetFloat(_ShipName+"_ShipPartPosY_"+i,transform.GetChild(i).localPosition.y);
+			PlayerPrefs.SetFloat(_ShipName+"_ShipPartPosZ_"+i,transform.GetChild(i).localPosition.z);
 		}
-		PlayerPrefs.SetFloat(mShipName+"_ShipCenterX",mShipCenter.x);
-		PlayerPrefs.SetFloat(mShipName+"_ShipCenterY",mShipCenter.y);
-		PlayerPrefs.SetFloat(mShipName+"_ShipCenterZ",mShipCenter.z);
+		PlayerPrefs.SetFloat(_ShipName+"_ShipCenterX",mShipCenter.x);
+		PlayerPrefs.SetFloat(_ShipName+"_ShipCenterY",mShipCenter.y);
+		PlayerPrefs.SetFloat(_ShipName+"_ShipCenterZ",mShipCenter.z);
 		
-		PlayerPrefs.SetInt(mShipName+"_ShipBoundaryH",_BoundaryHorizontal);
-		PlayerPrefs.SetInt(mShipName+"_ShipBoundaryV",_OffsetVertical);
-		PlayerPrefs.SetInt(mShipName+"_ShipOffsetH",_OffsetHorizontal);
-		PlayerPrefs.SetInt(mShipName+"_ShipOffsetV",_OffsetVertical);
+		PlayerPrefs.SetInt(_ShipName+"_ShipBoundaryH",_BoundaryHorizontal);
+		PlayerPrefs.SetInt(_ShipName+"_ShipBoundaryV",_OffsetVertical);
+		PlayerPrefs.SetInt(_ShipName+"_ShipOffsetH",_OffsetHorizontal);
+		PlayerPrefs.SetInt(_ShipName+"_ShipOffsetV",_OffsetVertical);
 	}
 	
 	void RemoveBackup()
 	{
-		int count_ = PlayerPrefs.GetInt(mShipName+"_ShipItemCount");
+		int count_ = PlayerPrefs.GetInt(_ShipName+"_ShipItemCount");
 		
 		for ( int i = 0; i < count_; ++i )
 		{
-			PlayerPrefs.DeleteKey(mShipName+"_ShipPartID_"+i);
-			PlayerPrefs.DeleteKey(mShipName+"_ShipPartOrder_"+i);
-			PlayerPrefs.DeleteKey(mShipName+"_ShipPartPosX_"+i);
-			PlayerPrefs.DeleteKey(mShipName+"_ShipPartPosY_"+i);
-			PlayerPrefs.DeleteKey(mShipName+"_ShipPartPosZ_"+i);
+			PlayerPrefs.DeleteKey(_ShipName+"_ShipPartID_"+i);
+			PlayerPrefs.DeleteKey(_ShipName+"_ShipPartOrder_"+i);
+			PlayerPrefs.DeleteKey(_ShipName+"_ShipPartPosX_"+i);
+			PlayerPrefs.DeleteKey(_ShipName+"_ShipPartPosY_"+i);
+			PlayerPrefs.DeleteKey(_ShipName+"_ShipPartPosZ_"+i);
 		}
-		PlayerPrefs.DeleteKey(mShipName+"_ShipItemCount");
-		PlayerPrefs.DeleteKey(mShipName+"_ShipCenterX");
-		PlayerPrefs.DeleteKey(mShipName+"_ShipCenterY");
-		PlayerPrefs.DeleteKey(mShipName+"_ShipCenterZ");
+		PlayerPrefs.DeleteKey(_ShipName+"_ShipItemCount");
+		PlayerPrefs.DeleteKey(_ShipName+"_ShipCenterX");
+		PlayerPrefs.DeleteKey(_ShipName+"_ShipCenterY");
+		PlayerPrefs.DeleteKey(_ShipName+"_ShipCenterZ");
 		
-		PlayerPrefs.DeleteKey(mShipName+"_ShipBoundaryH");
-		PlayerPrefs.DeleteKey(mShipName+"_ShipBoundaryV");
-		PlayerPrefs.DeleteKey(mShipName+"_ShipOffsetH");
-		PlayerPrefs.DeleteKey(mShipName+"_ShipOffsetV");
+		PlayerPrefs.DeleteKey(_ShipName+"_ShipBoundaryH");
+		PlayerPrefs.DeleteKey(_ShipName+"_ShipBoundaryV");
+		PlayerPrefs.DeleteKey(_ShipName+"_ShipOffsetH");
+		PlayerPrefs.DeleteKey(_ShipName+"_ShipOffsetV");
 	}
 	
 	// Use this for initialization
@@ -385,7 +389,6 @@ public class Ship : MonoBehaviour
 	
 	public void EraseShip()
 	{
-		Debug.Log ("Erasing ship");
 		for ( int i = 0; i < HangarManager.HANGAR_SIZE; ++i )
 		{
 			for ( int j = 0; j < HangarManager.HANGAR_SIZE; ++j )
@@ -420,7 +423,7 @@ public class Ship : MonoBehaviour
 		mStats.GetComponent<TextMesh>().text = 
 			"RARITY: " + mRarityOverall + 
 			"\nENERGY: " + mEnergyOverall +
-			"\n MONKEY DAMAGE: " + mWeaponDamage + 
+			"\n ACTIVE DAMAGE: " + mWeaponDamage + 
 			"\n SHIELD CAPACITY: " + mShieldCapacity + 
 			"\n SHIELD RECHARGE: " + mShieldRecharge +
 			"\n MASS: " + mMass +

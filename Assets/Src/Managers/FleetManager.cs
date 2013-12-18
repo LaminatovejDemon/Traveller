@@ -76,6 +76,7 @@ public class FleetManager : MonoBehaviour
 		int scanCount_ = PlayerPrefs.GetInt("ScanShipCount");
 		
 		int order_ = Random.Range(1, scanCount_);
+		//int order_ = 1;
 		Debug.Log ("Getting some scan ScannedShip_" + order_);
 		return mShipScanList["ScannedShip_"+order_];
 	}
@@ -89,10 +90,14 @@ public class FleetManager : MonoBehaviour
 	
 	public ShipScan GetDuplicate(Ship ship)
 	{
+		Debug.Log ("Getting duplicate of " + ship);
+
 		int scanCount_ = PlayerPrefs.GetInt("ScanShipCount");
+		Debug.Log("ScanShipCount is " + scanCount_);
+
 		for ( int i = 1; i < scanCount_+1; ++ i )
 		{
-			if ( IsMatching(ship, mShipScanList["ScannedShip_" + i]) )
+			if ( mShipScanList.ContainsKey("ScannedShip_" + i) && IsMatching(ship, mShipScanList["ScannedShip_" + i]) )
 			{
 				return mShipScanList["ScannedShip_" + i];
 			}
@@ -104,6 +109,12 @@ public class FleetManager : MonoBehaviour
 	public void DeleteAllScans()
 	{
 		mShipScanList.Clear();
+		PlayerPrefs.SetInt("ScanShipCount", 0);
+	}
+
+	public void AddTutorialShip()
+	{
+	//	ScanShip((GameObject)Resources.Load("Gameplay/TutorialShip", typeof(GameObject)));
 	}
 	
 	public bool IsMatching(Ship ship, ShipScan scan)
@@ -170,7 +181,9 @@ public class FleetManager : MonoBehaviour
 		}
 		
 		BackupScan(new_, scanCount_+1);
-		
+
+		Debug.Log("Adding ship into list: " + new_.mName);
+
 		mShipScanList.Add(new_.mName, new_);
 		
 		mPlayerShipName = new_.mName;
@@ -218,6 +231,7 @@ public class FleetManager : MonoBehaviour
 	
 	void BackupScan(ShipScan scan, int lastIndex)
 	{
+		Debug.Log("Setting ship count" + lastIndex);
 		PlayerPrefs.SetInt("ScanShipCount", lastIndex);
 		
 		PlayerPrefs.SetFloat(scan.mName+"_centerX", scan.mCenter.x);

@@ -19,6 +19,17 @@ public class ScrollingPanel : MonoBehaviour
 	float[]  		mHistoryTimestamp = new float[10];
 	Vector3[]		mHistoryPosition = new Vector3[10];
 	int mHistoryIndex = 0;
+
+	public void Clear()
+	{
+		if ( _ContentContainer == null )
+		{
+			return;
+		}
+
+		_ContentContainer.transform.DetachChildren();
+
+	}
 	
 	public bool IsWithin(Vector3 worldCoordintates)
 	{

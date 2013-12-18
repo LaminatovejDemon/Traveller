@@ -176,13 +176,11 @@ public class Part : MonoBehaviour
 
 		if ( fingerDelta.x > GetDragThreshold() || _TouchLocation == Location.Ship ) 
 		{
-			Debug.Log ("It's draggin'" + fingerDelta);
 			DragBegin();
 		}
 		else if ( fingerDelta.y > GetDragThreshold() )
 		{
-			Debug.Log ("It's movin'" + fingerDelta);
-			ResetTouchLocation();
+				ResetTouchLocation();
 		}
 
 	}
@@ -360,8 +358,6 @@ public class Part : MonoBehaviour
 			return;
 		}
 
-		Debug.Log ("Updating location");
-		
 		mLocation = newLocation_;
 		
 		switch (mLocation)

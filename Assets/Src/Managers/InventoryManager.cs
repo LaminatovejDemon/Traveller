@@ -36,7 +36,7 @@ public class InventoryManager : MonoBehaviour
 
 		_Initialized = true;
 	}
-		
+	
 	public void RetrievePart(Transform partObject)
 	{
 		int index = -1;
@@ -94,8 +94,7 @@ public class InventoryManager : MonoBehaviour
 		}
 
 		partObject.transform.parent = _ScrollingPanel._ContentContainer;
-		partObject.name = "Transformed_" + partObject.name;
-	
+
 		SortInventory();
 		MainManager.GetInstance().Backup();
 	}
@@ -141,13 +140,12 @@ public class InventoryManager : MonoBehaviour
 		{
 			GameObject.Destroy(mInventoryList[i]);
 		}
-
 		mInventoryList.Clear();
+		_ScrollingPanel.Clear();
 	}
 	
 	public void FillInventory(int maxRarity)
 	{
-		Debug.Log ("Filling inventory");
 		ClearInventory();
 
 		int index_ = 0;
@@ -169,7 +167,7 @@ public class InventoryManager : MonoBehaviour
 				continue;
 			}
 
-			part_ = PartManager.GetInstance().GetPattern(index_);
+			/*part_ = PartManager.GetInstance().GetPattern(index_);
 			
 			if ( part_ == null )
 			{
@@ -178,7 +176,9 @@ public class InventoryManager : MonoBehaviour
 			
 			AddCaption(part_.GetComponent<Part>());
 			
-			mInventoryList.Add(part_);
+			mInventoryList.Add(part_);*/
+			InsertPart(PartManager.GetInstance().GetPattern(index_));
+
 			++index_;
 		}
 		
