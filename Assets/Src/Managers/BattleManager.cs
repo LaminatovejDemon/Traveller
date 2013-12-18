@@ -72,6 +72,15 @@ public class BattleManager : ButtonHandler
 	{
 		if ( !mAttacker.IsAlive() || !mDefender.IsAlive() )
 		{
+
+			MainManager.GetInstance()._PlayerData.SetStats(mDefender.IsAlive(), mAttacker.IsAlive());
+
+			if  ( mDefender.IsAlive() )
+			{
+				LootManager.GetInstance().GetLoot();
+			}
+
+
 			_TurnButtonSlider.SlideIn = false;
 			HangarManager.GetInstance()._OpenButtonContainerSlider.SlideIn = true;
 			_OpenHangarButton.Visible = true;	

@@ -275,6 +275,11 @@ public class PartManager : MonoBehaviour
 		return null;
 	}
 
+	public int GetPatternCount()
+	{
+		return mPatternList.Count;
+	}
+
 	public float GetRarity(int id)
 	{
 		if ( id < 0 || mPatternList.Count <= id )

@@ -10,7 +10,8 @@ public class MainManager : MonoBehaviour {
 	public Camera _InventoryCamera;
 	public Camera _GUICamera;
 	public PlayerData _PlayerData;
-	
+
+
 	private static MainManager mInstance = null;
 	
 	Vector3 [] mFingerWorldPositions = new Vector3[10];
@@ -48,6 +49,9 @@ public class MainManager : MonoBehaviour {
 		RestorePlayer();
 
 	}
+
+
+
 
 	bool _BackupDirty = true;
 
