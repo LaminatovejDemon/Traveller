@@ -210,7 +210,21 @@ public class HangarManager : ButtonHandler
 		
 		switch (target._Handle)
 		{
+		case ButtonHandler.ButtonHandle.CONFIRM:
+			MainManager.GetInstance()._PlayerData.DeleteAll();
+			Utils.DestroyParentWindow(target.gameObject);
+
+			break;
+
+		case ButtonHandler.ButtonHandle.CANCEL:
+			Utils.DestroyParentWindow(target.gameObject);
+			break;
+
 		case ButtonHandler.ButtonHandle.HANGAR_ERASE_ALL:
+			PopupManager.GetInstance().CreateConfirmPopup("ERASE ALL DATA", "Are you sure to erase ALL DATA?", this);
+			break;
+
+		case ButtonHandler.ButtonHandle.HANGAR_ERASE_SHIP:
 			OnClearButton();
 			break;
 		

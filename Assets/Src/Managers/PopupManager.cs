@@ -17,8 +17,20 @@ public class PopupManager : MonoBehaviour {
 		return mInstance;
 	}
 
-	public PartPopup _PartPopupWindow;
+	public PopupPart _PartPopupWindow;
 	public PopupMessage _MessagePopupWindow;
+	public PopupConfirm _ConfirmPopupWindow;
+	
+	public void CreateConfirmPopup(string title, string content, ButtonHandler handler)
+	{
+		PopupConfirm newPopup_ = ((GameObject)GameObject.Instantiate(_ConfirmPopupWindow.gameObject)).GetComponent<PopupConfirm>();
+		
+		newPopup_.Initialize();
+		
+		newPopup_.SetTitleTextObject(title);
+		newPopup_.SetContentTextObject(content);
+		newPopup_.SetHandler(handler);
+	}
 
 	public void CreateMessagePopup(string title, string content)
 	{
@@ -31,13 +43,14 @@ public class PopupManager : MonoBehaviour {
 	}
 
 
-	public void CreatePartPopup(GameObject partResource, PartManager.Pattern pattern)
+	public void CreatePartPopup(GameObject partResource, PartManager.Pattern pattern, string header = "")
 	{
-		PartPopup newPopup_ = ((GameObject)GameObject.Instantiate(_PartPopupWindow.gameObject)).GetComponent<PartPopup>();
+		PopupPart newPopup_ = ((GameObject)GameObject.Instantiate(_PartPopupWindow.gameObject)).GetComponent<PopupPart>();
 
 		newPopup_.Initialize();
 
 		newPopup_.SetPartObject(partResource);
+		newPopup_.SetHeaderTextObject(header);
 
 		string text_ = pattern.mName;
 

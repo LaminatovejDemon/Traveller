@@ -59,4 +59,14 @@ public class PlayerData : MonoBehaviour
 			InventoryManager.GetInstance().RestoreInventory();
 		}
 	}
+
+	public void DeleteAll()
+	{
+		FleetManager.GetShip().EraseShip();
+		FleetManager.GetInstance().DeleteAllScans();
+		PlayerPrefs.DeleteAll();
+		_AchievedRarity = 0;
+
+		Restore();
+	}
 }

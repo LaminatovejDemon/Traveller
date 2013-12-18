@@ -100,6 +100,11 @@ public class FleetManager : MonoBehaviour
 		
 		return null;
 	}
+
+	public void DeleteAllScans()
+	{
+		mShipScanList.Clear();
+	}
 	
 	public bool IsMatching(Ship ship, ShipScan scan)
 	{

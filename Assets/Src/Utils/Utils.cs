@@ -16,6 +16,15 @@ public class Utils : MonoBehaviour
 		return source + (target - source) * relativeAddition;
 	}
 
+	public static void DestroyParentWindow(GameObject parentWindowHolder)
+	{
+		ParentWindow parentWindowComponent = parentWindowHolder.GetComponent<ParentWindow>();
+		if ( parentWindowComponent != null )
+		{
+			GameObject.Destroy(parentWindowComponent._WindowObject);
+		}
+	}
+
 	public static Vector3 ScalarDivide(Vector3 above, Vector3 below)
 	{
 		Vector3 ret_ = above;

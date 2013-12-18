@@ -413,7 +413,7 @@ public class Ship : MonoBehaviour
 			mStats.GetComponent<TextMesh>().anchor = TextAnchor.UpperRight;
 		}
 		
-		mStats.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(1,1,0)) + Vector3.down * 8.0f;
+		mStats.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(1,1,0)) + Vector3.down * 4.0f;
 		mStats.transform.rotation = Camera.main.transform.rotation;
 		
 		

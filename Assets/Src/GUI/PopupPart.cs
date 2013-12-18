@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PartPopup : PopupWindow 
+public class PopupPart : PopupWindow 
 {
 	GameObject _PartObject;
 	public Transform _PartHandler;
 	public Transform _TitleTextHandler;
 	public Transform _ContentTextHandler;
+	public Transform _HeaderHandler;
 
 	public void SetPartObject(GameObject partResource)
 	{
@@ -19,6 +20,11 @@ public class PartPopup : PopupWindow
 		_PartObject.transform.localPosition = Vector3.zero;
 		Utils.SetLayer(_PartObject.transform, gameObject.layer);
 		Utils.SetColissionEnabled(_PartObject.transform, false);
+	}
+
+	public void SetHeaderTextObject(string content)
+	{
+		SetTextObject(_HeaderHandler, content, 0.6f);
 	}
 
 	public void SetContentTextObject(string content)

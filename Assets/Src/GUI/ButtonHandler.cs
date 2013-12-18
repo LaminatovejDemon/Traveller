@@ -5,11 +5,14 @@ public class ButtonHandler : MonoBehaviour
 {
 	public enum ButtonHandle
 	{
-		HANGAR_ERASE_ALL,
+		HANGAR_ERASE_SHIP,
 		HANGAR_OPEN,
 		HANGAR_DONE,
 		INVENTORY_SLIDER,
 		BATTLE_TURN,
+		HANGAR_ERASE_ALL,
+		CONFIRM,
+		CANCEL,
 		Invalid,
 	};
 		

@@ -46,7 +46,7 @@ public class LootManager : MonoBehaviour
 	
 	public float GetELO()
 	{
-		return MainManager.GetInstance()._PlayerData._PlayerWinCount / MainManager.GetInstance()._PlayerData._PlayerGamesCount;
+		return ((float)MainManager.GetInstance()._PlayerData._PlayerWinCount) / ((float)MainManager.GetInstance()._PlayerData._PlayerGamesCount);
 	}
 	
 	public float GetXP()
@@ -74,9 +74,7 @@ public class LootManager : MonoBehaviour
 
 		InventoryManager.GetInstance().InsertPart(LootPart_);
 
-		PopupManager.GetInstance().CreatePartPopup(LootPart_, LootPart_.GetComponent<Part>().mPattern);
-
-
+		PopupManager.GetInstance().CreatePartPopup(LootPart_, LootPart_.GetComponent<Part>().mPattern, "YOU SALVAGED NEW MODULE!");
 	}
 
 	int RollIndex()
