@@ -135,5 +135,6 @@ public class TierData : MonoBehaviour
 	public void DeleteAll()
 	{
 		_AchievedRarity = 0;
+		Destroy(gameObject);
 	}
 }
