@@ -243,12 +243,16 @@ public class PartManager : MonoBehaviour
 		spec2 = mDataFile[mDataIndex++];
 		int.TryParse(mDataFile[mDataIndex++], out spec2val);
 			
-		
+		while ( mDataFile[mDataIndex] == "" && mDataFile.Length > mDataIndex+1 )
+		{
+			++mDataIndex;
+		}
+
 		if ( mDataFile.Length <= mDataIndex+1 || (relevant && !success_) )
 		{
 			return false;
 		}
-		
+
 /*		if ( relevant )
 		{
 			Debug.Log("Got Line" + id + ", " + name + ", " + description + ", " + rarity + "," + power + ","  + hash + ","  
