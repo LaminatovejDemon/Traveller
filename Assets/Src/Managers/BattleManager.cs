@@ -73,13 +73,23 @@ public class BattleManager : ButtonHandler
 		if ( !mAttacker.IsAlive() || !mDefender.IsAlive() )
 		{
 
-			MainManager.GetInstance()._PlayerData.SetStats(mDefender.IsAlive(), mAttacker.IsAlive());
+			// we need tier before counting stats for both sides
+			int attackerTier_ = mAttacker.GetTierData().GetTier();
+			int defenderTier_ = mDefender.GetTierData().GetTier();
+
+			// settings scan stats
+			mAttacker._ScanParent.GetTierData().SetStats(mAttacker.IsAlive(), mDefender.IsAlive(), defenderTier_);
+			mDefender._ScanParent.GetTierData().SetStats(mDefender.IsAlive(), mAttacker.IsAlive(), defenderTier_);
+
+			// and parent stats
+			FleetManager.GetShip().GetTierData().SetStats(mDefender.IsAlive(), mAttacker.IsAlive(), attackerTier_);
+
+			PopupManager.GetInstance().DisplayRewardPopup(mDefender.IsAlive(), mAttacker.IsAlive());
 
 			if  ( mDefender.IsAlive() )
 			{
 				LootManager.GetInstance().GetLoot();
 			}
-
 
 			_TurnButtonSlider.SlideIn = false;
 			HangarManager.GetInstance()._OpenButtonContainerSlider.SlideIn = true;
@@ -147,7 +157,7 @@ public class BattleManager : ButtonHandler
 			case ButtonHandler.ButtonHandle.BATTLE_TURN:
 			Turn();
 			target.Active = false;
-			_OpenHangarButton.Active = false;
+			// FIXME: Hotfix when using rocket and laser on one tile _OpenHangarButton.Active = false;
 			break;
 			case ButtonHandler.ButtonHandle.HANGAR_OPEN:
 			HangarManager.GetInstance().OnHangarOpenButton();

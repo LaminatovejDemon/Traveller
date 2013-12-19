@@ -44,17 +44,14 @@ public class LootManager : MonoBehaviour
 
 	}
 	
-	public float GetELO()
+	float GetELO()
 	{
-		return ((float)MainManager.GetInstance()._PlayerData._PlayerWinCount) / ((float)MainManager.GetInstance()._PlayerData._PlayerGamesCount);
+		return FleetManager.GetShip().GetTierData().GetELO();
 	}
 	
 	public float GetXP()
 	{
-		float xp_ = (float)(MainManager.GetInstance()._PlayerData._PlayerGamesCount+GetELO());
-
-		Debug.Log ("Player has " + xp_ + "XP");
-		return xp_;
+		return FleetManager.GetShip().GetTierData().GetXP();
 	}
 
 	public void GetLoot()
@@ -122,7 +119,7 @@ public class LootManager : MonoBehaviour
 
 	float GetLootProbability()
 	{
-		float lootProbability_ = Mathf.Min(Mathf.Sqrt(1.0f/(float)MainManager.GetInstance()._PlayerData._PlayerGamesCount), 1.0f);
+		float lootProbability_ = Mathf.Min(Mathf.Sqrt(1.0f/(float)FleetManager.GetShip().GetTierData()._TotalGamesCount), 1.0f);
 		Debug.Log ("Loot probability is " + lootProbability_);
 		return lootProbability_;
 	}

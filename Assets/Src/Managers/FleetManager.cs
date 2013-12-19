@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class FleetManager : MonoBehaviour 
 {
 	public string mPlayerShipName = "";
+	GameObject _ShipScanContainer;
 	
 	private static FleetManager mInstance = null;
 	public static FleetManager GetInstance()
@@ -19,51 +20,6 @@ public class FleetManager : MonoBehaviour
 		}
 		return mInstance;
 	}
-	
-	public class ShipScan
-	{
-		public struct PatternPlan
-		{
-			public PatternPlan(string patternID, Vector3 position)
-			{
-				mPatternID = patternID;
-				mPosition = position;
-			}
-			
-			//public PartManager.Pattern mPattern {get; private set;}
-			public string mPatternID;
-			public Vector3 mPosition {get; private set;}
-		};
-		
-		public string mName;
-		public Vector3 mCenter;
-		public int mBoundaryH;
-		public int mBoundaryV;
-		public int mOffsetH;
-		public int mOffsetV;
-		
-		
-		public List <PatternPlan> mPartList {get; private set;}
-		
-		public ShipScan()
-		{
-			mPartList = new List<PatternPlan>();
-		}
-		
-		//public void AddPart(Part part)
-		public void AddPart(string patternID, Vector3 localPosition)
-		{
-			//if ( part == null )
-			//{
-			//	return;
-			//}
-			//mPartList.Add(new PatternPlan(part.mPattern, part.transform.localPosition));
-			//mPartList.Add(new PatternPlan(PartManager.GetInstance().GetPattern(patternID).GetComponent<PatternPlan>(), localPosition));
-			mPartList.Add(new PatternPlan(patternID, localPosition));
-		}
-		
-		List<PatternPlan> mList;
-	};
 	
 	public void DestroyShipInstance(Ship instance)
 	{
@@ -108,6 +64,7 @@ public class FleetManager : MonoBehaviour
 
 	public void DeleteAllScans()
 	{
+		GameObject.Destroy(_ShipScanContainer);
 		mShipScanList.Clear();
 		PlayerPrefs.SetInt("ScanShipCount", 0);
 	}
@@ -167,8 +124,14 @@ public class FleetManager : MonoBehaviour
 			RemoveBackup(name_);
 		}
 		
-		ShipScan new_ = new ShipScan();
-		new_.mName = name_;
+		ShipScan new_ = new GameObject("_ShipScan_" + name).AddComponent<ShipScan>();
+		if ( _ShipScanContainer == null )
+		{
+			_ShipScanContainer = new GameObject("#ShipScanContainer");
+		}
+		new_.transform.parent = _ShipScanContainer.transform;
+
+		new_.name = new_.mName = name_;
 		new_.mCenter = ship.GetComponent<Ship>().mShipCenter;
 		new_.mBoundaryH = ship.GetComponent<Ship>()._BoundaryHorizontal;
 		new_.mBoundaryV = ship.GetComponent<Ship>()._BoundaryVertical;
@@ -191,32 +154,16 @@ public class FleetManager : MonoBehaviour
 	
 	void RestoreScan(string name)
 	{
-		ShipScan new_ = new ShipScan();
-		
-		Vector3 center_;
-		center_.x = PlayerPrefs.GetFloat(name+"_centerX");
-		center_.y = PlayerPrefs.GetFloat(name+"_centerY");
-		center_.z = PlayerPrefs.GetFloat(name+"_centerZ");
-		new_.mCenter = center_;
-		
-		new_.mBoundaryH = PlayerPrefs.GetInt(name+"_boundaryH");
-		new_.mBoundaryV = PlayerPrefs.GetInt(name+"_boundaryV");
-		new_.mOffsetH = PlayerPrefs.GetInt(name+"_offsetH");
-		new_.mOffsetV = PlayerPrefs.GetInt(name+"_offsetV");
-		
-		int count_ = PlayerPrefs.GetInt(name+"_partCount");
-		for ( int i = 0; i < count_; ++i )
+		ShipScan new_ = new GameObject("_ShipScan_" + name).AddComponent<ShipScan>();
+		if ( _ShipScanContainer == null )
 		{
-			string id_ = PlayerPrefs.GetString(name+"_part_"+i+"_id");
-			Vector3 pos_;
-			pos_.x = PlayerPrefs.GetFloat(name+"_part_"+i+"_posX");
-			pos_.y = PlayerPrefs.GetFloat(name+"_part_"+i+"_posY");
-			pos_.z = PlayerPrefs.GetFloat(name+"_part_"+i+"_posZ");
-			
-			new_.AddPart(id_, pos_);
+			_ShipScanContainer = new GameObject("#ShipScanContainer");
 		}
-		new_.mName = name;
-		
+		new_.transform.parent = _ShipScanContainer.transform;
+
+		new_.name = new_.mName = name;
+		new_.Restore();
+
 		mShipScanList.Add(new_.mName, new_);
 	}
 	
@@ -234,23 +181,8 @@ public class FleetManager : MonoBehaviour
 		Debug.Log("Setting ship count" + lastIndex);
 		PlayerPrefs.SetInt("ScanShipCount", lastIndex);
 		
-		PlayerPrefs.SetFloat(scan.mName+"_centerX", scan.mCenter.x);
-		PlayerPrefs.SetFloat(scan.mName+"_centerY", scan.mCenter.y);
-		PlayerPrefs.SetFloat(scan.mName+"_centerZ", scan.mCenter.z);
-		
-		PlayerPrefs.SetInt(scan.mName+"_boundaryH", scan.mBoundaryH);
-		PlayerPrefs.SetInt(scan.mName+"_boundaryV", scan.mBoundaryV);
-		PlayerPrefs.SetInt(scan.mName+"_offsetH", scan.mOffsetH);
-		PlayerPrefs.SetInt(scan.mName+"_offsetV", scan.mOffsetV);
-		
-		PlayerPrefs.SetInt(scan.mName+"_partCount", scan.mPartList.Count);
-		for ( int i = 0; i < scan.mPartList.Count; ++i )
-		{
-			PlayerPrefs.SetString(scan.mName+"_part_"+i+"_id", scan.mPartList[i].mPatternID);
-			PlayerPrefs.SetFloat(scan.mName+"_part_"+i+"_posX", scan.mPartList[i].mPosition.x);
-			PlayerPrefs.SetFloat(scan.mName+"_part_"+i+"_posY", scan.mPartList[i].mPosition.y);
-			PlayerPrefs.SetFloat(scan.mName+"_part_"+i+"_posZ", scan.mPartList[i].mPosition.z);
-		}
+
+		scan.Backup();
 	}
 	
 	void RemoveBackup(string name)

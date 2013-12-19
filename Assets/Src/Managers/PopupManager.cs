@@ -20,6 +20,22 @@ public class PopupManager : MonoBehaviour {
 	public PopupPart _PartPopupWindow;
 	public PopupMessage _MessagePopupWindow;
 	public PopupConfirm _ConfirmPopupWindow;
+
+	public void DisplayRewardPopup(bool ownerIsAlive, bool enemyIsAlive)
+	{
+		if ( !ownerIsAlive && !enemyIsAlive )
+		{
+			CreateMessagePopup("DRAW GAME", "Everybody is dead, Dave...\n\n"+ FleetManager.GetShip().GetTierData().GetStatsLabel()); 
+		}
+		else if ( ownerIsAlive )
+		{
+			CreateMessagePopup("YOU WON", "Dr. Hildegarde Lanstrom would know.\n\n"+FleetManager.GetShip().GetTierData().GetStatsLabel());
+		}
+		else 
+		{
+			CreateMessagePopup("YOU LOST YOUR SHIP", "...\n\n"+FleetManager.GetShip().GetTierData().GetStatsLabel());
+		}
+	}
 	
 	public void CreateConfirmPopup(string title, string content, ButtonHandler handler)
 	{

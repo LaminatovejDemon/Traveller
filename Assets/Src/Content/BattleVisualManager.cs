@@ -77,6 +77,11 @@ public class BattleVisualManager : MonoBehaviour
 	
 	void ExecuteHit(ProjectileVisual visual)
 	{
+		if ( visual._Projectile == null || visual._TargetShip == null )
+		{
+			return;
+		}
+
 		if ( visual._Link == null )
 		{
 			Utils.SetLayer(visual._Projectile.transform, visual._TargetShip.gameObject.layer);

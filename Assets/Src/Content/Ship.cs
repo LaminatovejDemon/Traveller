@@ -27,6 +27,8 @@ public class Ship : MonoBehaviour
 	public Vector3 mShipCenter { get; private set;}
 	
 	public Shield _Shield;
+
+	public ShipScan _ScanParent { get; private set;}
 	
 	BattleComputer _BattleComputer;
 	
@@ -74,12 +76,13 @@ public class Ship : MonoBehaviour
 		_ShipRotationContainer.parent = _ShipPositionContainer;
 	}
 	
-	public void Initialize(FleetManager.ShipScan template)
+	public void Initialize(ShipScan template)
 	{
 		if ( mInitialized )
 		{
 			return;
 		}
+		_ScanParent = template;
 		
 		CreateContainer(template.mName);
 		_BattleComputer = gameObject.AddComponent<BattleComputer>();
@@ -190,7 +193,7 @@ public class Ship : MonoBehaviour
 		//BackupShip();
 	}
 	
-	public void LoadShip(FleetManager.ShipScan template)
+	public void LoadShip(ShipScan template)
 	{
 		Debug.Log ("loading ship" + template.mName);
 
@@ -642,6 +645,20 @@ public class Ship : MonoBehaviour
 		}
 		
 		return false;
+	}
+
+	TierData _TierData;
+
+	public TierData GetTierData()
+	{
+		if ( _TierData == null )
+		{
+			_TierData = gameObject.AddComponent<TierData>();
+			_TierData._ParentName = _ShipName;
+			_TierData.Initialize();
+		}
+		
+		return _TierData;
 	}
 		
 	void Occupy(Part part, Vector3 position, bool place, bool changeLayer = true)
