@@ -1,20 +1,81 @@
-id;name;description;rarity;power;hash;hp;weight;integrity;model;texture;spec1;spec1val;spec2;spec2val
-GenerA1;Generator A1;The smallest generator, innefective but very compact and versatile.;1;4;1;1;6;0;GenerA1;mtexture;0;0;0;0
-GenerA2;Generator A2;Advanced version of the first generator, for bigger size and higher weight offers better energy gain.;3;10;3;1;11;0;GenerA2;mtexture;0;0;0;0
-GenerA3;Generator A3;Large sized generator, easy to hit due to its size, but effective at energy gain for your modules.;5;17;7;1;16;0;GenerA3;mtexture;0;0;0;0
-GenerA4;Generator A4;The biggest generator up to date, very effective energy wise. Protect it at all cost as a single hit to this module can leave half of your systems without power.;7;25;195;1;21;0;GenerA4;mtexture;0;0;0;0
-EngineA1;Engines A1;The most basic engines, still offering acceptable evade chances for lightweighted ships.;2;-1;1;1;3;0;EngineA1;mtexture;engipow;6;0;0
-EngineA2;Engines A2;Advanced version of the first engines, offering good evade at compact size but for increased energy cost.;4;-3;1;1;5;0;EngineA2;mtexture;engipow;27;evade;1
-EngineA3;Engines A3;Basic medium sized engines, giving great evade chances for higher module size and energy cost.;6;-5;3;1;7;0;EngineA3;mtexture;engipow;70;evade;2
-ShieldA1;Shields A1;The first tiny shield with low energy cost. Can offer great defence vs smaller ships but has no recharge. Effective in combination with recharger modules.;2;-1;1;1;8;0;ShieldA1;mtexture;srech;0;scap;6
-ShieldA2;Shields A2;Medium sized shield with minimal recharge but acceptable shield capacity. Effective in combination with recharger modules.;5;-3;3;1;14;0;ShieldA2;mtexture;srech;1;scap;15
-RechargerA1;Recharger A1;Recharger offerst a nice boost for shield regeneration, if cleverly placed in your boxship, it can help to soak up tons of enemy beam damage.;5;-7;1;1;15;0;RechargerA1;mtexture;srech;4;0;0
-LaserBasicA1;Laser A1;The most basic laser in the universum, the very first weapon usefull for your first smaller ships.;1;-2;1;1;3;0;LaserBasicA1;mtexture;beam;1;0;0
-LaserHeavyA1;Heavy Laser A1;The first heavy laser in the game, effective at energy/damage ratio, but still fires only one shot.;5;-7;1;1;6;0;LaserHeavyA1;mtexture;beam;6;0;0
-LaserGatlingA1;Gatling Laser A1;Compact laser being able to shoot multiple times in a single turn, fires all its projectiles from one side in its single turn. Great at destroying multiple unarmored and unshielded targets.;4;-4;1;1;7;0;LaserGatlingA1;mtexture;beam;1;beamrep;3
-TorpedoA1;Torpedos A1;Basic torpedo launcher. It has low damage and high energy cost, but still offers extremely efficient way on how to destroy exposed unarmored modules of the enemy in one hit as it penetrates shields easily.;6;-8;1;1;10;0;TorpedoA1;mtexture;torpdam;3;hitchance;100
-ArmorA1;Armor A1;Ultra leightweited armor that melts like a paper, acceptable defence against missiles for high maneuvrable boxships.;1;0;1;2;1;0;ArmorA1;mtexture;0;0;0;0
-ArmorA2;Armor A2;Offers reasonable protection against low tier weapons at reasonable weight, but not really strong vs heavily armed beam boxships.;2;0;1;4;4;0;ArmorA2;mtexture;0;0;0;0
-ArmorA3;Armor A3;Great armor against torpedos, quite usefull even against mediocre armed beam boxships, but quite heavy.;4;0;1;7;9;0;ArmorA3;mtexture;0;0;0;0
-ArmorA4;Armor A4;The monstrously strong armor able to survive multiple volleys of enemy fire, but extremely heavy weighted.;6;0;1;10;25;0;ArmorA4;mtexture;0;0;0;0
-;;;;;;;;;;;;;;
+id;name;description;rarity;power;hash;hp;weight;integrity;model;texture;spec1;spec1val;spec2;spec2val;;;
+GenerA1;Abacus v1 Generator;The smallest generator, innefective but very compact and versatile.;1;4;1;1;6;0;GenerA1;mtexture;0;0;0;0;;;
+GenerA2;Abacus v2 Generator;Advanced version of the first generator, for bigger size and higher weight offers better energy gain.;25;10;3;1;11;0;GenerA2;mtexture;0;0;0;0;;;
+GenerA3;Abacus v3 Generator;Large sized generator, easy to hit due to its size, but effective at energy gain for your modules.;60;17;7;1;16;0;GenerA3;mtexture;0;0;0;0;;;
+GenerA4;Abacus v4 Generator;The biggest generator up to date, very effective energy wise. Protect it at all cost as a single hit to this module can leave half of your systems without power.;80;25;195;1;21;0;GenerA4;mtexture;0;0;0;0;;;
+GenerB1;Barbatus v1 Generator;The smallest generator, more effective than its Abacus counterpart. Good for monobox ships or as additional expendable power supply.;90;6;1;1;8;0;GenerB1;mtexture;0;0;0;0;;;
+GenerB2;Barbatus v2 Generator;;105;14;3;1;15;0;GenerB2;mtexture;0;0;0;0;;;
+GenerB3;Barbatus v3 Generator;;130;25;7;1;18;0;GenerB3;mtexture;0;0;0;0;;;
+GenerB4;Barbatus v4 Generator;;160;32;195;1;24;0;GenerB4;mtexture;0;0;0;0;;;
+GenerC1;Calvus v1 Generator;;200;8;1;2;12;0;GenerC1;mtexture;0;0;0;0;;;
+GenerC2;Calvus v2 Generator;;275;20;3;2;20;0;GenerC2;mtexture;0;0;0;0;;;
+GenerC3;Calvus v3 Generator;;325;34;7;2;24;0;GenerC3;mtexture;0;0;0;0;;;
+GenerC4;Calvus v4 Generator;;400;50;195;2;30;0;GenerC4;mtexture;0;0;0;0;;;
+EngineA1;Abacus v1 Engines;The most basic engines, still offering acceptable evade chances for lightweighted ships.;15;-1;1;1;3;0;EngineA1;mtexture;engipow;6;0;0;;;
+EngineA2;Abacus v2 Engines;Advanced version of the first engines, offering good evade at compact size but for increased energy cost.;40;-3;1;1;5;0;EngineA2;mtexture;engipow;27;evade;1;;;
+EngineA3;Abacus v3 Engines;Basic medium sized engines, giving great evade chances for higher module size and energy cost.;80;-5;3;1;7;0;EngineA3;mtexture;engipow;70;evade;2;;;
+EngineB1;Barbatus v1 Engines;;85;-2;1;1;5;0;EngineB1;mtexture;engipow;25;evade;2;;;
+EngineB2;Barbatus v2 Engines;;130;-6;1;1;7;0;EngineB2;mtexture;engipow;95;evade;3;;;
+EngineB3;Barbatus v3 Engines;;180;-10;3;1;9;0;EngineB3;mtexture;engipow;150;evade;4;;;
+EngineC1;Calvus v1 Engines;;220;-4;1;2;6;0;EngineC1;mtexture;engipow;100;evade;4;;;
+EngineC2;Calvus v2 Engines;;300;-12;1;2;8;0;EngineC2;mtexture;engipow;200;evade;5;;;
+EngineC3;Calvus v3 Engines;;370;-20;3;2;10;0;EngineC3;mtexture;engipow;300;evade;6;;;
+ShieldA1;Abacus v1 Shields;The first tiny shield with low energy cost. Can offer great defence vs smaller ships but has no recharge. Effective in combination with recharger modules.;15;-1;1;1;8;0;ShieldA1;mtexture;srech;0;scap;4;;;
+ShieldA2;Abacus v2 Shields;Medium sized shield with minimal recharge but acceptable shield capacity. Effective in combination with recharger modules.;50;-3;3;1;14;0;ShieldA2;mtexture;srech;0;scap;10;;;
+ShieldB1;Barbatus v1 Shields;;130;-2;1;1;9;0;ShieldB1;mtexture;srech;1;scap;4;;;
+ShieldB2;Barbatus v2 Shields;;190;-6;3;1;16;0;ShieldB2;mtexture;srech;2;scap;20;;;
+ShieldC1;Calvus v1 Shields;;250;-4;1;2;10;0;ShieldC1;mtexture;srech;1;scap;15;;;
+ine;Calvus v2 Shields;;350;-8;3;2;18;0;ShieldC2;mtexture;srech;3;scap;30;;;
+RechargerA1;Abacus v1 Recharger;Recharger offerst a nice boost for shield regeneration, if cleverly placed in your boxship, it can help to soak up tons of enemy beam damage.;100;-7;1;1;15;0;RechargerA1;mtexture;srech;4;0;0;;;
+RechargerB1;Barbatus v1 Recharger;;230;-12;1;1;22;0;RechargerB1;mtexture;srech;8;0;0;;;
+RechargerC1;Calvus v1 Recharger;;380;-10;1;1;25;0;RechargerC1;mtexture;srech;12;0;0;;;
+LaserBasicA1;Abacus v1 Laser;The most basic laser in the universum, the very first weapon usefull for your first smaller ships.;1;-4;1;1;6;0;LaserBasicA1;mtexture;beam;1;0;0;;;
+LaserBasicA2;Abacus v2 Laser;;20;-3;1;1;6;0;LaserBasicA2;mtexture;beam;1;0;0;;;
+LaserBasicA3;Abacus v3 Laser;;40;-2;1;1;5;0;LaserBasicA3;mtexture;beam;1;0;0;;;
+LaserHeavyA1;Abacus v1 Heavy Laser;The first heavy laser in the game, effective at energy/damage ratio, but still fires only one shot.;80;-7;1;1;6;0;LaserHeavyA1;mtexture;beam;6;0;0;;;
+LaserGatlingA1;Abacus v1 Gatling Laser;Compact laser being able to shoot multiple times in a single turn, fires all its projectiles from one side in its single turn. Great at destroying multiple unarmored and unshielded targets.;65;-4;1;1;7;0;LaserGatlingA1;mtexture;beam;1;beamrep;3;;;
+LaserBasicB1;Barbatus v1 Laser;;50;-4;1;1;7;0;LaserBasicB1;mtexture;beam;2;0;0;;;
+LaserBasicB2;Barbatus v2 Laser;;80;-3;1;1;8;0;LaserBasicB2;mtexture;beam;2;0;0;;;
+LaserBasicB3;Barbatus v3 Laser;;120;-2;1;1;8;0;LaserBasicB3;mtexture;beam;2;0;0;;;
+LaserHeavyB1;Barbatus v1 Heavy Laser;;160;-10;1;1;8;0;LaserHeavyB1;mtexture;beam;10;0;0;;;
+LaserGatlingB1;Barbatus v1 Gatling Laser;;200;-6;1;1;10;0;LaserGatlingB1;mtexture;beam;2;beamrep;3;;;
+LaserBasicC1;Calvus v1 Laser;;160;-3;1;3;8;0;LaserBasicC1;mtexture;beam;3;0;0;;;
+LaserBasicC2;Calvus v2 Laser;;220;-4;1;3;8;0;LaserBasicC2;mtexture;beam;4;0;0;;;
+LaserBasicC3;Calvus v3 Laser;;280;-3;1;3;8;0;LaserBasicC3;mtexture;beam;4;0;0;;;
+LaserHeavyC1;Calvus v1 Heavy Laser;;360;-11;1;3;10;0;LaserHeavyC1;mtexture;beam;15;0;0;;;
+LaserGatlingC1;Calvus v1 Gatling Laser;;330;-8;1;3;10;0;LaserGatlingC1;mtexture;beam;3;beamrep;3;;;
+TorpedoA1;Abacus v1 Torpedos;Basic torpedo launcher. It has low damage and high energy cost, but still offers extremely efficient way on how to destroy exposed unarmored modules of the enemy in one hit as it penetrates shields easily.;110;-8;1;1;10;0;TorpedoA1;mtexture;torpdam;2;hitchance;50;;;
+TorpedoB1;Barbatus v1 Torpedos;;250;-10;1;1;15;0;TorpedoB1;mtexture;torpdam;4;hitchance;65;;;
+TorpedoC1;Calvus v1 Torpedos;;400;-16;1;3;20;0;TorpedoC1;mtexture;torpdam;6;hitchance;90;;;
+ArmorA1;Abacus v1 Armor;Ultra leightweited armor that melts like a paper, acceptable defence against missiles for high maneuvrable boxships.;3;0;1;2;1;0;ArmorA1;mtexture;0;0;0;0;;;
+ArmorA2;Abacus v2 Armor;Offers reasonable protection against low tier weapons at reasonable weight, but not really strong vs heavily armed beam boxships.;20;0;1;4;4;0;ArmorA2;mtexture;0;0;0;0;;;
+ArmorA3;Abacus v3 Armor;Great armor against torpedos, quite usefull even against mediocre armed beam boxships, but quite heavy.;55;0;1;7;9;0;ArmorA3;mtexture;0;0;0;0;;;
+ArmorA4;Abacus v4 Armor;The monstrously strong armor able to survive multiple volleys of enemy fire, but extremely heavy weighted.;90;0;1;10;25;0;ArmorA4;mtexture;0;0;0;0;;;
+ArmorB1;Barbatus v1 Armor;;110;0;1;4;2;0;ArmorB1;mtexture;0;0;0;0;;;
+ArmorB2;Barbatus v2 Armor;;140;0;1;7;8;0;ArmorB2;mtexture;0;0;0;0;;;
+ArmorB3;Barbatus v3 Armor;;170;0;1;12;18;0;ArmorB3;mtexture;0;0;0;0;;;
+ArmorB4;Barbatus v4 Armor;;220;0;1;18;50;0;ArmorB4;mtexture;0;0;0;0;;;
+ArmorC1;Calvus v1 Armor;;250;0;1;6;3;0;ArmorC1;mtexture;0;0;0;0;;;
+ArmorC2;Calvus v2 Armor;;300;0;1;12;7;0;ArmorC2;mtexture;0;0;0;0;;;
+ArmorC3;Calvus v3 Armor;;350;0;1;18;10;0;ArmorC3;mtexture;0;0;0;0;;;
+ArmorC4;Calvus v4 Armor;;400;0;1;30;50;0;ArmorC4;mtexture;0;0;0;0;;;
+;;;;;;;;;;;;;;;;;
+changes made;;all rarities reworked to elo rating, added beta and gamma class;;;;;;;;;;;;;;;
+notes;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;
