@@ -76,7 +76,13 @@ public class InventoryManager : MonoBehaviour
 	void InsertPart(string patternID)
 	{
 		GameObject new_ = PartManager.GetInstance().GetPattern(patternID);
-		
+
+		if ( new_ == null )
+		{
+			Debug.Log ("ERROR: There is missing FBX for part " + patternID);
+			//return;
+		}
+
 		InsertPart(new_);
 	}
 	
