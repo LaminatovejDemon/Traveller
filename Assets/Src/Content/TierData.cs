@@ -76,7 +76,6 @@ public class TierData : MonoBehaviour
 	public float GetVictoryCoef(int tier)
 	{
 		float coef_ = (_WinCount[tier] + 10.0f) / (_GamesCount[tier] + 20.0f - _DrawCount[tier]);
-		Debug.Log ("victory coef for iter " + tier + " is " + coef_);
 		return coef_;
 	}
 
@@ -96,12 +95,14 @@ public class TierData : MonoBehaviour
 			sum_ += (GetVictoryCoef(i) - 0.5f) * (i+1);
 		}
 		
-		return sum_ * 100.0f;
+		return (int)(sum_ * 1000.0f)/10.0f;
 	}
 	
 	public string GetStatsLabel()
 	{
-		return "TIER WINS: "+_WinCount[0]+"\nTIER DRAWS: "+_DrawCount[0]+"\nBATTLES TOTAL: " + _TotalGamesCount + "\n\nELO:" + GetELO();
+		int tier_ = GetTier();
+
+		return "TIER: "+ (tier_+1) +"\nWLD: "+_WinCount[tier_]+"/"+ (_GamesCount[tier_] - _DrawCount[tier_] - _WinCount[tier_])+"/"+ _DrawCount[tier_] + "\nBATTLES TOTAL: " + _TotalGamesCount + "\n\nELO:" + GetELO();
 	}
 	
 	public void Backup()

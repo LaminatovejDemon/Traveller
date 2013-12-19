@@ -4,7 +4,33 @@ using System.Collections;
 public class Utils : MonoBehaviour 
 {
 	public const bool RenderToTexture = false;
-	
+
+	public static string SplitLines(string text, int maxWidth)
+	{
+		char[] chars_ = new char[1];
+		chars_[0] = ' ';
+
+		string [] lines_ = text.Split(chars_);
+		string ret_ = "";
+		int lineLength = 0;
+		for ( int i = 0; i < lines_.Length; ++i )
+		{
+			lineLength += lines_[i].Length;
+			if ( lineLength > maxWidth )
+			{
+				ret_ += "\n" + lines_[i] + " ";
+				lineLength = lines_[i].Length + 1;
+			}
+			else
+			{
+				ret_ += lines_[i] + " ";
+				lineLength++;
+			}
+		}
+
+		return ret_;
+	}
+
 	//Vector3.slerp sometimes moves object in wrong axis first and is broken
 	public static Vector3 Interpolate(Vector3 source, Vector3 target, float relativeAddition = 0.1f)
 	{

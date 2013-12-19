@@ -34,7 +34,7 @@ public class Ship : MonoBehaviour
 	
 	public bool IsAlive()
 	{
-		if (mWeaponDamage > 0 && mMinimalConsumption <= mEnergyProduction )
+		if ( mEnergyProduction > 0 )
 		{
 			return true;
 		}

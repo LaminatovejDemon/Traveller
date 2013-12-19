@@ -77,14 +77,11 @@ public class LootManager : MonoBehaviour
 	int RollIndex()
 	{
 		float loot_ = Random.Range(0, 100);
-		Debug.Log ("Rolling starts at" + loot_);
 		for ( int i = 0; i < _PatternPercentList.Count; ++i )
 		{
 			loot_ -= _PatternPercentList[i];
-			Debug.Log ("\tRemoving " + _PatternPercentList[i] + " to " + loot_);
 			if ( loot_ < 0 )
 			{
-				Debug.Log ("WE'VE GOT AN INDEX!" + i);
 				return i;
 			}
 		}

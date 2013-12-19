@@ -29,7 +29,7 @@ public class PopupPart : PopupWindow
 
 	public void SetContentTextObject(string content)
 	{
-		SetTextObject(_ContentTextHandler, content, 1.0f);
+		SetTextObject(_ContentTextHandler, content, 0.8f);
 	}
 
 	public void SetTitleTextObject(string content)

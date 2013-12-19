@@ -71,7 +71,15 @@ public class FleetManager : MonoBehaviour
 
 	public void AddTutorialShip()
 	{
-	//	ScanShip((GameObject)Resources.Load("Gameplay/TutorialShip", typeof(GameObject)));
+	/*	if ( _ShipScanContainer == null )
+		{
+			_ShipScanContainer = new GameObject("#ShipScanContainer");
+		}
+
+		ShipScan tutorialScan_ = ((GameObject)GameObject.Instantiate((GameObject)Resources.Load("Gameplay/TutorialShip", typeof(GameObject)))).GetComponent<ShipScan>();
+		tutorialScan_.transform.parent = _ShipScanContainer.transform;
+		mShipScanList.Add(tutorialScan_.mName, tutorialScan_);
+		PlayerPrefs.SetInt("ScanShipCount", 1);*/
 	}
 	
 	public bool IsMatching(Ship ship, ShipScan scan)

@@ -123,7 +123,7 @@ public class PartManager : MonoBehaviour
 		ShieldRecharge, 
 		ShieldCapacity,
 		EnginePower,
-		Evade,
+		Evade_NOT_USED,
 		AntiTorpedo, 	//probability of torpedo destroy
 		CargoSpace,
 		Scanner,		
@@ -207,7 +207,7 @@ public class PartManager : MonoBehaviour
 		case "engipow":
 			return AbilityType.EnginePower;
 		case "evade":
-			return AbilityType.Evade;
+			return AbilityType.Evade_NOT_USED;
 		case "antitorp":
 			return AbilityType.AntiTorpedo;
 		case "cargo":
@@ -359,7 +359,7 @@ public class PartManager : MonoBehaviour
 
 	public string GetEvadeLabel(Pattern pattern)
 	{
-		Ability evade_ = pattern.GetAbility(AbilityType.Evade);
+		Ability evade_ = pattern.GetAbility(AbilityType.EnginePower);
 
 		if ( evade_ == null )
 		{
@@ -372,6 +372,11 @@ public class PartManager : MonoBehaviour
 	public string GetHPLabel(Pattern pattern)
 	{
 		return "Armor: " + pattern.mHp + "HU\n";
+	}
+
+	public string GetMassLabel(Pattern pattern)
+	{
+		return "Mass: " + pattern.mWeight + "kT\n";
 	}
 
 	public string GetDamageLabel(Pattern pattern)

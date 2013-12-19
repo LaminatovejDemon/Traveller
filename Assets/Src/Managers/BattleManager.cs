@@ -74,12 +74,12 @@ public class BattleManager : ButtonHandler
 		{
 
 			// we need tier before counting stats for both sides
-			int attackerTier_ = mAttacker.GetTierData().GetTier();
-			int defenderTier_ = mDefender.GetTierData().GetTier();
+			int attackerTier_ = mAttacker._ScanParent.GetTierData().GetTier();
+			int defenderTier_ = mDefender._ScanParent.GetTierData().GetTier();
 
 			// settings scan stats
 			mAttacker._ScanParent.GetTierData().SetStats(mAttacker.IsAlive(), mDefender.IsAlive(), defenderTier_);
-			mDefender._ScanParent.GetTierData().SetStats(mDefender.IsAlive(), mAttacker.IsAlive(), defenderTier_);
+			mDefender._ScanParent.GetTierData().SetStats(mDefender.IsAlive(), mAttacker.IsAlive(), attackerTier_);
 
 			// and parent stats
 			FleetManager.GetShip().GetTierData().SetStats(mDefender.IsAlive(), mAttacker.IsAlive(), attackerTier_);

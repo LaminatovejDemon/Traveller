@@ -75,9 +75,12 @@ public class PopupManager : MonoBehaviour {
 		text_ = "";
 
 		text_ += PartManager.GetInstance().GetEnergyLabel(pattern);
+		text_ += PartManager.GetInstance().GetDamageLabel(pattern);
 		text_ += PartManager.GetInstance().GetEvadeLabel(pattern);
 		text_ += PartManager.GetInstance().GetHPLabel(pattern);
-		text_ += PartManager.GetInstance().GetDamageLabel(pattern);
+		text_ += PartManager.GetInstance().GetMassLabel(pattern);
+
+		text_ += "\n"+ Utils.SplitLines(pattern.mDescription, 38);
 
 		newPopup_.SetContentTextObject(text_);
 	}
