@@ -166,7 +166,7 @@ public class Part : MonoBehaviour
 	{
 		if ( _TouchLocationTimeStamp == -1 )
 		{
-			return;
+		//	return;
 		}
 
 		Vector3 fingerDelta = (fingerPos - _TouchLocationPosition);
@@ -180,7 +180,7 @@ public class Part : MonoBehaviour
 		}
 		else if ( fingerDelta.y > GetDragThreshold() )
 		{
-				ResetTouchLocation();
+			ResetTouchLocation();
 		}
 
 	}

@@ -49,7 +49,7 @@ public class CameraHandler : MonoBehaviour
 		else if ( !_FillScreen )
 		{
 			Rect cameraRect_ = _RealCamera.rect;
-			cameraRect_.width = 0.5f;
+			cameraRect_.width = 0.495f;
 			cameraRect_.x = _ViewPortOffset;
 			_RealCamera.rect = cameraRect_;
 		}

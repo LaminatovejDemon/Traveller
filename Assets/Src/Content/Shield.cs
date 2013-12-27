@@ -82,7 +82,7 @@ public class Shield : MonoBehaviour
 		_Visual.transform.localPosition = shieldOffset_;
 		_Visual.transform.localRotation = Quaternion.identity;
 		_Visual.transform.localScale = new Vector3(_ParentShip._BoundaryHorizontal + 0.2f, 2.0f, _ParentShip._BoundaryVertical + 0.2f);
-		_ShieldCapacityCaption.transform.position = _Visual.transform.position + Camera.main.transform.rotation * Vector3.up * 3.0f;
+		_ShieldCapacityCaption.transform.position = _Visual.transform.position + Camera.main.transform.rotation * (Vector3.up * 2.5f + Vector3.left * 1.0f);
 		_ShieldCapacityCaption.transform.rotation = Camera.main.transform.rotation;
 		_ShieldCapacityCaption.transform.parent = _ParentShip.transform.parent.parent;
 		

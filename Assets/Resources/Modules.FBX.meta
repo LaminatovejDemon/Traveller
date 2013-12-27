@@ -271,6 +271,18 @@ ModelImporter:
     100530: TorpedoC1_0_power
     100532: TorpedoC1_0_turret
     100534: TorpedoC1_1_power
+    100536: ShieldA2_0_turningXYZ
+    100538: ShieldA2_0_turningXYZ 1
+    100540: ShieldA3
+    100542: ShieldA3_0_power
+    100544: ShieldA3_0_turningX
+    100546: ShieldB3
+    100548: ShieldB3_0_power
+    100550: ShieldB3_0_turningX
+    100552: ShieldC2_0_turningXYZ
+    100554: ShieldC3
+    100556: ShieldC3_0_power
+    100558: ShieldC3_0_turningX
     400000: AntiMissA
     400002: ArmorTungA
     400004: ArmorTungB
@@ -539,6 +551,18 @@ ModelImporter:
     400530: TorpedoC1_0_power
     400532: TorpedoC1_0_turret
     400534: TorpedoC1_1_power
+    400536: ShieldA2_0_turningXYZ
+    400538: ShieldA2_0_turningXYZ 1
+    400540: ShieldA3
+    400542: ShieldA3_0_power
+    400544: ShieldA3_0_turningX
+    400546: ShieldB3
+    400548: ShieldB3_0_power
+    400550: ShieldB3_0_turningX
+    400552: ShieldC2_0_turningXYZ
+    400554: ShieldC3
+    400556: ShieldC3_0_power
+    400558: ShieldC3_0_turningX
     2300000: AntiMissA
     2300002: ArmorTungA
     2300004: ArmorTungB
@@ -755,6 +779,18 @@ ModelImporter:
     2300426: TorpedoC1_0_power
     2300428: TorpedoC1_0_turret
     2300430: TorpedoC1_1_power
+    2300432: ShieldA2_0_turningXYZ
+    2300434: ShieldA2_0_turningXYZ 1
+    2300436: ShieldA3
+    2300438: ShieldA3_0_power
+    2300440: ShieldA3_0_turningX
+    2300442: ShieldB3
+    2300444: ShieldB3_0_power
+    2300446: ShieldB3_0_turningX
+    2300448: ShieldC2_0_turningXYZ
+    2300450: ShieldC3
+    2300452: ShieldC3_0_power
+    2300454: ShieldC3_0_turningX
     3300000: AntiMissA
     3300002: ArmorTungA
     3300004: ArmorTungB
@@ -971,6 +1007,18 @@ ModelImporter:
     3300426: TorpedoC1_0_power
     3300428: TorpedoC1_0_turret
     3300430: TorpedoC1_1_power
+    3300432: ShieldA2_0_turningXYZ
+    3300434: ShieldA2_0_turningXYZ 1
+    3300436: ShieldA3
+    3300438: ShieldA3_0_power
+    3300440: ShieldA3_0_turningX
+    3300442: ShieldB3
+    3300444: ShieldB3_0_power
+    3300446: ShieldB3_0_turningX
+    3300448: ShieldC2_0_turningXYZ
+    3300450: ShieldC3
+    3300452: ShieldC3_0_power
+    3300454: ShieldC3_0_turningX
     4300000: ArmorTungD
     4300002: ArmorTungC
     4300004: ArmorTungB
@@ -1187,6 +1235,18 @@ ModelImporter:
     4300426: GenerC2_0_power
     4300428: GenerC3
     4300430: GenerC3_0_power
+    4300432: ShieldA3
+    4300434: ShieldA3_0_power
+    4300436: ShieldA3_0_turningX
+    4300438: ShieldB3
+    4300440: ShieldB3_0_turningX
+    4300442: ShieldB3_0_power
+    4300444: ShieldC3
+    4300446: ShieldC3_0_turningX
+    4300448: ShieldC3_0_power
+    4300450: ShieldA2_0_turningXYZ
+    4300452: ShieldA2_0_turningXYZ
+    4300454: ShieldC2_0_turningXYZ
     9500000: //RootNode
   materials:
     importMaterials: 1

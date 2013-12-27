@@ -89,8 +89,7 @@ public class ScrollingPanel : MonoBehaviour
 			_ContentContainer.transform.localPosition = Vector3.zero;
 			_ContentContainer.transform.localRotation = Quaternion.identity;
 		}
-		
-		LimitTargetContainerPosition();
+
 		_ContentContainer.transform.localPosition = mTargetContainerPosition;
 
 		_Initialized = true;
@@ -101,7 +100,9 @@ public class ScrollingPanel : MonoBehaviour
 		for ( int i = 0; i < _ContentContainer.childCount; ++i )
 		{
 			_ContentContainer.GetChild(i).position = _ContentContainer.transform.position + Camera.main.transform.rotation * Vector3.down * i * _CellSize;
-		}		
+		}	
+
+		LimitTargetContainerPosition();
 	}
 	
 	void Update()
@@ -184,17 +185,18 @@ public class ScrollingPanel : MonoBehaviour
 	void LimitTargetContainerPosition()
 	{
 	//	mTargetContainerPosition.z = (int)(mTargetContainerPosition.z / _CellSize) * _CellSize;
-		
-		if ( mTargetContainerPosition.z < _BoundaryCollider.bounds.extents.y )
+
+		float lowerCap_ = _BoundaryCollider.bounds.extents.y + _CellSize * (Mathf.Max(_ContentContainer.childCount - 3,0));
+		float upperCap_ = -_BoundaryCollider.bounds.extents.y + _CellSize * (Mathf.Min(2, _ContentContainer.childCount - 1)) + 1.0f;
+
+		if ( mTargetContainerPosition.z < upperCap_ )
 		{
-			mTargetContainerPosition.z = _BoundaryCollider.bounds.extents.y;
+			mTargetContainerPosition.z = upperCap_;
 		}
-		else if ( mTargetContainerPosition.z > _CellSize * (_ContentContainer.childCount-1) - _BoundaryCollider.bounds.extents.y )
+		else if ( mTargetContainerPosition.z > lowerCap_ )
 		{
-			mTargetContainerPosition.z = _CellSize * (_ContentContainer.childCount-1) - _BoundaryCollider.bounds.extents.y;
+			mTargetContainerPosition.z =  lowerCap_;
 		}
-		
-		
 	}
 	
 	public void StopScrolling()

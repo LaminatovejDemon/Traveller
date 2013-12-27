@@ -691,7 +691,8 @@ public class Ship : MonoBehaviour
 					if (x-i < 0 || x-i >= HangarManager.HANGAR_SIZE || y-j < 0 || y-j >= HangarManager.HANGAR_SIZE )
 					{
 						Debug.Log ("Kurva UZ!");
-						continue;
+						part.UpdateLocation(Part.Location.Inventory);
+						return;
 					}
 					
 					if ( (place && mOccupied[x-i, y-j] != null) || (!place && mOccupied[x-i, y-j] == null) )
