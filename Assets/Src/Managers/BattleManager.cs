@@ -27,9 +27,11 @@ public class BattleManager : ButtonHandler
 	{		
 		mAttacker = attacker;
 		mDefender = defender;
+
+		BattleVisualManager.GetInstance().InitializeBattle();
 		
-		mAttacker._ShipPositionContainer.position += Camera.main.transform.rotation * Vector3.right * 5.0f;
-		mDefender._ShipPositionContainer.position += Camera.main.transform.rotation * Vector3.left * 5.0f;
+	//	mAttacker._ShipPositionContainer.position += Camera.main.transform.rotation * Vector3.right * 5.0f;
+	//	mDefender._ShipPositionContainer.position += Camera.main.transform.rotation * Vector3.left * 5.0f;
 		
 		mAttacker.mStats.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(1,1,0)) + Vector3.down * 15.0f;
 		mDefender.mStats.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(0.22f,1,0)) + Vector3.down * 15.0f;
@@ -135,8 +137,8 @@ public class BattleManager : ButtonHandler
 		MainManager.GetInstance()._EnemyCamera.Show(NPCShip_.transform.parent);
 		
 		//FleetManager.GetShip().DebugRotate = true;
-		PlayerShip_.DebugRotate = true;
-		NPCShip_.DebugRotate = true;
+//		PlayerShip_.DebugRotate = true;
+//		NPCShip_.DebugRotate = true;
 	}
 	
 	public void ShowBattleFinished()

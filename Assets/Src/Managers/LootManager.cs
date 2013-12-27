@@ -108,16 +108,16 @@ public class LootManager : MonoBehaviour
 			float val_ = _PatternRatioList[i] * 100.0f / total_;
 			percentTotal_ += val_;
 			_PatternPercentList[i] = val_;
-			Debug.Log("\t" + _PatternRarityList[i] + ": " + _PatternPercentList[i]);
+//			Debug.Log("\t" + _PatternRarityList[i] + ": " + _PatternPercentList[i]);
 		}
 
-		Debug.Log ("total percent :" + percentTotal_);
+//		Debug.Log ("total percent :" + percentTotal_);
 	}
 
 	float GetLootProbability()
 	{
 		float lootProbability_ = Mathf.Min(Mathf.Sqrt(1.0f/(float)FleetManager.GetShip().GetTierData()._TotalGamesCount), 1.0f);
-		Debug.Log ("Loot probability is " + lootProbability_);
+//		Debug.Log ("Loot probability is " + lootProbability_);
 		return lootProbability_;
 	}
 }

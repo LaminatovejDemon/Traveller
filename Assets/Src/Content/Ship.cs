@@ -150,7 +150,6 @@ public class Ship : MonoBehaviour
 	
 	void RemovePart(Part which, bool changeLayer)
 	{
-		Debug.Log (name + ": Removing " + which);					
 		Occupy(which, which.transform.localPosition, false, changeLayer);
 		
 	}
@@ -471,7 +470,7 @@ public class Ship : MonoBehaviour
 	
 	void SetEnergyIncome(Part part)
 	{
-		if ( part.mHP <= 0 )
+		if ( part == null || part.mHP <= 0 )
 		{
 			return;
 		}
@@ -482,7 +481,8 @@ public class Ship : MonoBehaviour
 	
 	void SetStats(Part part)
 	{
-		if ( part.mHP <= 0 )
+		// Already dead
+		if ( part == null || part.mHP <= 0 )
 		{
 			return;
 		}
@@ -527,7 +527,7 @@ public class Ship : MonoBehaviour
 	}
 	
 	
-	bool _DebugRotateDirection = true;
+/*	bool _DebugRotateDirection = true;
 	float _DebugRotateSpeed = 0;
 	bool _DebugRotate;
 	
@@ -541,7 +541,7 @@ public class Ship : MonoBehaviour
 		get {
 			return _DebugRotate;
 		}
-	}
+	}*/
 	
 	public void SetHangarEntry(bool state)
 	{
@@ -562,7 +562,7 @@ public class Ship : MonoBehaviour
 		else
 		{	
 			UpdateStatsContainer();
-			DebugRotate = false;
+		//	DebugRotate = false;
 			_ShipPositionContainer.parent = HangarManager.GetInstance()._HangarContainer.transform;
 			transform.localPosition = Vector3.zero;
 			_ShipPositionContainer.localPosition = Vector3.zero;		
@@ -742,9 +742,9 @@ public class Ship : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		if ( DebugRotate )
+	/*	if ( DebugRotate )
 		{
 			_ShipRotationContainer.Rotate(Vector3.up, (_DebugRotateDirection ? 1 : -1) * Time.deltaTime * _DebugRotateSpeed);
-		}
+		}*/
 	}
 }
