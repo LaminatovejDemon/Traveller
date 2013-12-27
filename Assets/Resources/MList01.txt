@@ -2,7 +2,7 @@ id;name;description;rarity;power;hash;hp;weight;integrity;model;texture;spec1;sp
 GenerA1;Abacus v1 Generator;The smallest generator, innefective but very compact and versatile.;1;4;1;1;6;0;GenerA1;mtexture;0;0;0;0
 GenerA2;Abacus v2 Generator;Advanced version of the first generator, for bigger size and higher weight offers better energy gain.;25;10;3;1;11;0;GenerA2;mtexture;0;0;0;0
 GenerA3;Abacus v3 Generator;Large sized generator, easy to hit due to its size, but effective at energy gain for your modules.;60;17;7;1;16;0;GenerA3;mtexture;0;0;0;0
-GenerA4;Abacus v4 Generator;The biggest generator up to date, very effective energy wise. Protect it at all cost as a single hit to this module can leave half of your systems without power.;80;25;195;1;21;0;GenerA4;mtexture;0;0;0;0
+GenerA4;Abacus v4 Generator;The biggest generator up to date from the abacus series, very effective energy wise. Protect it at all cost as a single hit to this module can leave half of your systems without power.;80;25;195;1;21;0;GenerA4;mtexture;0;0;0;0
 GenerB1;Barbatus v1 Generator;The smallest generator, more effective than its Abacus counterpart. Good for monobox ships or as additional expendable power supply.;90;6;1;1;8;0;GenerB1;mtexture;0;0;0;0
 GenerB2;Barbatus v2 Generator;Two slot sized generator, adequate option for powering smaller ships or as versatile power addon for bigger vessels;105;14;3;1;15;0;GenerB2;mtexture;0;0;0;0
 GenerB3;Barbatus v3 Generator;Large sized generator from Barbatus class, more effective than its Abacus counterpart. Overall great power source that should be placed in the middle of the ship.;130;25;7;1;18;0;GenerB3;mtexture;0;0;0;0
@@ -20,12 +20,15 @@ EngineB3;Barbatus v3 Engines;The best version of Barbatus engines, though bigger
 EngineC1;Calvus v1 Engines;Calvus class engines, small in size, versatile, effective and with basic armor. Great option for small advanced ships.;220;-4;1;2;6;0;EngineC1;mtexture;engipow;70;evade;4
 EngineC2;Calvus v2 Engines;The best of the small one slotted engines, great power, great versatility.;300;-12;1;2;8;0;EngineC2;mtexture;engipow;140;evade;5
 EngineC3;Calvus v3 Engines;The strongest engines up to date, giving huge evade. If coupled and powered they can make any but heavy armored ships nearly untargetable.;370;-20;3;2;10;0;EngineC3;mtexture;engipow;210;evade;6
-ShieldA1;Abacus v1 Shields;The first tiny shield with low energy cost. Can offer great defence vs smaller ships but has no recharge. Effective in combination with recharger modules.;15;-1;1;1;8;0;ShieldA1;mtexture;srech;0;scap;4
-ShieldA2;Abacus v2 Shields;Medium sized shield with no recharge but acceptable shield capacity. Effective in combination with recharger modules.;50;-3;3;1;14;0;ShieldA2;mtexture;srech;0;scap;10
-ShieldB1;Barbatus v1 Shields;Medium quality shields having small recharge, good option against weaker ships.;130;-2;1;1;9;0;ShieldB1;mtexture;srech;1;scap;4
-ShieldB2;Barbatus v2 Shields;Medium sized medium quality shields - they have good shield capacity with small recharge. Can take up some beating from lower tier weapons.;190;-6;3;1;16;0;ShieldB2;mtexture;srech;2;scap;20
-ShieldC1;Calvus v1 Shields;The strongest one slotted shields in the universe. For their size they have great capacity and small recharge.;250;-4;1;2;10;0;ShieldC1;mtexture;srech;1;scap;15
-ine;Calvus v2 Shields;The best shields availabe, having huge capacity and good recharge for very small energy consumption.;350;-8;3;2;18;0;ShieldC2;mtexture;srech;3;scap;30
+ShieldA1;Abacus v1 Shields;The first tiny shield with low energy cost. Can offer great defence vs smaller ships but has no recharge. Effective in combination with recharger modules.;15;-1;1;1;8;0;ShieldA1;mtexture;srech;0;scap;6
+ShieldA2;Abacus v2 Shields;Advanced version of Av2 shields offers higher shield capacity at increased energy cost. Acceptable option for lower tier ships.;50;-2;1;1;9;0;ShieldA2;mtexture;srech;0;scap;12
+ShieldA3;Abacus v3 Shields;Medium sized shield with no recharge but acceptable shield capacity. Effective in combination with recharger modules.;90;-3;3;1;14;0;ShieldA3;mtexture;srech;0;scap;15
+ShieldB1;Barbatus v1 Shields;Medium quality shields having small recharge, good option against weaker ships.;130;-2;1;1;9;0;ShieldB1;mtexture;srech;1;scap;8
+ShieldB2;Barbatus v2 Shields;Advanced version of Bv2 shields, offers higher shield capacity at more effective energy consumption ratio.;150;-4;1;1;11;0;ShieldB2;mtexture;srech;1;scap;15
+ShieldB3;Barbatus v3 Shields;Medium sized medium quality shields - they have good shield capacity with small recharge. Can take up some beating from lower tier weapons.;210;-6;3;1;16;0;ShieldB3;mtexture;srech;2;scap;30
+ShieldC1;Calvus v1 Shields;The 2nd strongest one slotted shields in the universe. For their size they have great capacity and small recharge.;250;-4;1;2;10;0;ShieldC1;mtexture;srech;1;scap;20
+ShieldC2;Calvus v2 Shields;The most versatile shields in the universe due to their size, capacity and energy consumption. Valid option for any even the most advanced ships.;300;-6;1;2;12;0;ShieldC2;mtexture;srech;1;scap;30
+ShieldC3;Calvus v3 Shields;The best shields availabe, having huge capacity and good recharge for very small energy consumption.;380;-8;3;2;18;0;ShieldC3;mtexture;srech;3;scap;40
 RechargerA1;Abacus v1 Recharger;Recharger offerst a nice boost for shield regeneration, if cleverly placed in your boxship, it can help to soak up tons of enemy beam damage.;100;-7;1;1;15;0;RechargerA1;mtexture;srech;4;0;0
 RechargerB1;Barbatus v1 Recharger;Barbatus recharger refreshing shield at the average rate. Great addition to anti laser defences. It can block off effectively multiple gatling lasers.;230;-12;1;1;22;0;RechargerB1;mtexture;srech;8;0;0
 RechargerC1;Calvus v1 Recharger;The ultimate shield recharger, it can keep shields powered up for ages unless being targeted by the strongest ships.;380;-10;1;1;25;0;RechargerC1;mtexture;srech;12;0;0
@@ -44,19 +47,38 @@ LaserBasicC2;Calvus v2 Laser;One of the best single shot lasers in the universe.
 LaserBasicC3;Calvus v3 Laser;The best choice for small laser, effective in damage/power ratio, compact, versatile.;280;-3;1;3;8;0;LaserBasicC3;mtexture;beam;4;0;0
 LaserHeavyC1;Calvus v1 Heavy Laser;The strongest heavy laser up to date, melts shields like a butter.;360;-11;1;3;10;0;LaserHeavyC1;mtexture;beam;15;0;0
 LaserGatlingC1;Calvus v1 Gatling Laser;Together with Calvus heavy laser the best beam weapon in the game. Hitting multiple targets, energy wise effective and with great damage output.;330;-8;1;3;10;0;LaserGatlingC1;mtexture;beam;3;beamrep;3
-TorpedoA1;Abacus v1 Torpedos;Basic torpedo launcher. It has low damage and high energy cost, but still offers extremely efficient way on how to destroy exposed unarmored modules of the enemy in one hit as it penetrates shields easily.;110;-8;1;1;10;0;TorpedoA1;mtexture;torpdam;2;hitchance;50
-TorpedoB1;Barbatus v1 Torpedos;;250;-10;1;1;15;0;TorpedoB1;mtexture;torpdam;4;hitchance;65
-TorpedoC1;Calvus v1 Torpedos;;400;-16;1;3;20;0;TorpedoC1;mtexture;torpdam;6;hitchance;90
+TorpedoA1;Abacus v1 Torpedos;Basic torpedo launcher. It has low damage, low hit chance and high energy cost, but still offers extremely efficient way on how to destroy exposed unarmored modules of the enemy in one hit as it penetrates shields easily.;110;-8;1;1;20;0;TorpedoA1;mtexture;torpdam;2;hitchance;50
+TorpedoB1;Barbatus v1 Torpedos;Advanced Torpedos, though not really accurate they posses deadly threat to almost all the ships.;250;-10;1;1;40;0;TorpedoB1;mtexture;torpdam;4;hitchance;65
+TorpedoC1;Calvus v1 Torpedos;The best Torpedos ingame, devastating, accurate. Probably the best weapon ingame matched only by the most advanced Gatlings and Heavy Lasers.;400;-16;1;3;60;0;TorpedoC1;mtexture;torpdam;6;hitchance;90
 ArmorA1;Abacus v1 Armor;Ultra leightweited armor that melts like a paper, acceptable defence against missiles for high maneuvrable boxships.;3;0;1;2;1;0;ArmorA1;mtexture;0;0;0;0
 ArmorA2;Abacus v2 Armor;Offers reasonable protection against low tier weapons at reasonable weight, but not really strong vs heavily armed beam boxships.;20;0;1;4;4;0;ArmorA2;mtexture;0;0;0;0
-ArmorA3;Abacus v3 Armor;Great armor against torpedos, quite usefull even against mediocre armed beam boxships, but quite heavy.;55;0;1;7;9;0;ArmorA3;mtexture;0;0;0;0
+ArmorA3;Abacus v3 Armor;Great armor against torpedos, quite usefull even against mediocre armed beam boxships, but heavy.;55;0;1;7;9;0;ArmorA3;mtexture;0;0;0;0
 ArmorA4;Abacus v4 Armor;The monstrously strong armor able to survive multiple volleys of enemy fire, but extremely heavy weighted.;90;0;1;10;25;0;ArmorA4;mtexture;0;0;0;0
-ArmorB1;Barbatus v1 Armor;;110;0;1;4;2;0;ArmorB1;mtexture;0;0;0;0
-ArmorB2;Barbatus v2 Armor;;140;0;1;7;8;0;ArmorB2;mtexture;0;0;0;0
-ArmorB3;Barbatus v3 Armor;;170;0;1;12;18;0;ArmorB3;mtexture;0;0;0;0
-ArmorB4;Barbatus v4 Armor;;220;0;1;18;50;0;ArmorB4;mtexture;0;0;0;0
-ArmorC1;Calvus v1 Armor;;250;0;1;6;3;0;ArmorC1;mtexture;0;0;0;0
-ArmorC2;Calvus v2 Armor;;300;0;1;12;7;0;ArmorC2;mtexture;0;0;0;0
-ArmorC3;Calvus v3 Armor;;350;0;1;18;10;0;ArmorC3;mtexture;0;0;0;0
-ArmorC4;Calvus v4 Armor;;400;0;1;30;50;0;ArmorC4;mtexture;0;0;0;0
+ArmorB1;Barbatus v1 Armor;Lightweighted armor that can sustain some damage, good choice for armored high evasive ships.;110;0;1;4;2;0;ArmorB1;mtexture;0;0;0;0
+ArmorB2;Barbatus v2 Armor;Relatively lightweited armor with good durability, great option for evasive ships with very strong engines.;140;0;1;7;8;0;ArmorB2;mtexture;0;0;0;0
+ArmorB3;Barbatus v3 Armor;Great compromise between weight and durability.;170;0;1;12;18;0;ArmorB3;mtexture;0;0;0;0
+ArmorB4;Barbatus v4 Armor;Heavy Barbatus Armor, extremely heavyweighted module that can withstand a great deal of damage.;220;0;1;18;50;0;ArmorB4;mtexture;0;0;0;0
+ArmorC1;Calvus v1 Armor;The best lightweited armor available, ideal for armored ships with high evade.;250;0;1;6;3;0;ArmorC1;mtexture;0;0;0;0
+ArmorC2;Calvus v2 Armor;Calvus class v2 armor, very light, very durable, one of the best armors ingame.;300;0;1;12;7;0;ArmorC2;mtexture;0;0;0;0
+ArmorC3;Calvus v3 Armor;The ultimate choice for those that seek balance between weight and protection.;350;0;1;18;10;0;ArmorC3;mtexture;0;0;0;0
+ArmorC4;Calvus v4 Armor;The beast! Effectively impenetrable for anything but the highest tier weapons. The best module ever for heavily armored battleships.;400;0;1;30;50;0;ArmorC4;mtexture;0;0;0;0
+;;;;;;;;;;;;;;
+changes made;;added 1slot shied v2 to each A-C class;;;;;;;;;;;;
+notes;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;
