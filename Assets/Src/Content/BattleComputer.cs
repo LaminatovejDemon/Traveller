@@ -75,6 +75,7 @@ public class BattleComputer : MonoBehaviour
 				ammoCount_ = part.mPattern.mAbilityList[i].mValue;	
 			}
 		}
+
 		
 		for ( int i = 0; i < part.mPattern.mAbilityList.Count; ++i )
 		{

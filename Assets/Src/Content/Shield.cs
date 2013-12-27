@@ -15,7 +15,7 @@ public class Shield : MonoBehaviour
 	float _RealCapacity = -1;
 	Color _BasicColor;
 	float _BasicColorAlpha;
-	Vector3 _InitialShipCenter;
+	public Vector3 _InitialShipCenter;
 	
 	public GameObject _ShieldCapacityCaption;
 	
@@ -54,7 +54,7 @@ public class Shield : MonoBehaviour
 		_Visual.gameObject.layer = _ParentShip.gameObject.layer;
 		_Visual.transform.parent = _ParentShip.transform.parent;
 		
-		_BasicColor = _Visual.material.color;
+		_BasicColor = _Visual.material.GetColor("_TintColor");
 		_BasicColorAlpha = _BasicColor.a;
 		
 		_ShieldCapacityCaption = TextManager.GetInstance().GetText("SHIELD: N/A", 0.5f);
@@ -64,16 +64,20 @@ public class Shield : MonoBehaviour
 		
 		RecalculateBoundary();
 		
-		SetVisibility(false);
-		
-		
+		//SetVisibility(false);
+
 		_Initialized = true;
 		
 	}
 	
 	public void RecalculateBoundary()
 	{
-		Vector3 shieldOffset_ = _InitialShipCenter - _ParentShip.mShipCenter;
+		if ( _ParentShip == null )
+		{
+			return;
+		}
+
+		Vector3 shieldOffset_ = _InitialShipCenter - _ParentShip.mShipCenter + Vector3.up * 1.0f;
 			
 		_Visual.transform.localPosition = shieldOffset_;
 		_Visual.transform.localRotation = Quaternion.identity;
@@ -86,6 +90,8 @@ public class Shield : MonoBehaviour
 	
 	public void SetVisibility(bool state)
 	{
+		Initialize();
+
 		_ShieldCapacityCaption.gameObject.SetActive(state);
 		_Visual.gameObject.SetActive(state);
 	}
@@ -112,12 +118,14 @@ public class Shield : MonoBehaviour
 	
 	void Update()
 	{
+		Initialize();
+
 		if ( _RealCapacity != (_Income - _OutcomeVisual) )
 		{
 			_RealCapacity = Mathf.Max((_Income - _OutcomeVisual), 0);
 			_BasicColor.a = (_RealCapacity/(_Income)) * _BasicColorAlpha;
 			
-			_Visual.material.color = _BasicColor;
+			_Visual.material.SetColor ("_TintColor", _BasicColor);
 			
 			_ShieldCapacityCaption.GetComponent<TextMesh>().text = "SHIELD: " + (_RechargeText != "" ? ""+(_RealCapacity-_Recharge) + _RechargeText : ""+_RealCapacity );
 		}

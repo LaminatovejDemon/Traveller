@@ -24,7 +24,7 @@ public class Ship : MonoBehaviour
 	public int _OffsetVertical {get; private set;}
 	public int _BoundaryHorizontal {get; private set;}
 	public int _BoundaryVertical {get; private set;}
-	public Vector3 mShipCenter { get; private set;}
+	public Vector3 mShipCenter;
 	
 	public Shield _Shield;
 
@@ -89,7 +89,7 @@ public class Ship : MonoBehaviour
 		
 		ClearHangar();
 		_Shield = gameObject.AddComponent<Shield>();
-		_Shield.Initialize();
+
 		
 		LoadShip(template);
 		
@@ -99,6 +99,7 @@ public class Ship : MonoBehaviour
 		_OffsetHorizontal = template.mOffsetH;
 		
 		transform.localPosition = mShipCenter = template.mCenter;
+
 		mInitialized = true;
 	}
 	
@@ -119,11 +120,10 @@ public class Ship : MonoBehaviour
 		
 		ClearHangar();
 		_Shield = gameObject.AddComponent<Shield>();
-		_Shield.Initialize();
 		
 		RestoreShip();
 		
-		transform.localPosition = mShipCenter;
+		//transform.localPosition = mShipCenter;
 		
 		
 		mInitialized = true;
@@ -712,7 +712,9 @@ public class Ship : MonoBehaviour
 		ClearStats();
 		
 		CalculateShipCenter();
-				
+
+		_Shield.SetVisibility(false);
+
 		for ( int i = 0; i < transform.childCount; ++i )
 		{
 			SetEnergyIncome(transform.GetChild(i).GetComponent<Part>());
