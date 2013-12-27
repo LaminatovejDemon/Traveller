@@ -10,7 +10,7 @@ public class MainManager : MonoBehaviour {
 	public Camera _InventoryCamera;
 	public Camera _GUICamera;
 	public PlayerData _PlayerData;
-
+	public TextMesh _FPSMesh;
 
 	private static MainManager mInstance = null;
 	
@@ -214,9 +214,28 @@ public class MainManager : MonoBehaviour {
 
 	
 	bool mMouseDown = false;
+
+	float _LastMeasure = -1;
+	float _AccumulatedDelta = 0;
+
+	void UpdateFPS()
+	{
+		if ( Time.time - _LastMeasure > 1.0f )
+		{
+			_FPSMesh.text = (_AccumulatedDelta / (Time.time - _LastMeasure)) + " ("+Application.targetFrameRate+") FPS";
+			_AccumulatedDelta = 0;
+			_LastMeasure = Time.time;
+		}
+		else
+		{
+			++_AccumulatedDelta;
+		}
+	}
 	
 	void Update () 
 	{
+		UpdateFPS();
+
 		BackupUpdate();
 #if UNITY_EDITOR
 		if ( Input.GetMouseButtonDown(0) )
