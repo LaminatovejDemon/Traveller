@@ -358,8 +358,6 @@ public class Ship : MonoBehaviour
 		int incX_ = px < sx ? 1 : -1;
 		int incY_ = py < sy ? 1 : -1;
 		
-		bool free_ = false;
-		
 		for ( int x_ = px; (incX_ > 0 ? x_ <= sx : x_ >= sx); x_ += incX_ )
 		{
 			for ( int y_ = py; (incY_ > 0 ? y_ <= sy : y_ >= sy); y_ += incY_ )
@@ -403,6 +401,7 @@ public class Ship : MonoBehaviour
 		}
 
 		GameObject.Destroy(mStats);
+		//_TierData.DeleteAll();
 		//GameObject.Destroy(transform.parent.gameObject);
 
 		MainManager.GetInstance().Backup();
@@ -453,7 +452,6 @@ public class Ship : MonoBehaviour
 	void AddWeaponStats(float damage, PartManager.Pattern parentPattern)
 	{
 		PartManager.Ability repeater_ = parentPattern.GetAbility(PartManager.AbilityType.BeamRepeater);
-		PartManager.Ability count_ = parentPattern.GetAbility(PartManager.AbilityType.TorpedoCount);
 				
 		if ( repeater_ != null )
 		{

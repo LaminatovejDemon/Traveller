@@ -25,6 +25,25 @@ public class FleetManager : MonoBehaviour
 	{
 		instance.EraseShip();
 	}
+
+	public ShipScan GetAverageScan(float elo)
+	{
+		ShipScan best_ = GetRandomScan();
+		ShipScan alter_ = best_;
+
+		for ( int i = 0; i < 10; ++i )
+		{
+			alter_ = GetRandomScan();
+			if ( Mathf.Abs(alter_.GetTierData().GetELO() - elo) < Mathf.Abs(best_.GetTierData().GetELO() - elo) )
+			{
+				Debug.Log ("Getting "+elo+" average " + alter_.mName + "(" + alter_.GetTierData().GetELO() + ") is better than "
+				           + best_.mName + "(" + best_.GetTierData().GetELO() + ")");
+				best_ = alter_;
+			}
+		}
+
+		return best_;
+	}
 	
 	public ShipScan GetRandomScan()
 	{
@@ -70,6 +89,14 @@ public class FleetManager : MonoBehaviour
 		GameObject.Destroy(_ShipScanContainer);
 		mShipScanList.Clear();
 		PlayerPrefs.SetInt("ScanShipCount", 0);
+	}
+
+	public void DeleteAllTierData()
+	{
+		for ( int i = 1; i < mShipScanList.Count; ++i )
+		{
+			mShipScanList["ScannedShip_" + i].GetTierData().DeleteAll();
+		}
 	}
 
 	public void AddTutorialShip()

@@ -6,14 +6,15 @@ public class PlayerData : MonoBehaviour
 	public void DeleteAll()
 	{
 		FleetManager.GetShip().EraseShip();
-		FleetManager.GetInstance().DeleteAllScans();
 		PlayerPrefs.DeleteAll();
+		FleetManager.GetInstance().DeleteAllScans();
 		FleetManager.GetShip().GetTierData().DeleteAll();
 		
 		FleetManager.GetInstance().AddTutorialShip();
 		Restore();
+	
 	}
-
+	
 	public void Backup()
 	{
 		FleetManager.GetShip().GetTierData().Backup();

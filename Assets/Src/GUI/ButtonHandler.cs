@@ -13,6 +13,7 @@ public class ButtonHandler : MonoBehaviour
 		HANGAR_ERASE_ALL,
 		CONFIRM,
 		CANCEL,
+		INVENTORY_CLEANUP,
 		Invalid,
 	};
 		

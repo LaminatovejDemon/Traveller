@@ -383,7 +383,6 @@ public class PartManager : MonoBehaviour
 	{
 		string damage_ = "";
 		string amount_ = "";
-		string torpedo_ = "";
 
 		Ability beamAbility_ = pattern.GetAbility(AbilityType.Beam);
 		Ability torpedoAbility_ = pattern.GetAbility(AbilityType.TorpedoDamage);

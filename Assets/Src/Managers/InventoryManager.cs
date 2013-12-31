@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class InventoryManager : MonoBehaviour 
+public class InventoryManager : ButtonHandler 
 {
 	public ScrollingPanel _ScrollingPanel;
 	public FrameSlider _ContainerSlider;
@@ -155,7 +155,6 @@ public class InventoryManager : MonoBehaviour
 		ClearInventory();
 
 		int index_ = 0;
-		GameObject part_ = null;
 		float rarity_;
 		
 		while ( true)
@@ -263,6 +262,32 @@ public class InventoryManager : MonoBehaviour
 		{
 			string patternID_ = PlayerPrefs.GetString("Player_Inventory_"+i+"_id");
 			InsertPart(patternID_);
+		}
+	}
+
+	public override void ButtonPressed (Button target)
+	{
+		base.ButtonPressed (target);
+		
+		switch (target._Handle)
+		{
+		case ButtonHandler.ButtonHandle.CONFIRM:
+
+			FleetManager.GetShip().EraseShip();
+			InventoryManager.GetInstance().FillInventory(1);
+
+			FleetManager.GetShip().GetTierData().DeleteAll();
+			FleetManager.GetInstance().DeleteAllTierData();
+			Utils.DestroyParentWindow(target.gameObject);
+			break;
+			
+		case ButtonHandler.ButtonHandle.CANCEL:
+			Utils.DestroyParentWindow(target.gameObject);
+			break;
+
+		case ButtonHandler.ButtonHandle.INVENTORY_CLEANUP:
+			PopupManager.GetInstance().CreateConfirmPopup("ERASE INVENTORY", "Are you sure to ERASE your INVENTORY?", this);
+			break;
 		}
 	}
 }

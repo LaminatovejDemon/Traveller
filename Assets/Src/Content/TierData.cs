@@ -58,8 +58,6 @@ public class TierData : MonoBehaviour
 
 	public void SetStats(bool ownerIsAlive, bool enemyIsAlive, int enemyTier)
 	{
-		int _tier = GetTier();
-
 		++_GamesCount[enemyTier];
 		++_TotalGamesCount;
 
@@ -135,6 +133,13 @@ public class TierData : MonoBehaviour
 	public void DeleteAll()
 	{
 		_AchievedRarity = 0;
-		Destroy(gameObject);
+		_Tier = 0;
+		_AchievedRarity = 0;
+		_TotalGamesCount = 0;
+		_WinCount = null;
+		_DrawCount = null;
+		_GamesCount = null;
+		_Initialized = false;
+		Initialize();
 	}
 }

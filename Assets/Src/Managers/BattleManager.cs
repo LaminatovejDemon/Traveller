@@ -197,7 +197,7 @@ public class BattleManager : ButtonHandler
 
 		BattleVisualManager.GetInstance().InitializeBattle();
 
-		Ship NPCShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetRandomScan() );
+		Ship NPCShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetAverageScan(FleetManager.GetInstance().GetPlayerScan().GetTierData().GetELO()) );
 		BattleVisualManager.GetInstance().RegisterHandler(NPCShip_.gameObject.AddComponent<BattleVisualHandler>());
 
 		Ship PlayerShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetPlayerScan() );

@@ -3,11 +3,8 @@ using System.Collections;
 
 public class ProjectileVisual : MonoBehaviour 
 {
-	bool _Initialized = false;
-
 	public void Initialize(Part link, float angle, BattleComputer.Side targetSide, int  index, Ship targetShip, bool intoShield, float damage)
 	{
-		_Initialized = true;
 		_Link = link;
 		_Angle = angle;
 		_index = index;
