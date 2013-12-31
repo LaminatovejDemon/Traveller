@@ -23,17 +23,18 @@ public class PopupManager : MonoBehaviour {
 
 	public void DisplayRewardPopup(bool ownerIsAlive, bool enemyIsAlive)
 	{
+		Debug.Log ("Reward popup of ship " + FleetManager.GetShip()._ShipName + " with data " + FleetManager.GetShip().GetTierData()._ParentName);
 		if ( !ownerIsAlive && !enemyIsAlive )
 		{
-			CreateMessagePopup("DRAW GAME", "Everybody is dead, Dave...\n\n"+ FleetManager.GetShip().GetTierData().GetStatsLabel()); 
+			CreateMessagePopup("DEAD SPACE", "Everybody is dead, Dave...\n\n"+ FleetManager.GetShip().GetTierData().GetStatsLabel()); 
 		}
 		else if ( ownerIsAlive )
 		{
-			CreateMessagePopup("YOU WON", "Dr. Hildegarde Lanstrom would know.\n\n"+FleetManager.GetShip().GetTierData().GetStatsLabel());
+			CreateMessagePopup("YOU SURVIVED", "Salvaging space...\n\n"+FleetManager.GetShip().GetTierData().GetStatsLabel());
 		}
 		else 
 		{
-			CreateMessagePopup("YOU LOST YOUR SHIP", "...\n\n"+FleetManager.GetShip().GetTierData().GetStatsLabel());
+			CreateMessagePopup("PWNED!", "...quickload\n\n"+FleetManager.GetShip().GetTierData().GetStatsLabel());
 		}
 	}
 	

@@ -31,15 +31,16 @@ public class Ship : MonoBehaviour
 	public ShipScan _ScanParent { get; private set;}
 	
 	BattleComputer _BattleComputer;
-	
+
+	public bool DoesDamage()
+	{
+		return mWeaponDamage > 0;
+	}
+	                 
+
 	public bool IsAlive()
 	{
-		if ( mEnergyProduction > 0 )
-		{
-			return true;
-		}
-		
-		return false;
+		return mEnergyProduction > 0;
 	}
 	
 	public Part GetPartAt(int x, int y)
@@ -194,8 +195,6 @@ public class Ship : MonoBehaviour
 	
 	public void LoadShip(ShipScan template)
 	{
-		Debug.Log ("loading ship" + template.mName);
-
 		_ShipName = template.mName;
 		
 		if (PlayerPrefs.GetInt(template.mName+"_ShipItemCount") > 0 )

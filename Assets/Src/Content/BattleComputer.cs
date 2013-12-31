@@ -125,6 +125,12 @@ public class BattleComputer : MonoBehaviour
 		
 		return Random.Range(0, max_);
 	}
+
+	// when all shots are queued for fire
+	public void AttackFinished()
+	{
+		GetComponent<BattleVisualBase>().AttackFinished();
+	}
 	
 	public void Attack(Ship target)
 	{
@@ -138,7 +144,6 @@ public class BattleComputer : MonoBehaviour
 				Shoot(target, mWeaponList[i], side_);
 			}
 			Shoot(target, mWeaponList[i], side_);
-			
 		}
 	}
 	
@@ -150,7 +155,6 @@ public class BattleComputer : MonoBehaviour
 		
 		if ( targetPart_ != null )
 		{
-			Debug.Log ("evade of " + target + " is " + target.GetEvade() );
 			if ( Random.value < target.GetEvade() )
 			{
 				targetPart_ = null;
@@ -163,18 +167,18 @@ public class BattleComputer : MonoBehaviour
 		{
 			if (target._Shield.GetCapacity() > 0 && (weapon._Ability != PartManager.AbilityType.TorpedoDamage))
 			{
-				BattleVisualManager.GetInstance().QueueFire(weapon._Owner, targetPart_, weapon._Ability , side, index_, target, true, weapon._Damage);
+				GetComponent<BattleVisualBase>().QueueFire(weapon._Owner, targetPart_, weapon._Ability , side, index_, target, true, weapon._Damage);
 				target._Shield.ChangeOutcomeCapacity(weapon._Damage);
 			}
 			else
 			{
-				BattleVisualManager.GetInstance().QueueFire(weapon._Owner, targetPart_, weapon._Ability , side, index_, target, false, weapon._Damage);
+				GetComponent<BattleVisualBase>().QueueFire(weapon._Owner, targetPart_, weapon._Ability , side, index_, target, false, weapon._Damage);
 				targetPart_.mHP -= weapon._Damage;
 			}
 		}
 		else
 		{
-			BattleVisualManager.GetInstance().QueueFire(weapon._Owner, null, weapon._Ability , side, index_, target, false, 0);
+			GetComponent<BattleVisualBase>().QueueFire(weapon._Owner, null, weapon._Ability , side, index_, target, false, 0);
 		}
 			
 //		Debug.Log ("Shooting at " + target + "'s " + side + " "+ index_ +" with " + weapon._Ability + "("+weapon._Damage+") of " + weapon._Owner.name );

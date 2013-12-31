@@ -60,6 +60,8 @@ public class MainManager : MonoBehaviour {
 		_BackupDirty = true;
 	}
 
+	public float _NextSimulationTime = 0;
+
 	void BackupUpdate()
 	{
 		if ( _BackupDirty )
@@ -68,6 +70,12 @@ public class MainManager : MonoBehaviour {
 			BackupPlayer();
 			_BackupDirty = false;
 		}
+
+		if ( Time.time - _NextSimulationTime > 0f )
+		{
+			_NextSimulationTime = Time.time + Random.Range(0.5f, 3.0f);
+			BattleManager.GetInstance().SimulateBattle();
+		}	
 	}
 	
 	void BackupPlayer()

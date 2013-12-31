@@ -58,7 +58,6 @@ public class PopupWindow : MonoBehaviour
 
 	protected virtual void OnTouchUp(int fingerID)
 	{
-		Debug.Log ("touch up");
 		if ( fingerID != mFingerID )
 		{
 			return;

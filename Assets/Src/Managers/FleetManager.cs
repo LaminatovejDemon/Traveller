@@ -23,17 +23,21 @@ public class FleetManager : MonoBehaviour
 	
 	public void DestroyShipInstance(Ship instance)
 	{
-//		mUsedShipList.Remove(instance);
 		instance.EraseShip();
 	}
 	
 	public ShipScan GetRandomScan()
 	{
+		if ( mShipScanList.Count < 2 )
+		{
+			return null;
+		}
+
 		int scanCount_ = PlayerPrefs.GetInt("ScanShipCount");
 		
 		int order_ = Random.Range(1, scanCount_);
-		//int order_ = 1;
-		Debug.Log ("Getting some scan ScannedShip_" + order_);
+
+
 		return mShipScanList["ScannedShip_"+order_];
 	}
 	
@@ -46,7 +50,6 @@ public class FleetManager : MonoBehaviour
 	
 	public ShipScan GetDuplicate(Ship ship)
 	{
-		Debug.Log ("Getting duplicate of " + ship);
 
 		int scanCount_ = PlayerPrefs.GetInt("ScanShipCount");
 		Debug.Log("ScanShipCount is " + scanCount_);
@@ -156,7 +159,7 @@ public class FleetManager : MonoBehaviour
 		Debug.Log("Adding ship into list: " + new_.mName);
 
 		mShipScanList.Add(new_.mName, new_);
-		
+
 		mPlayerShipName = new_.mName;
 	}
 	
@@ -188,7 +191,6 @@ public class FleetManager : MonoBehaviour
 	{
 		Debug.Log("Setting ship count" + lastIndex);
 		PlayerPrefs.SetInt("ScanShipCount", lastIndex);
-		
 
 		scan.Backup();
 	}
@@ -215,22 +217,10 @@ public class FleetManager : MonoBehaviour
 		
 		PlayerPrefs.DeleteKey(name+"_partCount");
 	}
-	
-//	List<Ship> mUsedShipList = new List<Ship>();
-	
-	public void RegisterShip(Ship which)
-	{
-//		mUsedShipList.Add(which);
-	}
-	
-	public void SetHangarEntry(bool state)
-	{
 		
+	public void SetHangarEntry(bool state)
+	{		
 		FleetManager.GetShip().SetHangarEntry(state);
-//		for ( int i = 0; i < mUsedShipList.Count; ++i )
-		{
-//			mUsedShipList[i].gameObject.SetActive(!state);
-		}
 	}
 	
 	private static Ship mPlayerShip = null;

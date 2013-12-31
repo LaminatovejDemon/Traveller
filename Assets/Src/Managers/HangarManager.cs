@@ -125,8 +125,10 @@ public class HangarManager : ButtonHandler
 			_HideHangarFinished = false;
 			_HangarSlideCompleted = false;
 			
-			BattleManager.GetInstance().ShowBattle();
-
+			if ( !BattleManager.GetInstance().ShowBattle() )
+			{
+				SetHangarVisibility(true);
+			}
 		}
 	}
 	

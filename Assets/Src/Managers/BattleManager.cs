@@ -28,8 +28,6 @@ public class BattleManager : ButtonHandler
 		mAttacker = attacker;
 		mDefender = defender;
 
-		BattleVisualManager.GetInstance().InitializeBattle();
-		
 	//	mAttacker._ShipPositionContainer.position += Camera.main.transform.rotation * Vector3.right * 5.0f;
 	//	mDefender._ShipPositionContainer.position += Camera.main.transform.rotation * Vector3.left * 5.0f;
 		
@@ -41,27 +39,40 @@ public class BattleManager : ButtonHandler
 		
 		mAttackerComputer = mAttacker.GetComponent<BattleComputer>();
 		mDefenderComputer = mDefender.GetComponent<BattleComputer>();
-		
+
 		mAttackerComputer.InitBattle();
 		mDefenderComputer.InitBattle();
+	}
+
+	bool _Simulation = false;
+
+	public void SetSimulation(bool state)
+	{
+		_Simulation = state;
+	}
+
+	bool _AutoTurn = false;
+	
+	public void SetAutoTurn(bool state)
+	{
+		_AutoTurn = state;
 	}
 	
 	void Turn()
 	{
-		BattleVisualManager.GetInstance().ResetTurn();
+		BattleVisualManager.GetInstance().InitializeTurn();
+		mAttacker.GetComponent<BattleVisualBase>().InitializeTurn();
+		mDefender.GetComponent<BattleVisualBase>().InitializeTurn();
+
 		mAttackerComputer.Attack(mDefender);
 		mDefenderComputer.Attack(mAttacker);
-		
-		//This should be used only when skip
-		//mAttacker.RemoveDestroyedParts();
-		//mDefender.RemoveDestroyedParts();
-		//CheckStats();
-		//TurnEnded();
+
+		mAttackerComputer.AttackFinished();
+		mDefenderComputer.AttackFinished();
 	}
 	
 	public void TurnEnded()
 	{
-		Debug.Log ("Setting stats in the end of turn");
 		mAttacker.SetStats();
 		mDefender.SetStats();
 		mDefenderComputer.EndTurn();
@@ -69,30 +80,66 @@ public class BattleManager : ButtonHandler
 		
 		CheckStats();
 	}
-	
-	void CheckStats()
+
+	void BattleCleanup()
 	{
-		if ( !mAttacker.IsAlive() || !mDefender.IsAlive() )
+		GameObject.Destroy(mAttacker.mStats.gameObject);
+		GameObject.Destroy(mAttacker.transform.parent.parent.gameObject);
+		GameObject.Destroy(mDefender.mStats.gameObject);
+		GameObject.Destroy(mDefender.transform.parent.parent.gameObject);
+
+		BattlePending = false;
+	}
+	
+	bool CheckStats()
+	{
+		if ( !mAttacker.IsAlive() || !mDefender.IsAlive() || !(mAttacker.DoesDamage() || mDefender.DoesDamage()) 
+		    || mAttacker._ScanParent == null )
 		{
+			BattleFinished();
+			return false;
+		}
+		else
+		{
+			if ( _AutoTurn )
+			{
+				Turn ();
+			}
+			else
+			{
+				_OpenHangarButton.Active = true;
+				_TurnButton.Active = true;
+			}
+		}
+		return true;
+	}
 
-			// we need tier before counting stats for both sides
-			int attackerTier_ = mAttacker._ScanParent.GetTierData().GetTier();
-			int defenderTier_ = mDefender._ScanParent.GetTierData().GetTier();
-
-			// settings scan stats
+	void BattleFinished()
+	{
+		// we need tier before counting stats for both sides
+		int attackerTier_ = mAttacker._ScanParent == null ? 0 : mAttacker._ScanParent.GetTierData().GetTier();
+		int defenderTier_ = mDefender._ScanParent.GetTierData().GetTier();
+		
+		// settings scan stats
+		if ( mAttacker._ScanParent != null )
+		{
 			mAttacker._ScanParent.GetTierData().SetStats(mAttacker.IsAlive(), mDefender.IsAlive(), defenderTier_);
-			mDefender._ScanParent.GetTierData().SetStats(mDefender.IsAlive(), mAttacker.IsAlive(), attackerTier_);
+		}
 
+		mDefender._ScanParent.GetTierData().SetStats(mDefender.IsAlive(), mAttacker.IsAlive(), attackerTier_);
+
+		if ( !_Simulation )
+		{
 			// and parent stats
 			FleetManager.GetShip().GetTierData().SetStats(mDefender.IsAlive(), mAttacker.IsAlive(), attackerTier_);
 
 			PopupManager.GetInstance().DisplayRewardPopup(mDefender.IsAlive(), mAttacker.IsAlive());
-
+			
 			if  ( mDefender.IsAlive() )
 			{
 				LootManager.GetInstance().GetLoot();
 			}
-
+			
 			_TurnButtonSlider.SlideIn = false;
 			HangarManager.GetInstance()._OpenButtonContainerSlider.SlideIn = true;
 			_OpenHangarButton.Visible = true;	
@@ -101,25 +148,66 @@ public class BattleManager : ButtonHandler
 		}
 		else
 		{
-			_OpenHangarButton.Active = true;
-			_TurnButton.Active = true;
+			BattleCleanup();
 		}
 	}
+
+	bool BattlePending = false;
 	
-		
-	public void ShowBattle()
+	public void SimulateBattle()
 	{
-		if ( mDefender != null )
+		ShipScan NPCScan1_ = FleetManager.GetInstance().GetRandomScan();
+		ShipScan NPCScan2_ = FleetManager.GetInstance().GetRandomScan();
+
+		if ( BattlePending || NPCScan1_ == null || NPCScan2_ == null )
 		{
-			FleetManager.GetInstance().DestroyShipInstance(mDefender);
+			return;
 		}
+
+		BattlePending = true;
+
+		BattleVisualManager.GetInstance().InitializeBattle();
+
+		Ship NPCShip1_ = FleetManager.GetShip( NPCScan1_ );
+		Ship NPCShip2_ = FleetManager.GetShip( NPCScan2_ );
+
+		BattleVisualManager.GetInstance().RegisterHandler(NPCShip1_.gameObject.AddComponent<BattleVisualBase>());
+
+
+		BattleVisualManager.GetInstance().RegisterHandler(NPCShip2_.gameObject.AddComponent<BattleVisualBase>());
+
+		Debug.Log ("\t\t...Doing some simulations between " + NPCShip1_ + " and " + NPCShip2_);
+
+		StartBattle (NPCShip1_, NPCShip2_);
+
+		SetAutoTurn(true);
+		SetSimulation(true);
+
+		CheckStats();
+	}
+	
+	public bool ShowBattle()
+	{
+		if ( BattlePending )
+		{
+			return false;
+		}
+
+		BattlePending = true;
+
+		BattleVisualManager.GetInstance().InitializeBattle();
+
 		Ship NPCShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetRandomScan() );
-		FleetManager.GetInstance().RegisterShip(NPCShip_);
-		
+		BattleVisualManager.GetInstance().RegisterHandler(NPCShip_.gameObject.AddComponent<BattleVisualHandler>());
+
 		Ship PlayerShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetPlayerScan() );
-		FleetManager.GetInstance().RegisterShip(PlayerShip_);
-		
-		//StartBattle (FleetManager.GetShip(), newShip_);
+		BattleVisualManager.GetInstance().RegisterHandler(PlayerShip_.gameObject.AddComponent<BattleVisualHandler>());
+
+		//Random.seed = 15;
+
+		SetAutoTurn(false);
+		SetSimulation(false);
+
 		StartBattle (NPCShip_, PlayerShip_);
 		_TurnButtonSlider.SlideIn = true;
 		HangarManager.GetInstance()._OpenButtonContainerSlider.SlideIn = true;
@@ -129,22 +217,18 @@ public class BattleManager : ButtonHandler
 		_TurnButton.Active = true;
 		_TurnButton.Visible = true;
 		
-		//MainManager.GetInstance()._BattleCamera.OnFinished(gameObject, "ShowBattleFinished");	
-	
-		// Dummy instead of ship itself
-		//MainManager.GetInstance()._BattleCamera.Show(FleetManager.GetShip().transform);
+
 		MainManager.GetInstance()._BattleCamera.Show(PlayerShip_.transform.parent);
+		PlayerShip_.gameObject.GetComponent<BattleVisualHandler>()._CameraRotationContainer = MainManager.GetInstance()._BattleCamera._RealCamera.transform.parent;
+
 		MainManager.GetInstance()._EnemyCamera.Show(NPCShip_.transform.parent);
-		
-		//FleetManager.GetShip().DebugRotate = true;
-//		PlayerShip_.DebugRotate = true;
-//		NPCShip_.DebugRotate = true;
+		NPCShip_.gameObject.GetComponent<BattleVisualHandler>()._CameraRotationContainer = MainManager.GetInstance()._EnemyCamera._RealCamera.transform.parent;
+
+		CheckStats();
+
+		return true;
 	}
-	
-	public void ShowBattleFinished()
-	{
-	}
-	
+
 	//BUTTONS
 	
 	Button _TurnButton;
@@ -159,19 +243,14 @@ public class BattleManager : ButtonHandler
 			case ButtonHandler.ButtonHandle.BATTLE_TURN:
 			Turn();
 			target.Active = false;
-			// FIXME: Hotfix when using rocket and laser on one tile _OpenHangarButton.Active = false;
+			// FIXME: flee anytime _OpenHangarButton.Active = false;
 			break;
 			case ButtonHandler.ButtonHandle.HANGAR_OPEN:
+
 			HangarManager.GetInstance().OnHangarOpenButton();
 			_TurnButtonSlider.SlideIn = false;
 			target.Visible = false;
-			GameObject.Destroy(mAttacker.mStats.gameObject);
-			GameObject.Destroy(mAttacker.transform.parent.parent.gameObject);
-			GameObject.Destroy(mDefender.mStats.gameObject);
-			GameObject.Destroy(mDefender.transform.parent.parent.gameObject);
-			
-			//mAttacker._Shield.SetVisibility(false);
-			//mDefender._Shield.SetVisibility(false);
+			BattleCleanup();
 			break;
 		}
 	}

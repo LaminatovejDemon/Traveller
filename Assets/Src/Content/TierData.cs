@@ -71,6 +71,8 @@ public class TierData : MonoBehaviour
 		{
 			++_WinCount[enemyTier];
 		}
+
+		Backup();
 	}
 	
 	public float GetVictoryCoef(int tier)
@@ -83,7 +85,6 @@ public class TierData : MonoBehaviour
 	{
 		float xp_ = (float)(_TotalGamesCount + GetELO());
 		
-		Debug.Log ("Player has " + xp_ + "XP");
 		return xp_;
 	}
 	
@@ -102,12 +103,11 @@ public class TierData : MonoBehaviour
 	{
 		int tier_ = GetTier();
 
-		return "TIER: "+ (tier_+1) +"\nWLD: "+_WinCount[tier_]+"/"+ (_GamesCount[tier_] - _DrawCount[tier_] - _WinCount[tier_])+"/"+ _DrawCount[tier_] + "\nBATTLES TOTAL: " + _TotalGamesCount + "\n\nELO:" + GetELO();
+		return "TIER: "+ (tier_+1) +"\nWLD: "+_WinCount[tier_]+"/"+ (_GamesCount[tier_] - _DrawCount[tier_] - _WinCount[tier_])+"/"+ _DrawCount[tier_] + "\nMISSIONS TOTAL: " + _TotalGamesCount + "\n\nELO:" + GetELO();
 	}
 	
 	public void Backup()
 	{
-		Debug.Log ("Backing tier data for ship " + _ParentName);
 		PlayerPrefs.SetInt(_ParentName+"_AchievedRarity", _AchievedRarity);
 		PlayerPrefs.SetInt(_ParentName+"_GamesTotal", _TotalGamesCount);
 
@@ -121,7 +121,6 @@ public class TierData : MonoBehaviour
 
 	public void Restore()
 	{
-		Debug.Log ("Restoring tier data for ship " + _ParentName);
 		_AchievedRarity = PlayerPrefs.GetInt(_ParentName+"_AchievedRarity");
 		_TotalGamesCount = PlayerPrefs.GetInt(_ParentName+"_GamesTotal");
 

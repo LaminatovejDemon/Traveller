@@ -33,11 +33,10 @@ public class AnimationCallback : MonoBehaviour
 		}		
 		else if ( _Sleeping && Time.time > _EndSleep)
 		{
-			Debug.Log ("Sending message " + _TargetMessage + "  by " + _TargetParameter);
+			Debug.Log ("Sending message " + _TargetMessage + "  by " + _TargetParameter + " to " + _TargetObject);
 			_TargetObject.SendMessage(_TargetMessage, _TargetParameter, SendMessageOptions.RequireReceiver);
 			if  (_DestroyWhenFinishedObject != null )
 			{
-				Debug.Log ("Destroying " + _DestroyWhenFinishedObject);
 				GameObject.Destroy(_DestroyWhenFinishedObject);
 			}
 
