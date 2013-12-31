@@ -29,6 +29,12 @@ public class FleetManager : MonoBehaviour
 	public ShipScan GetAverageScan(float elo)
 	{
 		ShipScan best_ = GetRandomScan();
+
+		if ( best_ == null )
+		{
+			return null;
+		}
+
 		ShipScan alter_ = best_;
 
 		for ( int i = 0; i < 10; ++i )
