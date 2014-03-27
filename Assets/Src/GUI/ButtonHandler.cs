@@ -14,6 +14,7 @@ public class ButtonHandler : MonoBehaviour
 		CONFIRM,
 		CANCEL,
 		INVENTORY_CLEANUP,
+		POPUP_TRASH_ITEM,
 		Invalid,
 	};
 		

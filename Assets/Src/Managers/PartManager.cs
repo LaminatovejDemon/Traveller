@@ -101,7 +101,7 @@ public class PartManager : MonoBehaviour
 		
 	};
 	
-	List<Pattern> mPatternList = new List<Pattern>();
+	public List<Pattern> mPatternList = new List<Pattern>();
 	
 	public void AddPattern(string id, string name, string description, int rarity, int power, int hash, 
 			int hp, int weight, int integrity, string model, string texture, string spec1, int spec1val, string spec2, int spec2val)
@@ -282,6 +282,23 @@ public class PartManager : MonoBehaviour
 	public int GetPatternCount()
 	{
 		return mPatternList.Count;
+	}
+
+	public float GetRarity(string id)
+	{
+		if ( !mInitialized )
+		{
+			Initialize();
+		}
+
+		for ( int i = 0; i< mPatternList.Count; ++i )
+		{
+			if ( mPatternList[i].mID == id )
+			{
+				return GetRarity(i);
+			}
+		}
+		return 0;
 	}
 
 	public float GetRarity(int id)

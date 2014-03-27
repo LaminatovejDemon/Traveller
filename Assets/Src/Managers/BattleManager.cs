@@ -116,28 +116,26 @@ public class BattleManager : ButtonHandler
 
 	void BattleFinished()
 	{
-		// we need tier before counting stats for both sides
-		int attackerTier_ = mAttacker._ScanParent == null ? 0 : mAttacker._ScanParent.GetTierData().GetTier();
-		int defenderTier_ = mDefender._ScanParent.GetTierData().GetTier();
-		
 		// settings scan stats
 		if ( mAttacker._ScanParent != null )
 		{
-			mAttacker._ScanParent.GetTierData().SetStats(mAttacker.IsAlive(), mDefender.IsAlive(), defenderTier_);
+			mAttacker._ScanParent.GetTierData().SetStats(mAttacker.IsAlive(), mDefender.IsAlive());
+			mAttacker._ScanParent.name = "" + mAttacker._ScanParent.GetTierData().GetVictoryCoef().ToString("0.00") + "_ShipScan";
 		}
 
-		mDefender._ScanParent.GetTierData().SetStats(mDefender.IsAlive(), mAttacker.IsAlive(), attackerTier_);
+		mDefender._ScanParent.GetTierData().SetStats(mDefender.IsAlive(), mAttacker.IsAlive());
+
 
 		if ( !_Simulation )
 		{
 			// and parent stats
-			FleetManager.GetShip().GetTierData().SetStats(mDefender.IsAlive(), mAttacker.IsAlive(), attackerTier_);
+			FleetManager.GetShip().GetTierData().SetStats(mDefender.IsAlive(), mAttacker.IsAlive());
 
 			PopupManager.GetInstance().DisplayRewardPopup(mDefender.IsAlive(), mAttacker.IsAlive());
 			
 			if  ( mDefender.IsAlive() )
 			{
-				LootManager.GetInstance().GetLoot();
+				LootManager.GetInstance().GetLoot(mAttacker._ScanParent);
 			}
 			
 			_TurnButtonSlider.SlideIn = false;
@@ -154,36 +152,44 @@ public class BattleManager : ButtonHandler
 
 	bool BattlePending = false;
 	
-	public void SimulateBattle()
+	public void SimulateBattle(ShipScan ownerScan, int count)
 	{
-		ShipScan NPCScan1_ = FleetManager.GetInstance().GetRandomScan();
-		ShipScan NPCScan2_ = FleetManager.GetInstance().GetRandomScan();
-
-		if ( BattlePending || NPCScan1_ == null || NPCScan2_ == null )
+		if ( BattlePending || ownerScan == null )
 		{
 			return;
 		}
 
-		BattlePending = true;
+		float time_ = Time.time;
+		for ( int i = 0; i < count; ++i )
+		{
+			ShipScan NPCScan1_ = FleetManager.GetInstance().GetAverageScan(ownerScan.GetTierData().GetVictoryCoef());
 
-		BattleVisualManager.GetInstance().InitializeBattle();
+			if ( NPCScan1_ == null )
+			{
+				return;
+			}
 
-		Ship NPCShip1_ = FleetManager.GetShip( NPCScan1_ );
-		Ship NPCShip2_ = FleetManager.GetShip( NPCScan2_ );
+			BattlePending = true;
 
-		BattleVisualManager.GetInstance().RegisterHandler(NPCShip1_.gameObject.AddComponent<BattleVisualBase>());
+			BattleVisualManager.GetInstance().InitializeBattle();
 
+			Ship NPCShip1_ = FleetManager.GetShip( NPCScan1_ );
+			Ship NPCShip2_ = FleetManager.GetShip( ownerScan );
 
-		BattleVisualManager.GetInstance().RegisterHandler(NPCShip2_.gameObject.AddComponent<BattleVisualBase>());
+			BattleVisualManager.GetInstance().RegisterHandler(NPCShip1_.gameObject.AddComponent<BattleVisualBase>());
+			BattleVisualManager.GetInstance().RegisterHandler(NPCShip2_.gameObject.AddComponent<BattleVisualBase>());
 
-		Debug.Log ("\t\t...Doing some simulations between " + NPCShip1_ + " and " + NPCShip2_);
+			StartBattle (NPCShip1_, NPCShip2_);
 
-		StartBattle (NPCShip1_, NPCShip2_);
+			SetAutoTurn(true);
+			SetSimulation(true);
 
-		SetAutoTurn(true);
-		SetSimulation(true);
+			bool battleFinished_ = CheckStats();
 
-		CheckStats();
+		//	Debug.Log ("\t\t...Doing some simulations between " + NPCShip1_ + " and " + NPCShip2_ + " and " + battleFinished_ + " with " + ownerScan.GetTierData().GetVictoryCoef());
+
+		}
+		//Debug.Log ("Simulation lasted " + ((Time.time - time_) * 100.0f) + "s.");
 	}
 	
 	public bool ShowBattle()
@@ -197,7 +203,7 @@ public class BattleManager : ButtonHandler
 
 		BattleVisualManager.GetInstance().InitializeBattle();
 
-		Ship NPCShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetAverageScan(FleetManager.GetInstance().GetPlayerScan().GetTierData().GetELO()) );
+		Ship NPCShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetAverageScan(FleetManager.GetInstance().GetPlayerScan().GetTierData().GetVictoryCoef()) );
 		BattleVisualManager.GetInstance().RegisterHandler(NPCShip_.gameObject.AddComponent<BattleVisualHandler>());
 
 		Ship PlayerShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetPlayerScan() );
@@ -217,12 +223,15 @@ public class BattleManager : ButtonHandler
 		_TurnButton.Active = true;
 		_TurnButton.Visible = true;
 		
-
 		MainManager.GetInstance()._BattleCamera.Show(PlayerShip_.transform.parent);
 		PlayerShip_.gameObject.GetComponent<BattleVisualHandler>()._CameraRotationContainer = MainManager.GetInstance()._BattleCamera._RealCamera.transform.parent;
+		PlayerShip_.SetCamera(MainManager.GetInstance()._BattleCamera);
+
 
 		MainManager.GetInstance()._EnemyCamera.Show(NPCShip_.transform.parent);
 		NPCShip_.gameObject.GetComponent<BattleVisualHandler>()._CameraRotationContainer = MainManager.GetInstance()._EnemyCamera._RealCamera.transform.parent;
+		NPCShip_.SetCamera(MainManager.GetInstance()._EnemyCamera);
+
 
 		CheckStats();
 

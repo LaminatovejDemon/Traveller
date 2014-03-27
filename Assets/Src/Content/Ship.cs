@@ -490,11 +490,16 @@ public class Ship : MonoBehaviour
 		// disabled parts
 		if ( mEnergyOverall + part.mPattern.mPower < 0 )
 		{
-			part.DisabledContainer.gameObject.SetActive(true);
-			Utils.SetLayer(part.DisabledContainer.transform, part.gameObject.layer);
+			//part.DisabledContainer.gameObject.SetActive(true);
+			part.SetPowered(false);
+
+			//Utils.SetLayer(part.DisabledContainer.transform, part.gameObject.layer);
+			part.SetPoweredLayer(part.gameObject.layer);
 			return;
 		}
-		part.DisabledContainer.gameObject.SetActive(false);
+
+		part.SetPowered(true);
+//		part.DisabledContainer.gameObject.SetActive(false);
 		
 		mEnergyOverall += part.mPattern.mPower < 0 ? part.mPattern.mPower : 0;
 		
@@ -656,6 +661,15 @@ public class Ship : MonoBehaviour
 		}
 		
 		return _TierData;
+	}
+
+	public Camera _SourceCamera {get; private set;}
+
+	// just for gui position
+	public void SetCamera(CameraHandler source)
+	{
+		_SourceCamera = source._RealCamera;
+		_Shield.RecalculateBoundary();
 	}
 		
 	void Occupy(Part part, Vector3 position, bool place, bool changeLayer = true)

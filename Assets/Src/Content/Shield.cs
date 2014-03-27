@@ -58,7 +58,10 @@ public class Shield : MonoBehaviour
 		_BasicColorAlpha = _BasicColor.a;
 		
 		_ShieldCapacityCaption = TextManager.GetInstance().GetText("SHIELD: N/A", 0.5f);
-		
+		_ShieldCapacityCaption.GetComponent<TextMesh>().anchor = TextAnchor.UpperLeft;
+		_ShieldCapacityCaption.name = _ParentShip.name + "_ShieldCaption";
+		_ShieldCapacityCaption.transform.parent =  _ParentShip.transform.parent.parent;
+
 		_BasicColor.a = 1.0f;
 		_ShieldCapacityCaption.GetComponent<TextMesh>().color = _BasicColor;
 		
@@ -82,10 +85,23 @@ public class Shield : MonoBehaviour
 		_Visual.transform.localPosition = shieldOffset_;
 		_Visual.transform.localRotation = Quaternion.identity;
 		_Visual.transform.localScale = new Vector3(_ParentShip._BoundaryHorizontal + 0.2f, 2.0f, _ParentShip._BoundaryVertical + 0.2f);
-		_ShieldCapacityCaption.transform.position = _Visual.transform.position + Camera.main.transform.rotation * (Vector3.up * 2.5f + Vector3.left * 1.0f);
-		_ShieldCapacityCaption.transform.rotation = Camera.main.transform.rotation;
+		PositionShieldCaption();
+
+	}
+
+	void PositionShieldCaption()
+	{
+		if ( _ParentShip._SourceCamera == null )
+		{
+			return;
+		}
+
+		Vector3 screenPosition_ = _ParentShip._SourceCamera.ViewportToScreenPoint(new Vector3(0,1,0));
+		Vector3 GUIPosition_ = MainManager.GetInstance()._GUICamera.ScreenToWorldPoint(screenPosition_ + Vector3.right * 10.0f + Vector3.down * 10.0f);
+
 		_ShieldCapacityCaption.transform.parent = _ParentShip.transform.parent.parent;
-		
+		_ShieldCapacityCaption.transform.position = GUIPosition_;
+		_ShieldCapacityCaption.transform.rotation = MainManager.GetInstance()._GUICamera.transform.rotation;
 	}
 	
 	public void SetVisibility(bool state)

@@ -27,10 +27,9 @@ public class PlayerData : MonoBehaviour
 
 		tierData_.Restore();
 
-		if ( tierData_._AchievedRarity < 1 )
+		if ( tierData_._TotalFightCount < 1 )
 		{
-			tierData_._AchievedRarity = 1;
-			InventoryManager.GetInstance().FillInventory(tierData_._AchievedRarity);
+			InventoryManager.GetInstance().FillInventory(1);
 		}
 		else
 		{

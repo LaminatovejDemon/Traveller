@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Part : MonoBehaviour 
 {
@@ -18,10 +19,17 @@ public class Part : MonoBehaviour
 	GameObject mHandleShadow = null;
 	Transform mCaption = null;
 	public float mHP = -1;
+
+	List<Transform> _SignalLights = new List<Transform>();
+	List<Transform> _RotationRoots = new List<Transform>();
+	List<Transform> _ParticleRoots = new List<Transform>();
+	Material _SignalLight;
+	Material _SignalGlow;
+	GameObject _SignalGlowTemplate;
 	
 	Transform _DisabledContainer;
 	
-	public Transform DisabledContainer
+	/*public Transform DisabledContainer
 	{
 		get 
 		{
@@ -39,6 +47,28 @@ public class Part : MonoBehaviour
 		{
 			_DisabledContainer = value;
 		}
+	}*/
+
+	bool _Powered = true;
+
+	public void SetPoweredLayer(int layer)
+	{
+		for ( int i = 0; i < _SignalLights.Count; ++i )
+		{
+			Utils.SetLayer(_SignalLights[i], layer);
+		}
+	}
+
+	public void SetPowered(bool state)
+	{
+		if ( _Powered == state )
+		{
+			return;
+		}
+
+		_Powered = state;
+
+		SetSignalLightsColor();
 	}
 		
 	
@@ -52,11 +82,112 @@ public class Part : MonoBehaviour
 		}
 		
 		mHP = mPattern.mHp;
-		
-		CreateDisabledContainer(transform);
+			
+//		CreateDisabledContainer(transform);
+
+		_SignalLight = Object.Instantiate(Resources.Load("Materials/SignalLight")) as Material;
+		_SignalGlowTemplate = Resources.Load("Content/SignalLight") as GameObject;
+		_SignalGlow = Object.Instantiate(Resources.Load("Content/Materials/SignalGlow")) as Material;
+
+		SetRoots(ref _SignalLights, "power", transform);
+		SetRoots(ref _ParticleRoots, "particle", transform);
+		SetRoots(ref _RotationRoots, "turret", transform);
+		SetRoots(ref _RotationRoots, "turningXYZ", transform);
+
+		mInitialized = true;
+
+		// needs to be after an initialization
+		SetSignalLights();
+	}
+
+	void SetSignalLights()
+	{
+		GameObject glow_;
+		for ( int i = 0; i < _SignalLights.Count; ++i )
+		{
+			_SignalLights[i].renderer.material = _SignalLight;
+			glow_ = GameObject.Instantiate(_SignalGlowTemplate) as GameObject;
+			glow_.transform.parent = _SignalLights[i];
+			glow_.transform.localPosition = _SignalGlowTemplate.transform.localPosition;
+			glow_.transform.localRotation = _SignalGlowTemplate.transform.localRotation;
+			glow_.transform.localScale = _SignalGlowTemplate.transform.localScale;
+			glow_.gameObject.layer = glow_.transform.parent.gameObject.layer;
+			glow_.renderer.material = _SignalGlow;
+		}
+
+		SetSignalLightsColor();
+	}
+
+	void SetSignalLightsColor()
+	{
+		if ( !mInitialized )
+		{
+			return;
+		}
+
+		int tier_ = (int)(mPattern.mRarity / 400.0f * 10.0f);
+		_SignalLight.SetColor("_TintColor", GetColor(tier_, 0.7f));
+		_SignalGlow.SetColor("_TintColor", GetColor(tier_, 0.4f));
+
+		_LightBlinkTimeStamp = Random.value + Time.time;
+	}
+
+	Color GetColor(int tier, float alpha)
+	{
+		Color ret_ = Color.magenta;
+
+		if ( !_Powered )
+		{
+			ret_ = new Color(1.0f, 0.1f, 0.1f, 1f);
+		}
+		else switch (tier)
+		{
+		case 0:
+			ret_ = new Color(243.0f / 255.0f ,244.0f / 255.0f, 161.0f / 255.0f, 0.9f);
+			break;
+		case 1:
+			ret_ = new Color(255.0f / 255.0f ,255.0f / 255.0f, 255.0f / 255.0f, 0.85f);
+			break;
+		case 2:
+			ret_ = new Color(67.0f / 255.0f ,212.0f / 255.0f, 206.0f / 255.0f, 0.8f);
+			break;
+		case 3:
+			ret_ = new Color(22.0f / 255.0f ,123.0f / 255.0f, 195.0f / 255.0f, 1f);
+			break;
+		case 4:
+			ret_ = new Color(0.0f / 255.0f ,48.0f / 255.0f, 225.0f / 255.0f, 1f);
+			break;
+		case 5:
+			ret_ = new Color(86.0f / 255.0f ,55.0f / 255.0f, 249.0f / 255.0f, 1f);
+			break;
+		case 6:
+			ret_ = new Color(54.0f / 255.0f ,0.0f / 255.0f, 189.0f / 255.0f, 1f);
+			break;
+		case 7:
+			ret_ = new Color(157.0f / 255.0f ,0.0f / 255.0f, 183.0f / 255.0f, 1f);
+			break;
+		default:
+			ret_ = new Color(255.0f / 255.0f ,24.0f / 255.0f, 210.0f / 255.0f, 1f);
+			break;
+		}
+		ret_.a *= alpha;
+		return ret_;
+	}
+
+	void SetRoots(ref List<Transform> target, string key, Transform parent)
+	{
+		for ( int i = 0; i < parent.childCount; ++i )
+		{
+			SetRoots(ref target, key, parent.GetChild(i));
+
+			if ( parent.GetChild(i).name.Contains(key) )
+			{
+				target.Add(parent.GetChild(i));
+			}
+		}
 	}
 	
-	void CreateDisabledContainer(Transform parent)
+/*	void CreateDisabledContainer(Transform parent)
 	{
 		for ( int i = 0; i < parent.childCount; ++i )
 		{
@@ -72,7 +203,7 @@ public class Part : MonoBehaviour
 			new_.transform.parent = DisabledContainer;	
 			//DisabledContainer.transform.localPosition = new Vector3(-0.005f, 0.005f, 0.006f);
 		}
-	}
+	}*/
 	
 	public PartManager.Pattern mPattern;
 
@@ -81,11 +212,37 @@ public class Part : MonoBehaviour
 	{
 	 	Initialize();
 	}
-	
+
+	float _LightBlinkTimeStamp;
+
 	// Update is called once per frame
 	void Update () 
+	{	
+		UpdateLightBlinking();
+	}
+
+	void UpdateLightBlinking()
 	{
-	
+		if ( Time.time - _LightBlinkTimeStamp > 0 )
+		{
+			Color signalColor_ = _SignalLight.GetColor("_TintColor");
+			
+			signalColor_.a = 1.0f - signalColor_.a;
+			
+			_SignalLight.SetColor("_TintColor", signalColor_);
+			
+			signalColor_.a *= 0.5f;
+			_SignalGlow.SetColor("_TintColor", signalColor_);
+
+			if ( _Powered )
+			{
+				_LightBlinkTimeStamp = Time.time + (signalColor_.a > 0.2f ? 4.0f + Random.value * 2.0f : 1.0f);
+			}
+			else
+			{
+				_LightBlinkTimeStamp = Time.time + 0.2f;
+			}
+		}
 	}
 	
 	public Vector3 GetGunPoint()
@@ -229,7 +386,9 @@ public class Part : MonoBehaviour
 			break;
 		}
 		
-		DisabledContainer.gameObject.SetActive(false);	
+		//DisabledContainer.gameObject.SetActive(false);	
+		SetPowered(true);
+
 		mDragBeginPosition = MainManager.GetInstance().GetWorldPos(mDragFingerID) - transform.localPosition;
 		mLocation = Location.Handle;
 		

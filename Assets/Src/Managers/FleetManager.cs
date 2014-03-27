@@ -26,7 +26,7 @@ public class FleetManager : MonoBehaviour
 		instance.EraseShip();
 	}
 
-	public ShipScan GetAverageScan(float elo)
+	public ShipScan GetAverageScan(float winRatio)
 	{
 		ShipScan best_ = GetRandomScan();
 
@@ -40,10 +40,8 @@ public class FleetManager : MonoBehaviour
 		for ( int i = 0; i < 10; ++i )
 		{
 			alter_ = GetRandomScan();
-			if ( Mathf.Abs(alter_.GetTierData().GetELO() - elo) < Mathf.Abs(best_.GetTierData().GetELO() - elo) )
+			if ( Mathf.Abs(alter_.GetTierData().GetVictoryCoef() - winRatio) < Mathf.Abs(best_.GetTierData().GetVictoryCoef() - winRatio) )
 			{
-				Debug.Log ("Getting "+elo+" average " + alter_.mName + "(" + alter_.GetTierData().GetELO() + ") is better than "
-				           + best_.mName + "(" + best_.GetTierData().GetELO() + ")");
 				best_ = alter_;
 			}
 		}
@@ -68,6 +66,11 @@ public class FleetManager : MonoBehaviour
 	
 	public ShipScan GetPlayerScan()
 	{
+		if ( !mShipScanList.ContainsKey(mPlayerShipName) )
+		{
+			return null;
+		}
+
 		return mShipScanList[mPlayerShipName];
 	}
 	
@@ -193,11 +196,15 @@ public class FleetManager : MonoBehaviour
 
 		mShipScanList.Add(new_.mName, new_);
 
+		BattleManager.GetInstance().SimulateBattle(new_, 50);
+
 		mPlayerShipName = new_.mName;
 	}
 	
 	void RestoreScan(string name)
 	{
+//		Debug.Log ("Restoring scan " + name);
+
 		ShipScan new_ = new GameObject("_ShipScan_" + name).AddComponent<ShipScan>();
 		if ( _ShipScanContainer == null )
 		{

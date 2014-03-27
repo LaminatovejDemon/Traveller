@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PopupWindow : MonoBehaviour 
+public class PopupWindow : ButtonHandler 
 {
 	public BoxCollider _BackgroundCollider;
 	public float _Depth;

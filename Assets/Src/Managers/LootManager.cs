@@ -43,18 +43,8 @@ public class LootManager : MonoBehaviour
 		_Initialzed = true;
 
 	}
-	
-	float GetELO()
-	{
-		return FleetManager.GetShip().GetTierData().GetELO();
-	}
-	
-	public float GetXP()
-	{
-		return FleetManager.GetShip().GetTierData().GetXP();
-	}
 
-	public void GetLoot()
+	public void GetLoot(ShipScan scanSource)
 	{
 		Initialize();
 
@@ -63,7 +53,7 @@ public class LootManager : MonoBehaviour
 			return;
 		}
 
-		SetLootRatio();
+		SetLootRatio(scanSource);
 
 		int rollIndex_ = RollIndex();
 
@@ -76,6 +66,16 @@ public class LootManager : MonoBehaviour
 
 	int RollIndex()
 	{
+
+		for ( int i = 0; i < _PatternPercentList.Count; ++i )
+		{
+			PartManager.Pattern dbgpart_ = PartManager.GetInstance().mPatternList[i];
+			if ( _PatternPercentList[i] > 0 )
+			{
+				Debug.Log ("\t" + dbgpart_.mName + "\t(" + dbgpart_.mRarity + ") has ratio " + _PatternPercentList[i]);
+			}
+		}
+
 		float loot_ = Random.Range(0, 100);
 		for ( int i = 0; i < _PatternPercentList.Count; ++i )
 		{
@@ -91,12 +91,14 @@ public class LootManager : MonoBehaviour
 		return _PatternPercentList.Count-1;
 	}
 
-	void SetLootRatio()
+	void SetLootRatio(ShipScan source)
 	{
 		float total_ = 0;
+		float averageRarity_ = source == null ? 1 : source.GetAverageRarity();
+		Debug.Log ("Rolling loot ("+ averageRarity_ +"):");
 		for ( int i = 0; i < _PatternRatioList.Count; ++i )
 		{
-			float val_ = Mathf.Max(0, 0.5f - Mathf.Abs(0.5f - ((GetXP() - _PatternRarityList[i])/GetXP())));
+			float val_ = Mathf.Max(0, 50.0f - Mathf.Abs(_PatternRarityList[i] - averageRarity_));
 			total_ += val_;
 			_PatternRatioList[i] = val_;
 		}
@@ -108,16 +110,13 @@ public class LootManager : MonoBehaviour
 			float val_ = _PatternRatioList[i] * 100.0f / total_;
 			percentTotal_ += val_;
 			_PatternPercentList[i] = val_;
-//			Debug.Log("\t" + _PatternRarityList[i] + ": " + _PatternPercentList[i]);
 		}
-
-//		Debug.Log ("total percent :" + percentTotal_);
 	}
 
 	float GetLootProbability()
 	{
-		float lootProbability_ = Mathf.Min(Mathf.Sqrt(1.0f/(float)FleetManager.GetShip().GetTierData()._TotalGamesCount), 1.0f);
-//		Debug.Log ("Loot probability is " + lootProbability_);
+		float lootProbability_ = Mathf.Clamp(1.0f - (InventoryManager.GetInstance().GetCount() / 10.0f), 0.05f, 1.0f);
+		Debug.Log ("Loot probability is " + lootProbability_ + "(" + InventoryManager.GetInstance().GetCount() + ")");
 		return lootProbability_;
 	}
 }

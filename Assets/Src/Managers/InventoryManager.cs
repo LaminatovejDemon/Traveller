@@ -60,8 +60,8 @@ public class InventoryManager : ButtonHandler
 		Utils.SetTransformCamera(partObject.transform, MainManager.GetInstance()._InventoryCamera, MainManager.GetInstance()._HangarCamera._RealCamera); 
 
 		partObject.name = FleetManager.GetShip().transform.childCount + "_" + partObject.name;
-		
-		mInventoryList[index] = null;
+
+		mInventoryList.RemoveAt(index);
 
 		//mInventoryList[index] = PartManager.GetInstance().GetPattern(partObject.GetComponent<Part>().mPattern.mID);
 		
@@ -148,6 +148,11 @@ public class InventoryManager : ButtonHandler
 		}
 		mInventoryList.Clear();
 		_ScrollingPanel.Clear();
+	}
+
+	public int GetCount()
+	{
+		return mInventoryList.Count;
 	}
 	
 	public void FillInventory(int maxRarity)

@@ -26,6 +26,10 @@ public class PopupMessage : PopupWindow
 		}
 
 		GameObject textObject_ = TextManager.GetInstance().GetText(content, scale);
+		TextMesh textMesh_ = textObject_.GetComponent<TextMesh>();
+		textMesh_.anchor = TextAnchor.MiddleCenter;
+		textMesh_.alignment = TextAlignment.Center;
+
 		textObject_.transform.parent = parent;
 		textObject_.transform.localScale = Vector3.one;
 		textObject_.transform.localRotation = Quaternion.identity;

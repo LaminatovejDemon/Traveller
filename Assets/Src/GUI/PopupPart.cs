@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PopupPart : PopupWindow 
+public class PopupPart : PopupWindow
 {
 	GameObject _PartObject;
+	GameObject _PartObjectOriginal;
 	public Transform _PartHandler;
 	public Transform _TitleTextHandler;
 	public Transform _ContentTextHandler;
@@ -11,6 +12,8 @@ public class PopupPart : PopupWindow
 
 	public void SetPartObject(GameObject partResource)
 	{
+		_PartObjectOriginal = partResource;
+
 		GameObject.Destroy(_PartObject);
 
 		_PartObject = (GameObject)GameObject.Instantiate(partResource);
@@ -20,6 +23,16 @@ public class PopupPart : PopupWindow
 		_PartObject.transform.localPosition = Vector3.zero;
 		Utils.SetLayer(_PartObject.transform, gameObject.layer);
 		Utils.SetColissionEnabled(_PartObject.transform, false);
+	}
+
+	public override void ButtonPressed (Button target)
+	{
+		if ( target._Handle == ButtonHandle.POPUP_TRASH_ITEM )
+		{
+			InventoryManager.GetInstance().RetrievePart(_PartObjectOriginal.transform);
+			GameObject.Destroy(_PartObjectOriginal);
+			GameObject.Destroy(gameObject);
+		}
 	}
 
 	public void SetHeaderTextObject(string content)

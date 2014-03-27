@@ -45,6 +45,17 @@ public class ShipScan : MonoBehaviour
 	{
 		mPartList = new List<PatternPlan>();
 	}
+
+	public float GetAverageRarity()
+	{
+		float ret_ = 0;
+		for ( int i = 0; i < mPartList.Count; ++i )
+		{
+			ret_ += PartManager.GetInstance().GetRarity(mPartList[i].mPatternID);
+		}
+
+		return ret_ / (float)mPartList.Count;
+	}
 	
 	//public void AddPart(Part part)
 	public void AddPart(string patternID, Vector3 localPosition)

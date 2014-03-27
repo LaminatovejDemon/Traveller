@@ -71,11 +71,11 @@ public class MainManager : MonoBehaviour {
 			_BackupDirty = false;
 		}
 
-		if ( Time.time - _NextSimulationTime > 0f )
+	/*	if ( Time.time - _NextSimulationTime > 0f )
 		{
 			_NextSimulationTime = Time.time + Random.Range(0.5f, 3.0f);
 			BattleManager.GetInstance().SimulateBattle();
-		}	
+		}	*/
 	}
 	
 	void BackupPlayer()
