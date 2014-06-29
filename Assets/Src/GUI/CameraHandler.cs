@@ -103,7 +103,10 @@ public class CameraHandler : MonoBehaviour
 	{		
 		Initialize();
 
-		_RealCamera.cullingMask = 1 << targetRoot.gameObject.layer;
+		_RealCamera.cullingMask = 
+			(1 << targetRoot.gameObject.layer)
+			+ (1 << LayerMask.NameToLayer("Default"));
+
 		_RealCamera.gameObject.layer = targetRoot.gameObject.layer;
 		_RealCamera.gameObject.SetActive(true);
 		

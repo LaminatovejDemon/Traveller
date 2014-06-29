@@ -126,7 +126,7 @@ public class Part : MonoBehaviour
 
 		int tier_ = (int)(mPattern.mRarity / 400.0f * 10.0f);
 		_SignalLight.SetColor("_TintColor", GetColor(tier_, 0.7f));
-		_SignalGlow.SetColor("_TintColor", GetColor(tier_, 0.4f));
+		_SignalGlow.SetColor("_Color", GetColor(tier_, 0.4f));
 
 		_LightBlinkTimeStamp = Random.value + Time.time;
 	}
@@ -231,7 +231,7 @@ public class Part : MonoBehaviour
 			_SignalLight.SetColor("_TintColor", signalColor_);
 			
 			signalColor_.a *= 0.5f;
-			_SignalGlow.SetColor("_TintColor", signalColor_);
+			_SignalGlow.SetColor("_Color", signalColor_);
 
 			if ( _Powered )
 			{

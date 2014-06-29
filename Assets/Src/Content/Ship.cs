@@ -151,7 +151,7 @@ public class Ship : MonoBehaviour
 		
 		RestoreShip();
 
-		Utils.SetLayer(_ShipPositionContainer, LayerMask.NameToLayer("Player"));
+		SetLayer(LayerMask.NameToLayer("Player"));
 
 		cameraHandler.Show(_ShipRotationContainer);
 		mInitialized = true;
@@ -160,7 +160,7 @@ public class Ship : MonoBehaviour
 	public void SetLayer(int layer)
 	{
 		Utils.SetLayer(_ShipPositionContainer, layer);
-		_cameraHandler._RealCamera.cullingMask = 1 << layer;
+		_cameraHandler._RealCamera.cullingMask = (1 << layer) + (1 << LayerMask.NameToLayer("Default"));
 	}
 	
 	public bool VisualHitPart(Part target)
@@ -559,7 +559,7 @@ public class Ship : MonoBehaviour
 		else
 		{	
 			UpdateStatsContainer();
-			_ShipPositionContainer.parent = HangarManager.Instance._HangarContainer.transform;
+		//	_ShipPositionContainer.parent = HangarManager.Instance._HangarContainer.transform;
 			transform.localPosition = Vector3.zero;
 			_ShipPositionContainer.localPosition = Vector3.zero;		
 			_ShipRotationContainer.transform.localPosition = Vector3.zero;
