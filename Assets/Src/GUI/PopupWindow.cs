@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class PopupWindow : ButtonHandler 
@@ -22,7 +22,7 @@ public class PopupWindow : ButtonHandler
 			return;
 		}
 
-		Camera targetCamera_ = MainManager.GetInstance()._GUICamera;
+		Camera targetCamera_ = MainManager.Instance._GUICamera;
 
 		_BackgroundCollider.size = new Vector3(targetCamera_.orthographicSize * targetCamera_.aspect * 2.0f, targetCamera_.orthographicSize * 2.0f, 0.1f);
 
@@ -52,7 +52,7 @@ public class PopupWindow : ButtonHandler
 
 	void OnTouchDown(int fingerID)
 	{
-		MainManager.GetInstance().AttachListner(gameObject);
+		MainManager.Instance.AttachListner(gameObject);
 		mFingerID = fingerID;
 	}
 

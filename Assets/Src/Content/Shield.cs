@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Shield : MonoBehaviour 
@@ -97,11 +97,11 @@ public class Shield : MonoBehaviour
 		}
 
 		Vector3 screenPosition_ = _ParentShip._SourceCamera.ViewportToScreenPoint(new Vector3(0,1,0));
-		Vector3 GUIPosition_ = MainManager.GetInstance()._GUICamera.ScreenToWorldPoint(screenPosition_ + Vector3.right * 10.0f + Vector3.down * 10.0f);
+		Vector3 GUIPosition_ = MainManager.Instance._GUICamera.ScreenToWorldPoint(screenPosition_ + Vector3.right * 10.0f + Vector3.down * 10.0f);
 
 		_ShieldCapacityCaption.transform.parent = _ParentShip.transform.parent.parent;
 		_ShieldCapacityCaption.transform.position = GUIPosition_;
-		_ShieldCapacityCaption.transform.rotation = MainManager.GetInstance()._GUICamera.transform.rotation;
+		_ShieldCapacityCaption.transform.rotation = MainManager.Instance._GUICamera.transform.rotation;
 	}
 	
 	public void SetVisibility(bool state)

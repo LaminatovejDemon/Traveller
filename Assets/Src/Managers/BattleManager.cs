@@ -4,17 +4,20 @@ using System.Collections;
 public class BattleManager : ButtonHandler 
 {
 	private static BattleManager mInstance = null;
-	public static BattleManager GetInstance()
+	public static BattleManager Instance
 	{
-		if ( mInstance == null )
+		get 
 		{
-			GameObject instanceObject_ = GameObject.Find("#BattleManager");
-			if ( instanceObject_ != null )
-				mInstance = instanceObject_.transform.GetComponent<BattleManager>();
-			else
-				mInstance =  new GameObject("#BattleManager").AddComponent<BattleManager>();
+			if ( mInstance == null )
+			{
+				GameObject instanceObject_ = GameObject.Find("#BattleManager");
+				if ( instanceObject_ != null )
+					mInstance = instanceObject_.transform.GetComponent<BattleManager>();
+				else
+					mInstance =  new GameObject("#BattleManager").AddComponent<BattleManager>();
+			}
+			return mInstance;
 		}
-		return mInstance;
 	}
 	
 	public FrameSlider _TurnButtonSlider;
@@ -28,9 +31,6 @@ public class BattleManager : ButtonHandler
 		mAttacker = attacker;
 		mDefender = defender;
 
-	//	mAttacker._ShipPositionContainer.position += Camera.main.transform.rotation * Vector3.right * 5.0f;
-	//	mDefender._ShipPositionContainer.position += Camera.main.transform.rotation * Vector3.left * 5.0f;
-		
 		mAttacker.mStats.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(1,1,0)) + Vector3.down * 15.0f;
 		mDefender.mStats.transform.position = Camera.main.ViewportToWorldPoint(new Vector3(0.22f,1,0)) + Vector3.down * 15.0f;
 		
@@ -116,7 +116,6 @@ public class BattleManager : ButtonHandler
 
 	void BattleFinished()
 	{
-		// settings scan stats
 		if ( mAttacker._ScanParent != null )
 		{
 			mAttacker._ScanParent.GetTierData().SetStats(mAttacker.IsAlive(), mDefender.IsAlive());
@@ -139,7 +138,7 @@ public class BattleManager : ButtonHandler
 			}
 			
 			_TurnButtonSlider.SlideIn = false;
-			HangarManager.GetInstance()._OpenButtonContainerSlider.SlideIn = true;
+			HangarManager.Instance._OpenButtonContainerSlider.SlideIn = true;
 			_OpenHangarButton.Visible = true;	
 			_OpenHangarButton.Caption = "OPEN DOCK";
 			_OpenHangarButton.Active = true;	
@@ -159,10 +158,9 @@ public class BattleManager : ButtonHandler
 			return;
 		}
 
-		float time_ = Time.time;
 		for ( int i = 0; i < count; ++i )
 		{
-			ShipScan NPCScan1_ = FleetManager.GetInstance().GetAverageScan(ownerScan.GetTierData().GetVictoryCoef());
+			ShipScan NPCScan1_ = FleetManager.Instance.GetRandomScan();//FleetManager.GetInstance().GetAverageScan(ownerScan.GetTierData().GetVictoryCoef());
 
 			if ( NPCScan1_ == null )
 			{
@@ -174,7 +172,9 @@ public class BattleManager : ButtonHandler
 			BattleVisualManager.GetInstance().InitializeBattle();
 
 			Ship NPCShip1_ = FleetManager.GetShip( NPCScan1_ );
+
 			Ship NPCShip2_ = FleetManager.GetShip( ownerScan );
+
 
 			BattleVisualManager.GetInstance().RegisterHandler(NPCShip1_.gameObject.AddComponent<BattleVisualBase>());
 			BattleVisualManager.GetInstance().RegisterHandler(NPCShip2_.gameObject.AddComponent<BattleVisualBase>());
@@ -184,7 +184,7 @@ public class BattleManager : ButtonHandler
 			SetAutoTurn(true);
 			SetSimulation(true);
 
-			bool battleFinished_ = CheckStats();
+			CheckStats();
 
 		//	Debug.Log ("\t\t...Doing some simulations between " + NPCShip1_ + " and " + NPCShip2_ + " and " + battleFinished_ + " with " + ownerScan.GetTierData().GetVictoryCoef());
 
@@ -203,11 +203,20 @@ public class BattleManager : ButtonHandler
 
 		BattleVisualManager.GetInstance().InitializeBattle();
 
-		Ship NPCShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetAverageScan(FleetManager.GetInstance().GetPlayerScan().GetTierData().GetVictoryCoef()) );
-		BattleVisualManager.GetInstance().RegisterHandler(NPCShip_.gameObject.AddComponent<BattleVisualHandler>());
 
-		Ship PlayerShip_ = FleetManager.GetShip( FleetManager.GetInstance().GetPlayerScan() );
+		/// Dummy ships to be destroyed
+		Ship NPCShip_ = FleetManager.GetShip( FleetManager.Instance.GetAverageScan(FleetManager.Instance.GetPlayerScan().GetTierData().GetVictoryCoef()) );
+		BattleVisualManager.GetInstance().RegisterHandler(NPCShip_.gameObject.AddComponent<BattleVisualHandler>());
+		NPCShip_.SetLayer(LayerMask.NameToLayer("BattleDefender"));
+		NPCShip_.cameraHandler._RealCamera.rect = new Rect(0.5f,0,0.5f, 1.0f);
+
+		Ship PlayerShip_ = FleetManager.GetShip( FleetManager.Instance.GetPlayerScan() );
 		BattleVisualManager.GetInstance().RegisterHandler(PlayerShip_.gameObject.AddComponent<BattleVisualHandler>());
+		PlayerShip_.SetLayer(LayerMask.NameToLayer("BattleAttacker"));
+		PlayerShip_.cameraHandler._RealCamera.rect = new Rect(0,0,0.5f, 1.0f);
+
+		/// hide original
+		FleetManager.GetShip()._ShipPositionContainer.gameObject.SetActive(false);
 
 		//Random.seed = 15;
 
@@ -216,23 +225,13 @@ public class BattleManager : ButtonHandler
 
 		StartBattle (NPCShip_, PlayerShip_);
 		_TurnButtonSlider.SlideIn = true;
-		HangarManager.GetInstance()._OpenButtonContainerSlider.SlideIn = true;
+		HangarManager.Instance._OpenButtonContainerSlider.SlideIn = true;
 		_OpenHangarButton.Visible = true;	
 		_OpenHangarButton.Caption = "FLEE";
 		
 		_TurnButton.Active = true;
 		_TurnButton.Visible = true;
 		
-		MainManager.GetInstance()._BattleCamera.Show(PlayerShip_.transform.parent);
-		PlayerShip_.gameObject.GetComponent<BattleVisualHandler>()._CameraRotationContainer = MainManager.GetInstance()._BattleCamera._RealCamera.transform.parent;
-		PlayerShip_.SetCamera(MainManager.GetInstance()._BattleCamera);
-
-
-		MainManager.GetInstance()._EnemyCamera.Show(NPCShip_.transform.parent);
-		NPCShip_.gameObject.GetComponent<BattleVisualHandler>()._CameraRotationContainer = MainManager.GetInstance()._EnemyCamera._RealCamera.transform.parent;
-		NPCShip_.SetCamera(MainManager.GetInstance()._EnemyCamera);
-
-
 		CheckStats();
 
 		return true;
@@ -252,11 +251,11 @@ public class BattleManager : ButtonHandler
 			case ButtonHandler.ButtonHandle.BATTLE_TURN:
 			Turn();
 			target.Active = false;
-			// FIXME: flee anytime _OpenHangarButton.Active = false;
+			_OpenHangarButton.Active = false;
 			break;
 			case ButtonHandler.ButtonHandle.HANGAR_OPEN:
-
-			HangarManager.GetInstance().OnHangarOpenButton();
+			FleetManager.GetShip()._ShipPositionContainer.gameObject.SetActive(true);
+			HangarManager.Instance.OnHangarOpenButton();
 			_TurnButtonSlider.SlideIn = false;
 			target.Visible = false;
 			BattleCleanup();

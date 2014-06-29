@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -17,7 +17,6 @@ public class Part : MonoBehaviour
 	int mDragFingerID = -1;
 	Vector3 mDragBeginPosition;
 	GameObject mHandleShadow = null;
-	Transform mCaption = null;
 	public float mHP = -1;
 
 	List<Transform> _SignalLights = new List<Transform>();
@@ -143,7 +142,7 @@ public class Part : MonoBehaviour
 		else switch (tier)
 		{
 		case 0:
-			ret_ = new Color(243.0f / 255.0f ,244.0f / 255.0f, 161.0f / 255.0f, 0.9f);
+			ret_ = new Color(243.0f / 255.0f ,244.0f / 255.0f, 161.0f / 255.0f, 0.7f);
 			break;
 		case 1:
 			ret_ = new Color(255.0f / 255.0f ,255.0f / 255.0f, 255.0f / 255.0f, 0.85f);
@@ -288,20 +287,7 @@ public class Part : MonoBehaviour
 		
 		return ret_;
 	}
-	
-	public void SetCaptionVisibility(bool state)
-	{
-		if ( mCaption == null )
-		{
-			mCaption = transform.Find("caption");
-		}
-		
-		if ( mCaption != null )
-		{
-			mCaption.gameObject.SetActive(state);
-		}
-	}
-	
+
 	Location _TouchLocation;
 	float _TouchLocationTimeStamp;
 	Vector3 _TouchLocationPosition;
@@ -375,7 +361,7 @@ public class Part : MonoBehaviour
 		switch ( mLocation )
 		{
 			case Location.Inventory:
-				InventoryManager.GetInstance().RetrievePart(transform);
+				InventoryManager.Instance.RetrievePart(transform);
 			break;
 			
 			case Location.Ship:
@@ -389,11 +375,9 @@ public class Part : MonoBehaviour
 		//DisabledContainer.gameObject.SetActive(false);	
 		SetPowered(true);
 
-		mDragBeginPosition = MainManager.GetInstance().GetWorldPos(mDragFingerID) - transform.localPosition;
+		mDragBeginPosition = MainManager.Instance.GetWorldPos(mDragFingerID) - transform.localPosition;
 		mLocation = Location.Handle;
-		
-		SetCaptionVisibility(true);
-		
+
 		if ( mHandleShadow == null )
 		{
 			mHandleShadow = CreateShadow();
@@ -412,17 +396,17 @@ public class Part : MonoBehaviour
 			return;
 		}
 		
-		Vector3 localPosition_ = MainManager.GetInstance().GetWorldPos(mDragFingerID) + Vector3.forward * 1.5f + Vector3.left * 0.5f + Vector3.up * 1.0f - mDragBeginPosition;
+		Vector3 localPosition_ = MainManager.Instance.GetWorldPos(mDragFingerID) + Vector3.forward * 1.5f + Vector3.left * 0.5f + Vector3.up * 1.0f - mDragBeginPosition;
 		transform.localPosition = localPosition_;
 		
 		
-		Vector3 targetPosition_ = localPosition_ - HangarManager.GetInstance()._HangarContainer.transform.localPosition;
+		Vector3 targetPosition_ = localPosition_ - HangarManager.Instance._HangarContainer.transform.localPosition;
 		
 		Vector3 placementPostiion = mHandleShadow.transform.position;
 		
 		if ( !FleetManager.GetShip().IsOccupied(mPattern.mHash, targetPosition_, ref placementPostiion) )
 		{
-			mHandleShadow.transform.position = placementPostiion + HangarManager.GetInstance()._HangarContainer.transform.localPosition;
+			mHandleShadow.transform.position = placementPostiion + HangarManager.Instance._HangarContainer.transform.localPosition;
 		}
 	}
 	
@@ -433,29 +417,28 @@ public class Part : MonoBehaviour
 			return;
 		}
 		
-		SetCaptionVisibility(false);
-		
 		ResetTouchLocation();
 		
 		transform.position = mHandleShadow.transform.position;
 		
 		mHandleShadow.SetActive(false);
 		mHandleShadow.transform.parent = transform;
-		UpdateLocation(InventoryManager.GetInstance()._ScrollingPanel.IsWithin(MainManager.GetInstance().GetWorldPos(mDragFingerID)) ? Location.Inventory : Location.Ship);
+		UpdateLocation(InventoryManager.Instance._ScrollingPanel.IsWithin(MainManager.Instance.GetWorldPos(mDragFingerID)) ? Location.Inventory : Location.Ship);
 		
 		_Dragging = false;
 	}
 	
 	void OnTouchDown(int fingerID)
 	{
-		if ( /*mLocation == Location.Ship ||*/ mDragFingerID != -1 )
+		if ( mDragFingerID != -1 )
 		{
 			return;
 		}
-		MainManager.GetInstance().AttachListner(gameObject);
+
+		MainManager.Instance.AttachListner(gameObject);
 		
 		mDragFingerID = fingerID;
-		SetTouchLocation(mLocation, MainManager.GetInstance().GetScreenPos(fingerID));	
+		SetTouchLocation(mLocation, MainManager.Instance.GetScreenPos(fingerID));	
 	}
 	
 	int mBoundaryHeight = 0;
@@ -483,7 +466,7 @@ public class Part : MonoBehaviour
 		}
 		else
 		{
-			CheckTouchLocation(MainManager.GetInstance().GetScreenPos(fingerID));
+			CheckTouchLocation(MainManager.Instance.GetScreenPos(fingerID));
 		}
 	}
 	
@@ -493,7 +476,7 @@ public class Part : MonoBehaviour
 		{
 			return;
 		}
-		MainManager.GetInstance().DetachListener(gameObject);
+		MainManager.Instance.DetachListener(gameObject);
 		
 		
 		if ( _Dragging )
@@ -502,7 +485,7 @@ public class Part : MonoBehaviour
 		}
 		else
 		{
-			CheckClick(MainManager.GetInstance().GetScreenPos(fingerID));
+			CheckClick(MainManager.Instance.GetScreenPos(fingerID));
 		}
 		
 		ResetTouchLocation();
@@ -525,7 +508,7 @@ public class Part : MonoBehaviour
 				FleetManager.GetShip().InsertPart(transform);
 				break;
 			case Location.Inventory:
-				InventoryManager.GetInstance().InsertPart(gameObject);
+				InventoryManager.Instance.InsertPart(gameObject);
 				break;
 		}
 	}

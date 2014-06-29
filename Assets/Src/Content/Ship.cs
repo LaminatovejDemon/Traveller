@@ -5,6 +5,20 @@ using System.Collections.Generic;
 public class Ship : MonoBehaviour 
 {
 
+	public CameraHandler cameraHandler
+	{
+		get 
+		{
+			return _cameraHandler;
+		}
+
+		private set
+		{
+			_cameraHandler = value;
+		}
+	}
+	private CameraHandler _cameraHandler;
+
 	private Part [,] mOccupied = new Part[HangarManager.HANGAR_SIZE, HangarManager.HANGAR_SIZE];
 
 	public GameObject mStats {get; private set;}
@@ -62,6 +76,13 @@ public class Ship : MonoBehaviour
 			}
 		}
 	}
+
+	void CreateCamera(Transform parent)
+	{
+		cameraHandler = CameraHandler.Create();
+		cameraHandler.name = "Camera";
+		cameraHandler.transform.parent = _ShipPositionContainer;
+	}
 	
 	void CreateContainer(string name)
 	{
@@ -86,6 +107,7 @@ public class Ship : MonoBehaviour
 		_ScanParent = template;
 		
 		CreateContainer(template.mName);
+		CreateCamera(_ShipPositionContainer);
 		_BattleComputer = gameObject.AddComponent<BattleComputer>();
 		
 		ClearHangar();
@@ -93,6 +115,8 @@ public class Ship : MonoBehaviour
 
 		
 		LoadShip(template);
+
+		cameraHandler.Show(_ShipRotationContainer);
 		
 		_BoundaryHorizontal = template.mBoundaryH;
 		_BoundaryVertical = template.mBoundaryV;
@@ -100,6 +124,7 @@ public class Ship : MonoBehaviour
 		_OffsetHorizontal = template.mOffsetH;
 		
 		transform.localPosition = mShipCenter = template.mCenter;
+		_ShipRotationContainer.transform.localPosition = -mShipCenter;
 
 		mInitialized = true;
 	}
@@ -115,6 +140,8 @@ public class Ship : MonoBehaviour
 		}
 		
 		CreateContainer(name);
+		CreateCamera(_ShipPositionContainer);
+
 		_BattleComputer = gameObject.AddComponent<BattleComputer>();	
 		
 		_ShipName = name;
@@ -123,11 +150,17 @@ public class Ship : MonoBehaviour
 		_Shield = gameObject.AddComponent<Shield>();
 		
 		RestoreShip();
-		
-		//transform.localPosition = mShipCenter;
-		
-		
+
+		Utils.SetLayer(_ShipPositionContainer, LayerMask.NameToLayer("Player"));
+
+		cameraHandler.Show(_ShipRotationContainer);
 		mInitialized = true;
+	}
+
+	public void SetLayer(int layer)
+	{
+		Utils.SetLayer(_ShipPositionContainer, layer);
+		_cameraHandler._RealCamera.cullingMask = 1 << layer;
 	}
 	
 	public bool VisualHitPart(Part target)
@@ -140,7 +173,7 @@ public class Ship : MonoBehaviour
 		
 		if ( target.mHP <= 0 )
 		{
-			RemovePart(target, false);
+			RemovePart(target);
 			return true;
 		}
 		else
@@ -149,10 +182,9 @@ public class Ship : MonoBehaviour
 		}
 	}
 	
-	void RemovePart(Part which, bool changeLayer)
+	void RemovePart(Part which)
 	{
-		Occupy(which, which.transform.localPosition, false, changeLayer);
-		
+		Occupy(which, which.transform.localPosition, false);
 	}
 	
 	public void RemoveDestroyedParts()
@@ -165,7 +197,7 @@ public class Ship : MonoBehaviour
 				actual_ = mOccupied[x_, y_];
 				if ( actual_ != null && actual_.mHP <= 0 )
 				{
-					RemovePart(actual_, true);
+					RemovePart(actual_);
 					GameObject.Destroy(actual_.gameObject);
 				}
 			}
@@ -179,8 +211,7 @@ public class Ship : MonoBehaviour
 		which.parent = null;
 		SetStats();
 
-		MainManager.GetInstance().Backup();
-		//BackupShip();
+		MainManager.Instance.Backup();
 	}
 	
 	public void InsertPart(Transform which)
@@ -189,8 +220,7 @@ public class Ship : MonoBehaviour
 		Occupy(which.GetComponent<Part>(), which.transform.localPosition, true);
 		SetStats();
 
-		MainManager.GetInstance().Backup();
-		//BackupShip();
+		MainManager.Instance.Backup();
 	}
 	
 	public void LoadShip(ShipScan template)
@@ -207,9 +237,7 @@ public class Ship : MonoBehaviour
 			
 			for ( int i = 0; i < itemCount_; ++i )
 			{
-				//GameObject part_ = PartManager.GetInstance().GetPattern(template.mPartList[i].mPattern.mID);
-
-				GameObject part_ = PartManager.GetInstance().GetPattern(template.mPartList[i].mPatternID);
+				GameObject part_ = PartManager.Instance.GetPattern(template.mPartList[i].mPatternID);
 				part_.transform.parent = transform;
 				part_.name = i + "_" + part_.name;
 				part_.GetComponent<Part>().mHP = part_.GetComponent<Part>().mPattern.mHp;
@@ -231,15 +259,12 @@ public class Ship : MonoBehaviour
 		
 		for ( int i = 0; i < itemCount_; ++i )
 		{
-			GameObject part_ = PartManager.GetInstance().GetPattern(PlayerPrefs.GetString(_ShipName+"_ShipPartID_"+i));
+			GameObject part_ = PartManager.Instance.GetPattern(PlayerPrefs.GetString(_ShipName+"_ShipPartID_"+i));
 			if ( part_ == null )
 			{
 				EraseShip();
-				//RemoveBackup();
 				return;
 			}
-			InventoryManager.GetInstance().AddCaption(part_.GetComponent<Part>());
-			part_.GetComponent<Part>().SetCaptionVisibility(false);
 			
 			part_.transform.parent = transform;
 			
@@ -315,13 +340,7 @@ public class Ship : MonoBehaviour
 		PlayerPrefs.DeleteKey(_ShipName+"_ShipOffsetH");
 		PlayerPrefs.DeleteKey(_ShipName+"_ShipOffsetV");
 	}
-	
-	// Use this for initialization
-	void Start () 
-	{
-		
-	}
-	
+
 	void GetHangarPlace(Vector3 position, out int x, out int y)
 	{
 		x = (int)(((int)(position.x + 1000.5f))-1000 + ((HangarManager.HANGAR_SIZE) * 0.5f -1));
@@ -350,7 +369,6 @@ public class Ship : MonoBehaviour
 		}
 		
 		return true;
-		
 	}
 	
 	bool IsOccupiedLocalRange(int hash, int px, int py, ref int sx, ref int sy)
@@ -373,9 +391,7 @@ public class Ship : MonoBehaviour
 		
 		return true;
 	}
-	
-	
-		
+
 	public float GetEvade()
 	{
 		if ( mMass <= 0 || mEnginePower <= 0 )
@@ -401,10 +417,8 @@ public class Ship : MonoBehaviour
 		}
 
 		GameObject.Destroy(mStats);
-		//_TierData.DeleteAll();
-		//GameObject.Destroy(transform.parent.gameObject);
 
-		MainManager.GetInstance().Backup();
+		MainManager.Instance.Backup();
 	}
 	
 	void UpdateStatsContainer()
@@ -431,7 +445,7 @@ public class Ship : MonoBehaviour
 			"\n EVADE: " + (GetEvade() == -1 ? "N/A" : (int)(GetEvade() * 100) + "%") + 
 			"\n IT'S " + (mValidShip ? "VALID SHIP" : "PIECE OF CRAP");
 		
-		HangarManager.GetInstance().InformShipValidity(FleetManager.GetShip().IsAlive());
+		HangarManager.Instance.InformShipValidity(FleetManager.GetShip().IsAlive());
 	}
 	
 	void ClearStats()
@@ -490,17 +504,14 @@ public class Ship : MonoBehaviour
 		// disabled parts
 		if ( mEnergyOverall + part.mPattern.mPower < 0 )
 		{
-			//part.DisabledContainer.gameObject.SetActive(true);
 			part.SetPowered(false);
 
-			//Utils.SetLayer(part.DisabledContainer.transform, part.gameObject.layer);
 			part.SetPoweredLayer(part.gameObject.layer);
 			return;
 		}
 
 		part.SetPowered(true);
-//		part.DisabledContainer.gameObject.SetActive(false);
-		
+
 		mEnergyOverall += part.mPattern.mPower < 0 ? part.mPattern.mPower : 0;
 		
 		_BattleComputer.AddConsumer(part);
@@ -527,24 +538,7 @@ public class Ship : MonoBehaviour
 		if ( new_ != null )
 			mEnginePower += new_.mValue;
 	}
-	
-	
-/*	bool _DebugRotateDirection = true;
-	float _DebugRotateSpeed = 0;
-	bool _DebugRotate;
-	
-	public bool DebugRotate
-	{
-		set {
-			_DebugRotate = value;
-			_DebugRotateSpeed = Random.Range(0, 10.0f);
-			_DebugRotateDirection = (Random.value > 0.5f);
-		}
-		get {
-			return _DebugRotate;
-		}
-	}*/
-	
+		
 	public void SetHangarEntry(bool state)
 	{
 		if ( mStats != null )
@@ -558,16 +552,17 @@ public class Ship : MonoBehaviour
 			CalculateShipCenter();
 			
 			transform.localPosition = mShipCenter;
-			_ShipPositionContainer.localPosition = Vector3.zero;
-			FleetManager.GetInstance().ScanShip(gameObject);
+			_ShipRotationContainer.localPosition = -mShipCenter;
+
+			FleetManager.Instance.ScanShip(gameObject);
 		}
 		else
 		{	
 			UpdateStatsContainer();
-		//	DebugRotate = false;
-			_ShipPositionContainer.parent = HangarManager.GetInstance()._HangarContainer.transform;
+			_ShipPositionContainer.parent = HangarManager.Instance._HangarContainer.transform;
 			transform.localPosition = Vector3.zero;
 			_ShipPositionContainer.localPosition = Vector3.zero;		
+			_ShipRotationContainer.transform.localPosition = Vector3.zero;
 			_ShipRotationContainer.localRotation = Quaternion.identity;
 		}
 	}
@@ -672,25 +667,13 @@ public class Ship : MonoBehaviour
 		_Shield.RecalculateBoundary();
 	}
 		
-	void Occupy(Part part, Vector3 position, bool place, bool changeLayer = true)
+	void Occupy(Part part, Vector3 position, bool place)
 	{
 		int x, y;
 	
 		GetHangarPlace(position, out x, out y);
 		int hash = part.mPattern.mHash;
-		
-		/*if ( changeLayer )
-		{
-			if ( place )
-			{
-				Utils.SetLayer(part.transform, MainManager.GetInstance()._HangarCamera.GetRealLayer() );
-			}
-			else
-			{
-				Utils.SetLayer(part.transform, 0 );
-			}
-		}*/	
-		
+
 		for ( int i = 0; i < 6; ++i )
 		{
 			for ( int j = 0; j < 4; ++j)
@@ -701,22 +684,19 @@ public class Ship : MonoBehaviour
 				{		
 					if (x-i < 0 || x-i >= HangarManager.HANGAR_SIZE || y-j < 0 || y-j >= HangarManager.HANGAR_SIZE )
 					{
-						Debug.Log ("Kurva UZ!");
 						part.UpdateLocation(Part.Location.Inventory);
 						return;
 					}
 					
 					if ( (place && mOccupied[x-i, y-j] != null) || (!place && mOccupied[x-i, y-j] == null) )
 					{
-						Debug.Log ("Kurva UZ! 2");
 						continue;
-					}
-					
+					}	
+
 					mOccupied[x-i,y-j] = place ? part : null;
 				}
 			}
 		}	
-
 	}
 
 	public void SetStats()
@@ -743,7 +723,7 @@ public class Ship : MonoBehaviour
 		
 		if ( mValidShip != lastValidity_ )
 		{
-			HangarManager.GetInstance().InformShipValidity(mValidShip);
+			HangarManager.Instance.InformShipValidity(mValidShip);
 		}
 		
 		_Shield.RecalculateBoundary();

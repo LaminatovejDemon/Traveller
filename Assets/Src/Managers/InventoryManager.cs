@@ -9,17 +9,20 @@ public class InventoryManager : ButtonHandler
 	public FrameSlider _ScrollingPanelSlider;
 	
 	private static InventoryManager mInstance = null;
-	public static InventoryManager GetInstance()
+	public static InventoryManager Instance
 	{
-		if ( mInstance == null )
+		get 
 		{
-			GameObject instanceObject_ = GameObject.Find("#InventoryManager");
-			if ( instanceObject_ != null )
-				mInstance = instanceObject_.transform.GetComponent<InventoryManager>();
-			else
-				mInstance =  new GameObject("#InventoryManager").AddComponent<InventoryManager>();
+			if ( mInstance == null )
+			{
+				GameObject instanceObject_ = GameObject.Find("#InventoryManager");
+				if ( instanceObject_ != null )
+					mInstance = instanceObject_.transform.GetComponent<InventoryManager>();
+				else
+					mInstance =  new GameObject("#InventoryManager").AddComponent<InventoryManager>();
+			}
+			return mInstance;
 		}
-		return mInstance;
 	}
 	
 	List <GameObject> mInventoryList = new List<GameObject>();
@@ -57,30 +60,24 @@ public class InventoryManager : ButtonHandler
 		_ScrollingPanel.StopScrolling();
 		
 		partObject.transform.parent = null;
-		Utils.SetTransformCamera(partObject.transform, MainManager.GetInstance()._InventoryCamera, MainManager.GetInstance()._HangarCamera._RealCamera); 
 
+		Utils.SetLayer(partObject.transform, FleetManager.GetShip().cameraHandler._RealCamera.gameObject.layer);
+	
 		partObject.name = FleetManager.GetShip().transform.childCount + "_" + partObject.name;
 
 		mInventoryList.RemoveAt(index);
 
-		//mInventoryList[index] = PartManager.GetInstance().GetPattern(partObject.GetComponent<Part>().mPattern.mID);
-		
-		//AddCaption(mInventoryList[index].GetComponent<Part>());
-		
 		SortInventory();
-		//BackupInventory();
-		MainManager.GetInstance().Backup();
+		MainManager.Instance.Backup();
 	}
 
-	// We don't want to override backup after restoring first modul of ship and inserting into, that's backup parameter
 	void InsertPart(string patternID)
 	{
-		GameObject new_ = PartManager.GetInstance().GetPattern(patternID);
+		GameObject new_ = PartManager.Instance.GetPattern(patternID);
 
 		if ( new_ == null )
 		{
 			Debug.Log ("ERROR: There is missing FBX for part " + patternID);
-			//return;
 		}
 
 		InsertPart(new_);
@@ -102,7 +99,7 @@ public class InventoryManager : ButtonHandler
 		partObject.transform.parent = _ScrollingPanel._ContentContainer;
 
 		SortInventory();
-		MainManager.GetInstance().Backup();
+		MainManager.Instance.Backup();
 	}
 
 	int GetFreeIndex()
@@ -164,7 +161,7 @@ public class InventoryManager : ButtonHandler
 		
 		while ( true)
 		{
-			rarity_ = PartManager.GetInstance().GetRarity(index_);
+			rarity_ = PartManager.Instance.GetRarity(index_);
 
 			if ( rarity_ == -1 )
 			{
@@ -177,24 +174,13 @@ public class InventoryManager : ButtonHandler
 				continue;
 			}
 
-			/*part_ = PartManager.GetInstance().GetPattern(index_);
-			
-			if ( part_ == null )
-			{
-				break;
-			}
-			
-			AddCaption(part_.GetComponent<Part>());
-			
-			mInventoryList.Add(part_);*/
-			InsertPart(PartManager.GetInstance().GetPattern(index_));
+			InsertPart(PartManager.Instance.GetPattern(index_));
 
 			++index_;
 		}
 		
 		SortInventory();
-		//BackupInventory();
-		MainManager.GetInstance().Backup();
+		MainManager.Instance.Backup();
 	}
 	
 	public void SetVisibility(bool state)
@@ -203,33 +189,6 @@ public class InventoryManager : ButtonHandler
 		_ScrollingPanelSlider.SlideIn = state;
 	}
 	
-	public void AddCaption(Part part)
-	{		
-		PartManager.Pattern pattern_ =  part.mPattern;
-		
-		//string [] name_ = pattern_.mName.Split('(');
-			
-		string data_ = pattern_.mName/*[0] + "\n(" + name_[1]*/ + "\n HP: " + pattern_.mHp + " Ff";
-		if ( pattern_.mPower > 0 ) 
-		{
-			data_ = data_ + "\n E: " + pattern_.mPower + " Rb";
-		}
-		else if ( pattern_.mPower < 0 )
-		{
-			data_ += "\n E:  " + -pattern_.mPower + " Rb";
-		}
-		
-		/* No caption in inventory
-		 * GameObject capName_ = TextManager.GetInstance().GetText(data_, 0.6f);
-	 	
-		capName_.transform.parent = part.transform;
-		capName_.name = "caption";
-
-		capName_.transform.localPosition = Vector3.zero;
-		capName_.transform.rotation = Camera.main.transform.rotation;		
-		*/
-	}
-
 	void ClearBackup()
 	{
 		int count_ = PlayerPrefs.GetInt("Player_InventoryCount");
@@ -279,10 +238,10 @@ public class InventoryManager : ButtonHandler
 		case ButtonHandler.ButtonHandle.CONFIRM:
 
 			FleetManager.GetShip().EraseShip();
-			InventoryManager.GetInstance().FillInventory(1);
+			InventoryManager.Instance.FillInventory(1);
 
 			FleetManager.GetShip().GetTierData().DeleteAll();
-			FleetManager.GetInstance().DeleteAllTierData();
+			FleetManager.Instance.DeleteAllTierData();
 			Utils.DestroyParentWindow(target.gameObject);
 			break;
 			

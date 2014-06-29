@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class PopupPart : PopupWindow
@@ -29,7 +29,7 @@ public class PopupPart : PopupWindow
 	{
 		if ( target._Handle == ButtonHandle.POPUP_TRASH_ITEM )
 		{
-			InventoryManager.GetInstance().RetrievePart(_PartObjectOriginal.transform);
+			InventoryManager.Instance.RetrievePart(_PartObjectOriginal.transform);
 			GameObject.Destroy(_PartObjectOriginal);
 			GameObject.Destroy(gameObject);
 		}

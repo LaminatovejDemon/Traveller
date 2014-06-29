@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -31,11 +31,11 @@ public class LootManager : MonoBehaviour
 			return;
 		}
 
-		int count_ = PartManager.GetInstance().GetPatternCount();
+		int count_ = PartManager.Instance.GetPatternCount();
 
 		for ( int i = 0; i < count_; ++i )
 		{
-			_PatternRarityList.Add(PartManager.GetInstance().GetRarity(i));
+			_PatternRarityList.Add(PartManager.Instance.GetRarity(i));
 			_PatternRatioList.Add(0);
 			_PatternPercentList.Add(0);
 		}
@@ -57,9 +57,9 @@ public class LootManager : MonoBehaviour
 
 		int rollIndex_ = RollIndex();
 
-		GameObject LootPart_ = PartManager.GetInstance().GetPattern(rollIndex_);
+		GameObject LootPart_ = PartManager.Instance.GetPattern(rollIndex_);
 
-		InventoryManager.GetInstance().InsertPart(LootPart_);
+		InventoryManager.Instance.InsertPart(LootPart_);
 
 		PopupManager.GetInstance().CreatePartPopup(LootPart_, LootPart_.GetComponent<Part>().mPattern, "YOU SALVAGED NEW MODULE!");
 	}
@@ -69,7 +69,7 @@ public class LootManager : MonoBehaviour
 
 		for ( int i = 0; i < _PatternPercentList.Count; ++i )
 		{
-			PartManager.Pattern dbgpart_ = PartManager.GetInstance().mPatternList[i];
+			PartManager.Pattern dbgpart_ = PartManager.Instance.mPatternList[i];
 			if ( _PatternPercentList[i] > 0 )
 			{
 				Debug.Log ("\t" + dbgpart_.mName + "\t(" + dbgpart_.mRarity + ") has ratio " + _PatternPercentList[i]);
@@ -115,8 +115,8 @@ public class LootManager : MonoBehaviour
 
 	float GetLootProbability()
 	{
-		float lootProbability_ = Mathf.Clamp(1.0f - (InventoryManager.GetInstance().GetCount() / 10.0f), 0.05f, 1.0f);
-		Debug.Log ("Loot probability is " + lootProbability_ + "(" + InventoryManager.GetInstance().GetCount() + ")");
+		float lootProbability_ = Mathf.Clamp(1.0f - (InventoryManager.Instance.GetCount() / 10.0f), 0.05f, 1.0f);
+		Debug.Log ("Loot probability is " + lootProbability_ + "(" + InventoryManager.Instance.GetCount() + ")");
 		return lootProbability_;
 	}
 }

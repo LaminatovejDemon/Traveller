@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -51,7 +51,7 @@ public class ShipScan : MonoBehaviour
 		float ret_ = 0;
 		for ( int i = 0; i < mPartList.Count; ++i )
 		{
-			ret_ += PartManager.GetInstance().GetRarity(mPartList[i].mPatternID);
+			ret_ += PartManager.Instance.GetRarity(mPartList[i].mPatternID);
 		}
 
 		return ret_ / (float)mPartList.Count;

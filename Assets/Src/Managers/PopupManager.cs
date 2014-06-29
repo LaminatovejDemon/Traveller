@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class PopupManager : MonoBehaviour {
@@ -75,11 +75,11 @@ public class PopupManager : MonoBehaviour {
 
 		text_ = "";
 
-		text_ += PartManager.GetInstance().GetEnergyLabel(pattern);
-		text_ += PartManager.GetInstance().GetDamageLabel(pattern);
-		text_ += PartManager.GetInstance().GetEvadeLabel(pattern);
-		text_ += PartManager.GetInstance().GetHPLabel(pattern);
-		text_ += PartManager.GetInstance().GetMassLabel(pattern);
+		text_ += PartManager.Instance.GetEnergyLabel(pattern);
+		text_ += PartManager.Instance.GetDamageLabel(pattern);
+		text_ += PartManager.Instance.GetEvadeLabel(pattern);
+		text_ += PartManager.Instance.GetHPLabel(pattern);
+		text_ += PartManager.Instance.GetMassLabel(pattern);
 
 		text_ += "\n"+ Utils.SplitLines(pattern.mDescription, 38);
 

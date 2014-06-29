@@ -150,9 +150,18 @@ public class BattleComputer : MonoBehaviour
 	void Shoot(Ship target, Weapon weapon, Side side)
 	{
 		int index_ = RollIndex(target, side);
-		
-		Part targetPart_ = target.GetComponent<BattleComputer>().GetTarget(side, index_);
-		
+
+		Part targetPart_ = null;
+		int iterations_ = 0;
+
+		while ( targetPart_ == null && iterations_ < HangarManager.HANGAR_SIZE)
+		{
+			targetPart_ = target.GetComponent<BattleComputer>().GetTarget(side, index_);
+
+			index_ = (index_ +1) % ((side == Side.Left || side == Side.Right) ? target._BoundaryVertical : target._BoundaryHorizontal);
+			++iterations_;
+		}
+
 		if ( targetPart_ != null )
 		{
 			if ( Random.value < target.GetEvade() )
@@ -161,8 +170,7 @@ public class BattleComputer : MonoBehaviour
 				index_ = -1;
 			}
 		}
-		
-		
+
 		if ( targetPart_ != null )
 		{
 			if (target._Shield.GetCapacity() > 0 && (weapon._Ability != PartManager.AbilityType.TorpedoDamage))

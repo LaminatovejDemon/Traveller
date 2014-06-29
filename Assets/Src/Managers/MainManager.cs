@@ -3,33 +3,30 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class MainManager : MonoBehaviour {
-	
-	public CameraHandler _BattleCamera;
-	public CameraHandler _HangarCamera;
-	public CameraHandler _EnemyCamera;
-	public Camera _InventoryCamera;
+
 	public Camera _GUICamera;
 	public PlayerData _PlayerData;
 	public TextMesh _FPSMesh;
 
-	private static MainManager mInstance = null;
-	
 	Vector3 [] mFingerWorldPositions = new Vector3[10];
 	Vector3 [] mFingerScreenPos = new Vector3[10];
 
 	List<GameObject> mTouchListeners = new List<GameObject>();
-	
-	public static MainManager GetInstance()
+
+	private static MainManager mInstance = null;
+	public static MainManager Instance
 	{
-		if ( mInstance == null )
-		{
-			GameObject instanceObject_ = GameObject.Find("#MainManager");
-			if ( instanceObject_ != null )
-				mInstance = instanceObject_.transform.GetComponent<MainManager>();
-			else
-				mInstance =  new GameObject("#MainManager").AddComponent<MainManager>();
+		get {
+			if ( mInstance == null )
+			{
+				GameObject instanceObject_ = GameObject.Find("#MainManager");
+				if ( instanceObject_ != null )
+					mInstance = instanceObject_.transform.GetComponent<MainManager>();
+				else
+					mInstance =  new GameObject("#MainManager").AddComponent<MainManager>();
+			}
+			return mInstance;
 		}
-		return mInstance;
 	}
 	
 	void Start () 
@@ -38,29 +35,21 @@ public class MainManager : MonoBehaviour {
 
 		name = "#MainManager";
 
-		InventoryManager.GetInstance();
-		PartManager.GetInstance().Initialize();
-		InventoryManager.GetInstance().Initialize();
-	//	NetworkManager.GetInstance();
-		HangarManager.GetInstance();
-		BattleManager.GetInstance();
-		FleetManager.GetInstance();
+		PartManager.Instance.Initialize();
+		InventoryManager.Instance.Initialize();
+		HangarManager.Instance.Initialize();
+		FleetManager.Instance.Initialize();
 
 		RestorePlayer();
 
 	}
-
-
-
-
+	
 	bool _BackupDirty = true;
 
 	public void Backup()
 	{
 		_BackupDirty = true;
 	}
-
-	public float _NextSimulationTime = 0;
 
 	void BackupUpdate()
 	{
@@ -70,12 +59,6 @@ public class MainManager : MonoBehaviour {
 			BackupPlayer();
 			_BackupDirty = false;
 		}
-
-	/*	if ( Time.time - _NextSimulationTime > 0f )
-		{
-			_NextSimulationTime = Time.time + Random.Range(0.5f, 3.0f);
-			BattleManager.GetInstance().SimulateBattle();
-		}	*/
 	}
 	
 	void BackupPlayer()
@@ -109,9 +92,8 @@ public class MainManager : MonoBehaviour {
 			return;
 		}
 
-		CheckTouchDown(_InventoryCamera, fingerID, position, ref mDebugRayInventory, true);
-		CheckTouchDown(_HangarCamera._RealCamera, fingerID, position, ref mDebugRayHangar);
-
+		//CheckTouchDown(FleetManager.GetShip().cameraHandler._RealCamera, fingerID, position, ref mDebugRayInventory);
+		CheckTouchDown(FleetManager.GetShip().cameraHandler._RealCamera, fingerID, position, ref mDebugRayHangar);
 	}
 
 	bool CheckTouchDown(Camera cam, int fingerID, Vector3 position, ref Ray ray, bool allCast = false)
@@ -123,8 +105,10 @@ public class MainManager : MonoBehaviour {
 
 		bool ret_ = false;
 
-		Vector3 touchPos_ = cam.ScreenToWorldPoint(position);
-		ray = new Ray(touchPos_ - cam.transform.forward * 50.0f, cam.transform.forward);
+		Vector3 touch1_ = cam.ScreenToWorldPoint(position - cam.transform.forward);
+		Vector3 touch2_ = cam.ScreenToWorldPoint(position + cam.transform.forward);
+
+		ray = new Ray(touch1_ - cam.transform.forward * (cam.isOrthoGraphic ? 50.0f : 0 ), cam.isOrthoGraphic ? cam.transform.forward : (touch2_ - touch1_).normalized);
 
 		SetScreenPos(fingerID, position);
 		SetWorldPos(fingerID, position);
@@ -184,8 +168,6 @@ public class MainManager : MonoBehaviour {
 
 	void TouchMoved(int fingerID, Vector3 position)
 	{
-		//mFingerPositions[fingerID] = position;
-
 		SetScreenPos(fingerID, position);
 		SetWorldPos(fingerID, position);
 		
@@ -230,7 +212,7 @@ public class MainManager : MonoBehaviour {
 	{
 		if ( Time.time - _LastMeasure > 1.0f )
 		{
-			_FPSMesh.text = (_AccumulatedDelta / (Time.time - _LastMeasure)) + " ("+Application.targetFrameRate+") FPS";
+			_FPSMesh.text = (_AccumulatedDelta / (Time.time - _LastMeasure)).ToString("0.00 FPS");
 			_AccumulatedDelta = 0;
 			_LastMeasure = Time.time;
 		}

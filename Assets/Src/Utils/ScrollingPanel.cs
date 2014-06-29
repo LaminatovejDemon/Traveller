@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class ScrollingPanel : MonoBehaviour 
@@ -133,8 +133,8 @@ public class ScrollingPanel : MonoBehaviour
 		}
 		
 		mDragFinger = fingerID;
-		mBeginPosition = _ContentContainer.transform.localPosition - MainManager.GetInstance().GetWorldPos(fingerID) ;
-		MainManager.GetInstance().AttachListner(gameObject);
+		mBeginPosition = _ContentContainer.transform.localPosition - MainManager.Instance.GetWorldPos(fingerID) ;
+		MainManager.Instance.AttachListner(gameObject);
 	}
 	
 	void SaveToHistory(Vector3 position)
@@ -174,7 +174,7 @@ public class ScrollingPanel : MonoBehaviour
 		{
 			return;
 		}
-		mTargetContainerPosition =  mBeginPosition + MainManager.GetInstance().GetWorldPos(fingerID);
+		mTargetContainerPosition =  mBeginPosition + MainManager.Instance.GetWorldPos(fingerID);
 				
 		mTargetContainerPosition.x = 0;
 		mTargetContainerPosition.y = 0;
@@ -215,7 +215,7 @@ public class ScrollingPanel : MonoBehaviour
 		}
 		
 		mDragFinger = -1;
-		MainManager.GetInstance().DetachListener(gameObject);
+		MainManager.Instance.DetachListener(gameObject);
 
 		mTargetContainerPosition += Vector3.forward * GetSpeedScrolling() * 0.2f;
 		

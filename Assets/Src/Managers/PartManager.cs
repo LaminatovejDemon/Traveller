@@ -1,21 +1,24 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 public class PartManager : MonoBehaviour 
 {
 	private static PartManager mInstance = null;
-	public static PartManager GetInstance()
+	public static PartManager Instance
 	{
-		if ( mInstance == null )
+		get 
 		{
-			GameObject instanceObject_ = GameObject.Find("#PartManager");
-			if ( instanceObject_ != null )
-				mInstance = instanceObject_.transform.GetComponent<PartManager>();
-			else
-				mInstance =  new GameObject("#PartManager").AddComponent<PartManager>();
+			if ( mInstance == null )
+			{
+				GameObject instanceObject_ = GameObject.Find("#PartManager");
+				if ( instanceObject_ != null )
+					mInstance = instanceObject_.transform.GetComponent<PartManager>();
+				else
+					mInstance =  new GameObject("#PartManager").AddComponent<PartManager>();
+			}
+			return mInstance;
 		}
-		return mInstance;
 	}
 	
 	GameObject mTemplate;
@@ -36,9 +39,8 @@ public class PartManager : MonoBehaviour
 		public float mValue { get; private set; }
 	};
 		
-	public struct Pattern
+	public class Pattern
 	{
-		
 		public Pattern(string id, string name, string description, int rarity, int power, int hash, 
 			int hp, int weight, int integrity, string model, string texture, string spec1, int spec1val, string spec2, int spec2val)
 		{
@@ -56,13 +58,13 @@ public class PartManager : MonoBehaviour
 			
 			mAbilityList = new List<Ability>();
 			
-			AbilityType type_ = PartManager.GetInstance().GetAbilityType(spec1);
+			AbilityType type_ = PartManager.Instance.GetAbilityType(spec1);
 			if ( type_ != PartManager.AbilityType.Invalid )
 			{
 				mAbilityList.Add(new Ability(type_, spec1val));
 			}
 			
-			type_ = PartManager.GetInstance().GetAbilityType(spec2);
+			type_ = PartManager.Instance.GetAbilityType(spec2);
 			if ( type_ != PartManager.AbilityType.Invalid )
 			{
 				mAbilityList.Add(new Ability(type_, spec2val));
@@ -94,11 +96,6 @@ public class PartManager : MonoBehaviour
 		public int mIntegrity {get; private set;}
 		public string mModel {get; private set;}
 		public string mTexture {get; private set;}
-	//	public string mSpec1 {get; private set;}
-	//	public int mSpec1val {get; private set;}
-	//	public string mSpec2 {get; private set;}
-	//	public int mSpec2val {get; private set;}
-		
 	};
 	
 	public List<Pattern> mPatternList = new List<Pattern>();

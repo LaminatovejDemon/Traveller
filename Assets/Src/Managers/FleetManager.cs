@@ -8,17 +8,20 @@ public class FleetManager : MonoBehaviour
 	GameObject _ShipScanContainer;
 	
 	private static FleetManager mInstance = null;
-	public static FleetManager GetInstance()
+	public static FleetManager Instance
 	{
-		if ( mInstance == null )
+		get 
 		{
-			GameObject instanceObject_ = GameObject.Find("#FleetManager");
-			if ( instanceObject_ != null )
-				mInstance = instanceObject_.transform.GetComponent<FleetManager>();
-			else
-				mInstance =  new GameObject("#FleetManager").AddComponent<FleetManager>();
+			if ( mInstance == null )
+			{
+				GameObject instanceObject_ = GameObject.Find("#FleetManager");
+				if ( instanceObject_ != null )
+					mInstance = instanceObject_.transform.GetComponent<FleetManager>();
+				else
+					mInstance =  new GameObject("#FleetManager").AddComponent<FleetManager>();
+			}
+			return mInstance;
 		}
-		return mInstance;
 	}
 	
 	public void DestroyShipInstance(Ship instance)
@@ -108,19 +111,6 @@ public class FleetManager : MonoBehaviour
 		}
 	}
 
-	public void AddTutorialShip()
-	{
-	/*	if ( _ShipScanContainer == null )
-		{
-			_ShipScanContainer = new GameObject("#ShipScanContainer");
-		}
-
-		ShipScan tutorialScan_ = ((GameObject)GameObject.Instantiate((GameObject)Resources.Load("Gameplay/TutorialShip", typeof(GameObject)))).GetComponent<ShipScan>();
-		tutorialScan_.transform.parent = _ShipScanContainer.transform;
-		mShipScanList.Add(tutorialScan_.mName, tutorialScan_);
-		PlayerPrefs.SetInt("ScanShipCount", 1);*/
-	}
-	
 	public bool IsMatching(Ship ship, ShipScan scan)
 	{
 		if ( ship.transform.childCount != scan.mPartList.Count )
@@ -196,15 +186,13 @@ public class FleetManager : MonoBehaviour
 
 		mShipScanList.Add(new_.mName, new_);
 
-		BattleManager.GetInstance().SimulateBattle(new_, 50);
+		BattleManager.Instance.SimulateBattle(new_, 50);
 
 		mPlayerShipName = new_.mName;
 	}
 	
 	void RestoreScan(string name)
 	{
-//		Debug.Log ("Restoring scan " + name);
-
 		ShipScan new_ = new GameObject("_ShipScan_" + name).AddComponent<ShipScan>();
 		if ( _ShipScanContainer == null )
 		{
@@ -286,17 +274,9 @@ public class FleetManager : MonoBehaviour
 		return mPlayerShip;
 	}
 	
-	void Start () 
+	public void Initialize() 
 	{
-		//REset
-		//PlayerPrefs.SetInt("ScanShipCount", 0);
-		RestoreScans();
-		
+		RestoreScans();		
 		GetShip();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 }

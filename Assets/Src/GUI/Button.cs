@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Button : MonoBehaviour 
@@ -96,7 +96,7 @@ public class Button : MonoBehaviour
 		
 	void OnTouchDown(int fingerID)
 	{
-		MainManager.GetInstance().AttachListner(gameObject);
+		MainManager.Instance.AttachListner(gameObject);
 		mFingerID = fingerID;
 	}
 	
@@ -109,6 +109,6 @@ public class Button : MonoBehaviour
 		
 	 	_Handler.SendMessage("ButtonPressed", this, SendMessageOptions.RequireReceiver);
 		mFingerID = -1;
-		MainManager.GetInstance().DetachListener(gameObject);
+		MainManager.Instance.DetachListener(gameObject);
 	}
 }

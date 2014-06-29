@@ -10,17 +10,20 @@ public class HangarManager : ButtonHandler
 	
 	public FrameSlider _HangarContainer;
 	private static HangarManager mInstance = null;
-	public static HangarManager GetInstance()
+	public static HangarManager Instance
 	{
-		if ( mInstance == null )
+		get 
 		{
-			GameObject instanceObject_ = GameObject.Find("#HangarManager");
-			if ( instanceObject_ != null )
-				mInstance = instanceObject_.transform.GetComponent<HangarManager>();
-			else
-				mInstance =  new GameObject("#HangarManager").AddComponent<HangarManager>();
+			if ( mInstance == null )
+			{
+				GameObject instanceObject_ = GameObject.Find("#HangarManager");
+				if ( instanceObject_ != null )
+					mInstance = instanceObject_.transform.GetComponent<HangarManager>();
+				else
+					mInstance =  new GameObject("#HangarManager").AddComponent<HangarManager>();
+			}
+			return mInstance;
 		}
-		return mInstance;
 	}
 	
 	bool mInitlialzed = false;
@@ -40,7 +43,7 @@ public class HangarManager : ButtonHandler
 		}
 	}
 	
-	void Initialize()
+	public void Initialize()
 	{
 		if ( mInitlialzed )
 		{
@@ -68,22 +71,18 @@ public class HangarManager : ButtonHandler
 	
 	void SetHangarVisibility(bool state)
 	{
-		//InventoryManager.GetInstance().gameObject.SetActive(state);
-		FleetManager.GetInstance().SetHangarEntry(state);
+		FleetManager.Instance.SetHangarEntry(state);
 		
 		_HideBattleFinished = false;
 		_HideHangarFinished = false;
 		_HangarSlideCompleted = false;
 		
 		AnimateShipEntry(state);
-		FleetManager.GetShip().gameObject.SetActive(state);
-		
+
 		_HangarContainer.SlideIn = state;
 		_HangarContainer.OnFinished(gameObject, "HangarSlideCompleted", state);
-		InventoryManager.GetInstance().SetVisibility(state);
+		InventoryManager.Instance.SetVisibility(state);
 		_ButtonContainerSlider.SlideIn = state;
-		//_OpenButtonContainerSlider.SlideIn = !state;	
-		
 	}
 	
 	bool _HideBattleFinished = false;
@@ -125,7 +124,7 @@ public class HangarManager : ButtonHandler
 			_HideHangarFinished = false;
 			_HangarSlideCompleted = false;
 			
-			if ( !BattleManager.GetInstance().ShowBattle() )
+			if ( !BattleManager.Instance.ShowBattle() )
 			{
 				SetHangarVisibility(true);
 			}
@@ -134,28 +133,22 @@ public class HangarManager : ButtonHandler
 	
 	void ShowHangar()
 	{
-		MainManager.GetInstance()._HangarCamera.OnFinished(gameObject, "ShowHangarFinished");
-		MainManager.GetInstance()._HangarCamera.Show(FleetManager.GetShip().transform);	
+		ShowHangarFinished();
 
 		//sort order
-		MainManager.GetInstance()._InventoryCamera.enabled = false;
-		MainManager.GetInstance()._InventoryCamera.enabled = true;
-		MainManager.GetInstance()._GUICamera.enabled = false;
-		MainManager.GetInstance()._GUICamera.enabled = true;
+		MainManager.Instance._GUICamera.enabled = false;
+		MainManager.Instance._GUICamera.enabled = true;
 	}
 
 	void AnimateShipEntry(bool state)
 	{
 		if ( !state )
 		{
-			MainManager.GetInstance()._HangarCamera.OnFinished(gameObject, "HideHangarFinished");	
-			MainManager.GetInstance()._HangarCamera.Hide();
+			HideHangarFinished();
 		}
 		else
 		{			
-			MainManager.GetInstance()._BattleCamera.OnFinished(gameObject, "HideBattleFinished");	
-			MainManager.GetInstance()._BattleCamera.Hide();
-			MainManager.GetInstance()._EnemyCamera.Hide();
+			HideBattleFinished();
 			FleetManager.GetShip()._Shield.SetVisibility(false);
 		}
 	}
@@ -169,20 +162,9 @@ public class HangarManager : ButtonHandler
 	{
 		FleetManager.GetShip().EraseShip();
 	}
-	
-	void Start () 
-	{
-		Initialize();
-	}
-	
-	void Update () {
-	
-	}
-	
-	
+
 	// BUTTON HANDLER EXTENSION
 	
-	//Button _OpenHangarButton;
 	public Button _CloseHangarButton;
 	
 	public override void ButtonStarted (Button target)
@@ -191,10 +173,6 @@ public class HangarManager : ButtonHandler
 		
 		switch (target._Handle)
 		{
-		/*case ButtonHandle.HANGAR_OPEN:
-			_OpenHangarButton = target;
-			target.Visible = false;
-			break;*/
 		case ButtonHandle.HANGAR_DONE:
 			
 			_CloseHangarButton = target;
@@ -203,7 +181,6 @@ public class HangarManager : ButtonHandler
 
 			break;
 		}
-		
 	}
 	
 	public override void ButtonPressed (Button target)
@@ -213,7 +190,7 @@ public class HangarManager : ButtonHandler
 		switch (target._Handle)
 		{
 		case ButtonHandler.ButtonHandle.CONFIRM:
-			MainManager.GetInstance()._PlayerData.DeleteAll();
+			MainManager.Instance._PlayerData.DeleteAll();
 			Utils.DestroyParentWindow(target.gameObject);
 
 			break;
