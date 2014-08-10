@@ -93,10 +93,15 @@ public class MainManager : MonoBehaviour {
 		}
 
 		//CheckTouchDown(FleetManager.GetShip().cameraHandler._RealCamera, fingerID, position, ref mDebugRayInventory);
-		CheckTouchDown(FleetManager.GetShip().cameraHandler._RealCamera, fingerID, position, ref mDebugRayHangar);
+		if ( CheckTouchDown(FleetManager.GetShip().cameraHandler._RealCamera, fingerID, position, ref mDebugRayHangar) )
+		{
+			return;
+		}
+
+		CheckTouchDown(FleetManager.GetShip().cameraHandler._RealCamera, fingerID, position, ref mDebugRayInventory, false);
 	}
 
-	bool CheckTouchDown(Camera cam, int fingerID, Vector3 position, ref Ray ray, bool allCast = false)
+	bool CheckTouchDown(Camera cam, int fingerID, Vector3 position, ref Ray ray, bool masked = true)
 	{
 		if ( cam == null )
 		{
@@ -113,9 +118,9 @@ public class MainManager : MonoBehaviour {
 		SetScreenPos(fingerID, position);
 		SetWorldPos(fingerID, position);
 		RaycastHit hit_;
-		int layerMask_ = 1 << cam.gameObject.layer;
+		int layerMask_ = masked ? 1 << cam.gameObject.layer : int.MaxValue;
 
-		if ( allCast )
+	/*	if ( allCast )
 		{
 			RaycastHit [] hits = Physics.RaycastAll(ray, 200, layerMask_ );
 			for ( int i = 0; i < hits.Length; ++i )
@@ -124,7 +129,7 @@ public class MainManager : MonoBehaviour {
 				ret_ = true;
 			}
 		}
-		else if ( Physics.Raycast(ray, out hit_, 200, layerMask_) )
+		else*/ if ( Physics.Raycast(ray, out hit_, 200, layerMask_) )
 		{
 			hit_.collider.gameObject.SendMessage("OnTouchDown", fingerID, SendMessageOptions.DontRequireReceiver);
 			ret_ = true;

@@ -204,7 +204,20 @@ public class Part : MonoBehaviour
 		}
 	}*/
 	
-	public PartManager.Pattern mPattern;
+	PartManager.Pattern _pattern;
+
+	public PartManager.Pattern mPattern
+	{
+		set
+		{
+			_pattern = value;
+		}
+		get
+		{
+			return _pattern;
+		}
+	}
+
 
 	// Use this for initialization
 	void Start () 

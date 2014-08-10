@@ -10,13 +10,14 @@ public class PopupPart : PopupWindow
 	public Transform _ContentTextHandler;
 	public Transform _HeaderHandler;
 
-	public void SetPartObject(GameObject partResource)
+	public void SetPartObject(GameObject partResource, PartManager.Pattern pattern)
 	{
 		_PartObjectOriginal = partResource;
 
 		GameObject.Destroy(_PartObject);
 
 		_PartObject = (GameObject)GameObject.Instantiate(partResource);
+		_PartObject.GetComponent<Part>().mPattern = pattern;
 
 		_PartObject.transform.parent = _PartHandler;
 		_PartObject.transform.localRotation = Quaternion.AngleAxis(270, Vector3.right) * partResource.transform.localRotation;

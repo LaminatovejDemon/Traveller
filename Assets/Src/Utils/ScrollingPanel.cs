@@ -33,12 +33,14 @@ public class ScrollingPanel : MonoBehaviour
 	
 	public bool IsWithin(Vector3 worldCoordintates)
 	{
-		bool located_ = _BoundaryCollider.bounds.center.x - _BoundaryCollider.bounds.extents.x < worldCoordintates.x &&
-			_BoundaryCollider.bounds.center.x + _BoundaryCollider.bounds.extents.x > worldCoordintates.x && 
-			_BoundaryCollider.bounds.center.z - _BoundaryCollider.bounds.extents.z < worldCoordintates.z &&
-			_BoundaryCollider.bounds.center.z + _BoundaryCollider.bounds.extents.z > worldCoordintates.z;
-		
-		return located_;
+		Ray checkRay_ = new Ray(worldCoordintates + _BoundaryCollider.transform.rotation * Vector3.up * 3.0f, _BoundaryCollider.transform.rotation * Vector3.down);
+		RaycastHit info_;
+		if ( Physics.Raycast(checkRay_, out info_, 6.0f, 1<<_BoundaryCollider.gameObject.layer) )
+		{
+			return info_.collider == _BoundaryCollider;
+		}
+
+		return false;
 	}
 	
 	void AlignToCamera()
@@ -90,6 +92,7 @@ public class ScrollingPanel : MonoBehaviour
 			_ContentContainer.transform.localRotation = Quaternion.identity;
 		}
 
+		mTargetContainerPosition = Vector3.up * 0.2f;
 		_ContentContainer.transform.localPosition = mTargetContainerPosition;
 
 		_Initialized = true;
@@ -166,7 +169,7 @@ public class ScrollingPanel : MonoBehaviour
 		return deltaTime_ > 0 ? (magnitude_ / deltaTime_) : 0;
 	}
 	
-	Vector3 mTargetContainerPosition;
+	public Vector3 mTargetContainerPosition;
 	
 	void OnTouchMove(int fingerID)
 	{
@@ -177,7 +180,7 @@ public class ScrollingPanel : MonoBehaviour
 		mTargetContainerPosition =  mBeginPosition + MainManager.Instance.GetWorldPos(fingerID);
 				
 		mTargetContainerPosition.x = 0;
-		mTargetContainerPosition.y = 0;
+		mTargetContainerPosition.y = 0.2f;
 		
 		SaveToHistory(mTargetContainerPosition);
 	}

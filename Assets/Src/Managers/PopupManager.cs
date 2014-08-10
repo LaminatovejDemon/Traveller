@@ -66,7 +66,7 @@ public class PopupManager : MonoBehaviour {
 
 		newPopup_.Initialize();
 
-		newPopup_.SetPartObject(partResource);
+		newPopup_.SetPartObject(partResource, pattern);
 		newPopup_.SetHeaderTextObject(header);
 
 		string text_ = pattern.mName;
